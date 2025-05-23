@@ -1,18 +1,20 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import {data} from "./data"
 
 // Define interfaces for type safety
 interface DataPoint {
-    year: string;
-    course: string;
-    total_enrolled: number;
-    passed: number;
-    failed: number;
+    gradeLevel: string;
     sem: number;
+    batch: string;
+    courseCode: string;
+    totalEnrolled: number;
+    passed: number;
 }
 
 interface ProcessedDataPoint extends DataPoint {
     proportion: number;
+    failed: number;
 }
 
 interface ChartDataPoint extends ProcessedDataPoint {
@@ -30,58 +32,32 @@ interface ChartDataPoint extends ProcessedDataPoint {
 // Import TooltipProps from recharts for proper typing
 import type { TooltipProps as RechartsTooltipProps } from 'recharts';
 
-const data: DataPoint[] = [
-    {
-        year: "2021-2022",
-        course: "BS02",
-        total_enrolled: 47,
-        passed: 42,
-        failed: 5,
-        sem: 1
-    },
-    {
-        year: "2022-2023",
-        course: "BS02",
-        total_enrolled: 80,
-        passed: 70,
-        failed: 10,
-        sem: 1
-    },
-    {
-        year: "2023-2024",
-        course: "BS02",
-        total_enrolled: 80,
-        passed: 75,
-        failed: 5,
-        sem: 1
-    },
-];
-
 const PChart: React.FC = () => {
     // Calculate proportions and statistics
     const processedData: ProcessedDataPoint[] = data.map(item => ({
         ...item,
-        proportion: item.passed / item.total_enrolled
+        proportion: item.passed / item.totalEnrolled,
+        failed: item.totalEnrolled - item.passed
     }));
 
     // Calculate Center Line (CL) - overall average
     const totalPassed: number = data.reduce((sum, item) => sum + item.passed, 0);
-    const totalEnrolled: number = data.reduce((sum, item) => sum + item.total_enrolled, 0);
+    const totalEnrolled: number = data.reduce((sum, item) => sum + item.totalEnrolled, 0);
     const CL: number = totalPassed / totalEnrolled;
 
     // Calculate VARIABLE control limits for each data point
     const chartData: ChartDataPoint[] = processedData.map(item => {
-        const n: number = item.total_enrolled; // Individual sample size
+        const n: number = item.totalEnrolled; // Individual sample size
         const sigma: number = Math.sqrt((CL * (1 - CL)) / n); // Individual sigma based on sample size
         
-        console.log(`n = ${n}`);
+        console.log(`Course: ${item.courseCode}, n = ${n}`);
         console.log(`CL = ${CL}`);
-        console.log(sigma);
-        console.log("\n\n\n\n\n");
+        console.log(`Sigma = ${sigma}`);
+        console.log("\n");
        
         return {
             ...item,
-            displayLabel: `${item.year} ${item.sem === 1 ? '1st' : item.sem === 2 ? '2nd' : `${item.sem}th`} sem`,
+            displayLabel: `Year ${item.gradeLevel} Sem ${item.sem}`,
             CL: CL,
             // Variable control limits based on individual sample size
             UCL1: CL + 1 * sigma,
@@ -111,17 +87,22 @@ const PChart: React.FC = () => {
     const customTooltip = ({ active, payload, label }: RechartsTooltipProps<number, string>) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload as ChartDataPoint;
+            const semText = data.sem === 1 ? '1st' : data.sem === 2 ? '2nd' : `${data.sem}th`;
+            
             return (
                 <div className="bg-white p-3 border border-gray-300 rounded-lg shadow-lg">
-                    <p className="font-bold text-gray-800 mb-2">{data.year}</p>
-                    <p className="text-gray-600">Enrolled: {data.total_enrolled}</p>
+                    <p className="font-bold text-gray-800 mb-2">{data.courseCode}</p>
+                    <p className="text-gray-600">Batch: {data.batch}</p>
+                    <p className="text-gray-600">Year Level: {data.gradeLevel}</p>
+                    <p className="text-gray-600">Semester: {semText}</p>
+                    <p className="text-gray-600">Enrolled: {data.totalEnrolled}</p>
                     <p className="text-gray-600">Passed: {data.passed}</p>
                     <p className="text-gray-600">Failed: {data.failed}</p>
                     <p className="font-bold text-green-600 mt-1">
                         Pass Rate: {(data.proportion * 100).toFixed(1)}%
                     </p>
                     <p className="text-gray-600 mt-1">
-                        Standard Devation: {(data.sigma * 100).toFixed(2)}%
+                        Standard Deviation: {(data.sigma * 100).toFixed(2)}%
                     </p>
                 </div>
             );
@@ -136,8 +117,8 @@ const PChart: React.FC = () => {
     return (
         <div className="w-full p-6 bg-white rounded-lg">
             <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">Variable P-Chart: Student Pass Rate Analysis</h2>
-                <p className="text-gray-600">Course: BS02 - Control Limits Vary by Sample Size</p>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">Variable P-Chart: Student Pass Rate Analysis by Course</h2>
+                <p className="text-gray-600">Batch: {data[0]?.batch} - Control Limits Vary by Sample Size</p>
             </div>
 
             <div className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -145,13 +126,11 @@ const PChart: React.FC = () => {
                     <div className="font-semibold text-blue-700">Center Line</div>
                     <div className="text-blue-900">{(CL * 100).toFixed(1)}%</div>
                 </div>
-                <div className="bg-purple-50 p-3 rounded-lg">
-                    <div className="font-semibold text-purple-700">Total Students</div>
-                    <div className="text-purple-900">{totalEnrolled}</div>
-                </div>
+                
+
                 <div className="bg-green-50 p-3 rounded-lg">
-                    <div className="font-semibold text-green-700"> Data Items </div>
-                    <div className="text-green-900"> {data.length}</div>
+                    <div className="font-semibold text-green-700">Data Items</div>
+                    <div className="text-green-900">{data.length}</div>
                 </div>
                 <div className="bg-amber-50 p-3 rounded-lg">
                     <div className="font-semibold text-amber-700">Y-Axis Range</div>
@@ -159,64 +138,70 @@ const PChart: React.FC = () => {
                 </div>
             </div>
 
-            {/* Chart and Control Limits Container */}
-            <div className="mb-6 flex gap-6">
-                {/* Control Limits Section for Each Year - Left Side */}
-                <div className="w-80 flex-shrink-0 text-sm overflow-auto h-[450px]">
-                    <h3 className="text-base font-semibold text-gray-800 mb-3">Control Limits by Year</h3>
-                    <div className="space-y-4">
-                        {chartData.map((item, index) => (
-                            <div key={index} className="bg-gray-50 p-3 rounded-lg border m-3">
-                                <div className="font-semibold text-gray-800 mb-2 text-center">
-                                    {item.year} (n={item.total_enrolled})
+            <div className="w-full overflow-x-auto text-sm">
+                <h3 className="text-base font-semibold text-gray-800 mb-3">Control Limits by Course</h3>
+                <div className="flex space-x-4 p-2">
+                    {chartData.map((item, index) => (
+                        <div key={index} className="w-80 flex-shrink-0 bg-gray-50 p-3 rounded-lg border">
+                            <div className="font-semibold text-gray-800 mb-2 text-center">
+                                {item.courseCode} (n={item.totalEnrolled})
+                            </div>
+                            <div className="text-xs text-center mb-2 text-gray-600">
+                                Yr {item.gradeLevel}, Sem {item.sem}
+                            </div>
+                            <div className="grid grid-cols-2 gap-1 text-xs">
+                                <div className="bg-red-100 px-1 py-0.5 rounded text-center">
+                                    <div className="font-medium text-red-700">UCL3</div>
+                                    <div className="text-red-900">{(item.UCL3 * 100).toFixed(1)}%</div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-1 text-xs">
-                                    <div className="bg-red-100 px-1 py-0.5 rounded text-center">
-                                        <div className="font-medium text-red-700">UCL3</div>
-                                        <div className="text-red-900">{(item.UCL3 * 100).toFixed(1)}%</div>
-                                    </div>
-                                    <div className="bg-red-100 px-1 py-0.5 rounded text-center">
-                                        <div className="font-medium text-red-700">LCL3</div>
-                                        <div className="text-red-900">{(item.LCL3 * 100).toFixed(1)}%</div>
-                                    </div>
-                                    <div className="bg-orange-100 px-1 py-0.5 rounded text-center">
-                                        <div className="font-medium text-orange-700">UCL2</div>
-                                        <div className="text-orange-900">{(item.UCL2 * 100).toFixed(1)}%</div>
-                                    </div>
-                                    <div className="bg-orange-100 px-1 py-0.5 rounded text-center">
-                                        <div className="font-medium text-orange-700">LCL2</div>
-                                        <div className="text-orange-900">{(item.LCL2 * 100).toFixed(1)}%</div>
-                                    </div>
-                                    <div className="bg-yellow-100 px-1 py-0.5 rounded text-center">
-                                        <div className="font-medium text-yellow-700">UCL1</div>
-                                        <div className="text-yellow-900">{(item.UCL1 * 100).toFixed(1)}%</div>
-                                    </div>
-                                    <div className="bg-yellow-100 px-1 py-0.5 rounded text-center">
-                                        <div className="font-medium text-yellow-700">LCL1</div>
-                                        <div className="text-yellow-900">{(item.LCL1 * 100).toFixed(1)}%</div>
-                                    </div>
-                                    <div className="bg-green-100 px-1 py-0.5 rounded text-center col-span-2">
-                                        <div className="font-medium text-green-700">Standard Devation (σ)</div>
-                                        <div className="text-green-900">{(item.sigma * 100).toFixed(2)}%</div>
-                                    </div>
+                                <div className="bg-red-100 px-1 py-0.5 rounded text-center">
+                                    <div className="font-medium text-red-700">LCL3</div>
+                                    <div className="text-red-900">{(item.LCL3 * 100).toFixed(1)}%</div>
+                                </div>
+                                <div className="bg-orange-100 px-1 py-0.5 rounded text-center">
+                                    <div className="font-medium text-orange-700">UCL2</div>
+                                    <div className="text-orange-900">{(item.UCL2 * 100).toFixed(1)}%</div>
+                                </div>
+                                <div className="bg-orange-100 px-1 py-0.5 rounded text-center">
+                                    <div className="font-medium text-orange-700">LCL2</div>
+                                    <div className="text-orange-900">{(item.LCL2 * 100).toFixed(1)}%</div>
+                                </div>
+                                <div className="bg-yellow-100 px-1 py-0.5 rounded text-center">
+                                    <div className="font-medium text-yellow-700">UCL1</div>
+                                    <div className="text-yellow-900">{(item.UCL1 * 100).toFixed(1)}%</div>
+                                </div>
+                                <div className="bg-yellow-100 px-1 py-0.5 rounded text-center">
+                                    <div className="font-medium text-yellow-700">LCL1</div>
+                                    <div className="text-yellow-900">{(item.LCL1 * 100).toFixed(1)}%</div>
+                                </div>
+                                <div className="bg-green-100 px-1 py-0.5 rounded text-center col-span-2">
+                                    <div className="font-medium text-green-700">Standard Deviation (σ)</div>
+                                    <div className="text-green-900">{(item.sigma * 100).toFixed(2)}%</div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                        </div>
+                    ))}
                 </div>
+            </div>
 
+
+            {/* Chart and Control Limits Container */}
+            <div className=" flex gap-6">
                 {/* Chart Section - Right Side */}
                 <div className="flex-1 h-[480px]">
                     <ResponsiveContainer width="100%" height="100%">
                         <LineChart
                             data={chartData}
-                            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                            margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
                         >
                             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                             <XAxis 
                                 dataKey="displayLabel" 
-                                tick={{ fontSize: 12 }}
+                                tick={{ fontSize: 11 }}
                                 stroke="#666"
+                                angle={-45}
+                                textAnchor="end"
+                                height={80}
                             />
                             <YAxis 
                                 tickFormatter={formatYAxis}
@@ -324,25 +309,26 @@ const PChart: React.FC = () => {
             <div className="w-full overflow-x-auto text-sm">
                 <div className="flex space-x-4 min-w-fit p-2">
                     {chartData.map((item, index) => (
-                        <div key={index} className="w-[330px] bg-gray-50 p-4 rounded-lg flex-shrink-0 shadow-lg">
-                            <div className="font-semibold text-gray-700 mb-2">{item.displayLabel}</div>
+                        <div key={index} className="w-[250px] bg-gray-50 p-4 rounded-lg flex-shrink-0 shadow-lg">
+                            <div className="font-semibold text-gray-700 mb-2">
+                                {item.courseCode} - Yr {item.gradeLevel}, Sem {item.sem}
+                            </div>
                             <div className="space-y-1">
-                                <div>Enrolled: {item.total_enrolled}</div>
+                                <div>Batch: {item.batch}</div>
+                                <div>Enrolled: {item.totalEnrolled}</div>
                                 <div>Passed: {item.passed}</div>
                                 <div>Failed: {item.failed}</div>
                                 <div className="font-semibold text-green-600">
                                     Pass Rate: {(item.proportion * 100).toFixed(1)}%
                                 </div>
                                 <div className="text-gray-600">
-                                    Standard Devation: {(item.sigma * 100).toFixed(2)}%
+                                    Standard Deviation: {(item.sigma * 100).toFixed(2)}%
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
-
-        
         </div>
     );
 };
