@@ -6,3 +6,33 @@ export const bgStyle = {
     backgroundPosition: "center"
   }
   
+
+  
+export const convertCodeToName = (code : string) => {
+  switch(code)
+  {
+    case "CE":
+      return "Civil Engeneering"
+      break 
+
+    case "CPE":
+      return "Computer Engeneering"
+      break
+
+    case "EE":
+      return "Electrical Engeneering"
+      break
+
+    case "ECE":
+      return "Electronic Engeneering"
+      break
+
+    case "IE":
+      return "industrial Engeneering"
+      break
+
+    case "ME":
+      return "Mechanical Engeneering"
+      break
+  }
+}

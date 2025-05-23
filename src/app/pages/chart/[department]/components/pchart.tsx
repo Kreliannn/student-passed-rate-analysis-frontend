@@ -1,6 +1,9 @@
+"use client"
+import { useEffect } from 'react';
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import {data} from "./data"
+import {data} from "./data/CE"
+import { courseInterface } from '@/types/interface';
 
 // Define interfaces for type safety
 interface DataPoint {
@@ -32,7 +35,11 @@ interface ChartDataPoint extends ProcessedDataPoint {
 // Import TooltipProps from recharts for proper typing
 import type { TooltipProps as RechartsTooltipProps } from 'recharts';
 
-const PChart: React.FC = () => {
+const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
+
+   
+
+
     // Calculate proportions and statistics
     const processedData: ProcessedDataPoint[] = data.map(item => ({
         ...item,
@@ -57,7 +64,7 @@ const PChart: React.FC = () => {
        
         return {
             ...item,
-            displayLabel: `Year ${item.gradeLevel} Sem ${item.sem}`,
+            displayLabel: ` ${item.gradeLevel} yr  ${item.sem + ((item.sem == 1) ? "st" : "nd")} sem `,
             CL: CL,
             // Variable control limits based on individual sample size
             UCL1: CL + 1 * sigma,
