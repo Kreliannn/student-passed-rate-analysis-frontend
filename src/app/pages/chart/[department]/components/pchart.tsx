@@ -5,6 +5,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import {data} from "./data/CE"
 import { courseInterface } from '@/types/interface';
 
+
 // Define interfaces for type safety
 interface DataPoint {
     gradeLevel: string;
@@ -37,7 +38,7 @@ import type { TooltipProps as RechartsTooltipProps } from 'recharts';
 
 const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
 
-   
+   const retention = (data[data.length - 1].totalEnrolled  / data[0].totalEnrolled) * 100
 
 
     // Calculate proportions and statistics
@@ -133,16 +134,24 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
                     <div className="font-semibold text-blue-700">Center Line</div>
                     <div className="text-blue-900">{(CL * 100).toFixed(1)}%</div>
                 </div>
-                
 
-                <div className="bg-green-50 p-3 rounded-lg">
-                    <div className="font-semibold text-green-700">Data Items</div>
-                    <div className="text-green-900">{data.length}</div>
+                <div className="bg-purple-50 p-3 rounded-lg">
+                    <div className="font-semibold text-purple-700"> Total Items</div>
+                    <div className="text-purple-900">{data.length}</div>
                 </div>
+                
                 <div className="bg-amber-50 p-3 rounded-lg">
                     <div className="font-semibold text-amber-700">Y-Axis Range</div>
                     <div className="text-amber-900">{(yAxisMin * 100).toFixed(1)}% - {(yAxisMax * 100).toFixed(1)}%</div>
                 </div>
+
+
+                <div className="bg-green-50 p-3 rounded-lg">
+                    <div className="font-semibold text-green-700"> Retention</div>
+                    <div className="text-green-900">{retention.toFixed(1)}%</div>
+                </div>
+
+         
             </div>
 
             <div className="w-full overflow-x-auto text-sm">
@@ -190,6 +199,7 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
                     ))}
                 </div>
             </div>
+
 
 
             {/* Chart and Control Limits Container */}
