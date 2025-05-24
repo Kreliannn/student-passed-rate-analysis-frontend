@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useState } from "react"
+import { use, useEffect, useState } from "react"
 import { Plus, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -11,14 +11,32 @@ import { DeleteButton } from "./components/deleteButton"
 import TableCourse from "./components/table"
 import { convertCodeToName } from "@/utils/customFunction"
 import { AddButton } from "./components/addButtton"
+import { useQuery } from "@tanstack/react-query"
+import axios from "axios"
+import { backendUrl } from "@/utils/url"
+import { courseInterface } from "@/types/interface"
 
 export default function LandingPage() {
       
       const params = useParams()
       const department = params.department as string
     
-      const [data, setData] = useState([])
+      const [courseData, setCourseData] = useState<courseInterface[]>([])
       const [selectedDepartment, setSelectedDepartment] = useState<string>("all")
+
+      const { data } = useQuery({
+        queryKey : ['course'],
+        queryFn : () => axios.get(backendUrl("course/" + department))
+      })
+
+      useEffect(() => {
+        console.log("USE EFFECT")
+        if(data?.data)
+        {
+            setCourseData(data.data)
+            console.log(data.data)
+        }
+      }, [data])
     
 
   return (
@@ -50,7 +68,7 @@ export default function LandingPage() {
             </div>
 
             <div className=" rounded-md ">
-                <TableCourse />
+                {courseData.length != 0 ?  <TableCourse course={courseData} /> : null}
             </div>
         </div>
            

@@ -8,46 +8,56 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { bgStyle } from "@/utils/customFunction"
 import Image from "next/image"
+import { courseInterface } from "@/types/interface"
 
 
-
-export default function TableCourse() {
-    const initialData = [
-        {
-          year: "2021-2022",
-          course: "BS02",
-          total_enrolled: 47,
-          passed: 42,
-          failed: 5,
-          sem: 1,
-        },
-        {
-          year: "2022-2023",
-          course: "BS02",
-          total_enrolled: 80,
-          passed: 70,
-          failed: 10,
-          sem: 1,
-        },
-        {
-          year: "2023-2024",
-          course: "BS02",
-          total_enrolled: 80,
-          passed: 75,
-          failed: 5,
-          sem: 1,
-        },
-      ]
+export default function TableCourse({ course } : { course : courseInterface[]})  {
     
-      const [data, setData] = useState(initialData)
-      const [selectedDepartment, setSelectedDepartment] = useState<string>("all")
+    
+      const [data, setData] = useState<courseInterface[]>(course)
+
+      const [selectBatch, setSelectBatch] = useState<string>("all")
       const [selectedYear, setSelectedYear] = useState<string>("all")
-    
-      const handleDelete = (index: number) => {
-        setData(data.filter((_, i) => i !== index))
-      }
 
-      const filteredData = selectedYear === "all" ? data : data.filter((item) => item.year === selectedYear)
+      const [filteredData, setFilteredData] = useState<courseInterface[]>(course)
+
+
+      const parseSelectedYear = (value: string) => {
+        const parts = value.split(" ");
+        return {
+          gradeLevel: parts[0], // e.g. "1st"
+          sem: parseInt(parts[2]), // e.g. "1" from "1st yr 1st sem"
+        };
+      };
+      
+      const applyFilter = (batch: string, yearValue: string) => {
+        let newFilteredData = [...data];
+      
+        if (batch !== "all") {
+          newFilteredData = newFilteredData.filter((item) => item.batch === batch);
+        }
+      
+        if (yearValue !== "all") {
+          const { gradeLevel, sem } = parseSelectedYear(yearValue);
+          newFilteredData = newFilteredData.filter(
+            (item) => item.gradeLevel === gradeLevel && item.sem === sem
+          );
+        }
+      
+        setFilteredData(newFilteredData);
+      };
+      
+      const handleFilterBatch = (selected: string) => {
+        setSelectBatch(selected);
+        applyFilter(selected, selectedYear);
+      };
+      
+      const handleFilterYear = (selected: string) => {
+        setSelectedYear(selected);
+        applyFilter(selectBatch, selected);
+      };
+      
+    
 
 
   return (
@@ -57,7 +67,7 @@ export default function TableCourse() {
                 <div className="flex items-center gap-4">
                     <div className="grid w-full max-w-sm items-center gap-1.5 ">
                         <Label className="text-white" htmlFor="year-select">Filter by Batch</Label>
-                        <Select  value={selectedYear} onValueChange={setSelectedYear} >
+                        <Select  value={selectBatch} onValueChange={handleFilterBatch} >
                         <SelectTrigger id="year-select" className="w-[200px] bg-white">
                             <SelectValue placeholder="Select Year" />
                         </SelectTrigger>
@@ -73,34 +83,26 @@ export default function TableCourse() {
 
                     <div className="grid w-full max-w-sm items-center gap-1.5">
                         <Label className="text-white" htmlFor="year-select"> Year Level </Label>
-                        <Select  value={selectedYear} onValueChange={setSelectedYear} >
-                        <SelectTrigger id="year-select" className="w-[200px] bg-white">
+                        <Select  value={selectedYear} onValueChange={handleFilterYear} >
+                        <SelectTrigger id="year-select" className="w-[250px] bg-white">
                             <SelectValue placeholder="Select Year" />
                         </SelectTrigger>
                         <SelectContent >
-                            <SelectItem value="all">Select Year Level </SelectItem>
-                            <SelectItem value="1st">1st</SelectItem>
-                            <SelectItem value="2nd">2nd</SelectItem>
-                            <SelectItem value="3rd">3rd</SelectItem>
-                            <SelectItem value="4th">4th</SelectItem>
+                        <SelectItem value="all">Select Year Level and Sem</SelectItem>
+                        <SelectItem value="1st yr 1st sem">1st yr 1st sem</SelectItem>
+                        <SelectItem value="1st yr 2nd sem">1st yr 2nd sem</SelectItem>
+                        <SelectItem value="2nd yr 1st sem">2nd yr 1st sem</SelectItem>
+                        <SelectItem value="2nd yr 2nd sem">2nd yr 2nd sem</SelectItem>
+                        <SelectItem value="3rd yr 1st sem">3rd yr 1st sem</SelectItem>
+                        <SelectItem value="3rd yr 2nd sem">3rd yr 2nd sem</SelectItem>
+                        <SelectItem value="4th yr 1st sem">4th yr 1st sem</SelectItem>
+                        <SelectItem value="4th yr 2nd sem">4th yr 2nd sem</SelectItem>
                         </SelectContent>
                         </Select>
                     </div>
 
 
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                        <Label className="text-white" htmlFor="year-select"> Sem </Label>
-                        <Select  value={selectedYear} onValueChange={setSelectedYear} >
-                        <SelectTrigger id="year-select" className="w-[200px] bg-white">
-                            <SelectValue placeholder="Select Year" />
-                        </SelectTrigger>
-                        <SelectContent >
-                            <SelectItem value="all">Select Sem </SelectItem>
-                            <SelectItem value="1">1st</SelectItem>
-                            <SelectItem value="2">2nd</SelectItem>
-                        </SelectContent>
-                        </Select>
-                    </div>
+                 
                 </div>
 
 
@@ -112,6 +114,7 @@ export default function TableCourse() {
                 <Table>
                 <TableHeader>
                     <TableRow>
+                        <TableHead> Batch </TableHead>
                         <TableHead> Year Level </TableHead>
                         <TableHead>Semester</TableHead>
                         <TableHead>Course</TableHead>
@@ -124,12 +127,13 @@ export default function TableCourse() {
                     {filteredData.length > 0 ? (
                     filteredData.map((item, index) => (
                         <TableRow key={index}>
-                            <TableCell>{item.year}</TableCell>
+                            <TableCell>{item.batch}</TableCell>
+                            <TableCell>{item.gradeLevel}</TableCell>
                             <TableCell>{item.sem}</TableCell>
-                            <TableCell>{item.course}</TableCell>
-                            <TableCell>{item.total_enrolled}</TableCell>
+                            <TableCell>{item.courseCode}</TableCell>
+                            <TableCell>{item.totalEnrolled}</TableCell>
                             <TableCell>{item.passed}</TableCell>
-                            <TableCell>{item.failed}</TableCell>
+                            <TableCell>{(item.totalEnrolled - item.passed)}</TableCell>
                         </TableRow>
                     ))
                     ) : (

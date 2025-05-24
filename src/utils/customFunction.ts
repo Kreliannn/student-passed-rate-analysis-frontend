@@ -65,11 +65,11 @@ export const convertYearLevel= (year : string) => {
 export const convertSem = (sem : string) => {
   switch(sem)
   {
-    case "1st":
+    case "firstSem":
       return 1
       break 
 
-    case "2nd":
+    case "secondSem":
       return 2
       break
   }

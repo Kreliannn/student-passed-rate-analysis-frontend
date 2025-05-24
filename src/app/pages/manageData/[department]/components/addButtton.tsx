@@ -104,7 +104,6 @@ export function AddButton() {
         }
       }
 
-
       const handlesaveButton = (courseCode : string, totalEnrolled : number, passed : number) => {
         let course : courseInterface = {
           gradeLevel : convertYearLevel(selectedYear), 
@@ -118,6 +117,13 @@ export function AddButton() {
       }
 
 
+      const handleSubmit = () => {
+        if(courseData.length == 0) return alert("no course found")
+        console.log(courseData)
+
+        setSelectedBatch("all")
+        setCourseData([])
+      }
 
       
 
@@ -252,13 +258,13 @@ export function AddButton() {
                           className="w-[75px]  text-white px-2 py-1 rounded"
                           onClick={(e) => {
                             
-                            const enrolled = inputValues[courseName]?.enrolled;
-                            const passed = inputValues[courseName]?.passed;
+                            const enrolled = Number(inputValues[courseName]?.enrolled);
+                            const passed = Number(inputValues[courseName]?.passed);
 
                             if(!enrolled || !passed)  return  alert("empty field")
 
                             console.log(`Course: ${courseName}, Enrolled: ${enrolled}, Passed: ${passed}`);
-
+                            handlesaveButton(courseName, enrolled, passed)
                             e.currentTarget.disabled = true;
                             e.currentTarget.innerHTML = "SAVED";
                             e.currentTarget.style.backgroundColor = "green";
@@ -281,7 +287,7 @@ export function AddButton() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <Button  >
+              <Button onClick={handleSubmit} >
                     Submit
               </Button>
             </div>
