@@ -22,21 +22,14 @@ import { Plus } from "lucide-react";
 import { convertYearLevel,convertSem  } from "@/utils/customFunction"
 import {CEcourse, CPEcourse, EEcourse, ECEcourse, IEcourse, MEcourse} from "../DepartmentCourse/course"
 import React, { useRef } from "react";
-
-
+import { errorAlert, successAlert } from "@/utils/alerts"
+import { backendUrl } from "@/utils/url"
 import { departmentCourseStructureInterface } from "@/types/interface"
 
 
 
     /*
-    const mutation = useMutation({
-        mutationFn : (data : employeeAddInterface) => axios.post(backendUrl("employee"), data),
-        onSuccess : (response : { data : employeeGetInterface[]} ) => {
-          setEmployees(response.data)
-          successAlert("Employee Added")
-        },
-        onError : (err : { request : { response : string}}) => errorAlert(err.request.response)
-    })*/
+   */
 
 type yearType = "firstYear" | "secondYear" | "thirdYear" | "fourthYear"
 type semType = "firstSem" | "secondSem"
@@ -44,7 +37,7 @@ type bactchType = "2020-2024" | "2021" | "thirdYear" | "fourthYear"
 type BatchYear = "2020-2024" | "2021-2025" | "2022-2026" | "2023-2027" | "2024-2028" | "2025-2029" | "2026-2030" | "2027-2031";
 
  
-export function AddButton() {
+export function AddButton({ department , setCourseDataGlobal} : { department : string, setCourseDataGlobal : React.Dispatch<React.SetStateAction<courseInterface[]>> }) {
 
     const [open, setOpen] = useState(false)
 
@@ -106,6 +99,7 @@ export function AddButton() {
 
       const handlesaveButton = (courseCode : string, totalEnrolled : number, passed : number) => {
         let course : courseInterface = {
+          department : selectedDepartment,
           gradeLevel : convertYearLevel(selectedYear), 
           sem : convertSem(selectedSem),
           batch : selectedBatch,
@@ -116,11 +110,23 @@ export function AddButton() {
         setCourseData((prev) => [...prev, course])
       }
 
+      const mutation = useMutation({
+        mutationFn : (data : courseInterface[]) => axios.post(backendUrl("course"), { courses : data}),
+        onSuccess : (response : { data : courseInterface[]} ) => {
+          const newCourseData = response.data
+          if(department == newCourseData[0].department) setCourseDataGlobal(newCourseData)
+          setOpen(false)
+          successAlert("data inserted successfuly")
+      
+        },
+        onError : (err : { request : { response : string}}) => errorAlert(err.request.response)
+      })
+
 
       const handleSubmit = () => {
         if(courseData.length == 0) return alert("no course found")
         console.log(courseData)
-
+        mutation.mutate(courseData)
         setSelectedBatch("all")
         setCourseData([])
       }

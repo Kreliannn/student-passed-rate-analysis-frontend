@@ -4,7 +4,7 @@ import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import {data} from "./data/CE"
 import { courseInterface } from '@/types/interface';
-
+import { getCourseName } from '@/utils/customFunction';
 
 // Define interfaces for type safety
 interface DataPoint {
@@ -99,7 +99,7 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
             
             return (
                 <div className="bg-white p-3 border border-gray-300 rounded-lg shadow-lg">
-                    <p className="font-bold text-gray-800 mb-2">{data.courseCode}</p>
+                    <p className="font-bold text-gray-800 mb-2">{`${data.courseCode} - ${getCourseName(data.courseCode)} `}</p>
                     <p className="text-gray-600">Batch: {data.batch}</p>
                     <p className="text-gray-600">Year Level: {data.gradeLevel}</p>
                     <p className="text-gray-600">Semester: {semText}</p>

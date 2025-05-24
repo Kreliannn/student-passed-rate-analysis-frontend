@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Plus, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -9,17 +9,21 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { bgStyle } from "@/utils/customFunction"
 import Image from "next/image"
 import { courseInterface } from "@/types/interface"
-
+import { getCourseName } from "@/utils/customFunction"
 
 export default function TableCourse({ course } : { course : courseInterface[]})  {
     
     
-      const [data, setData] = useState<courseInterface[]>(course)
+     
 
       const [selectBatch, setSelectBatch] = useState<string>("all")
       const [selectedYear, setSelectedYear] = useState<string>("all")
 
       const [filteredData, setFilteredData] = useState<courseInterface[]>(course)
+
+      useEffect(() => {
+        setFilteredData(course)
+      }, [course])
 
 
       const parseSelectedYear = (value: string) => {
@@ -31,7 +35,7 @@ export default function TableCourse({ course } : { course : courseInterface[]}) 
       };
       
       const applyFilter = (batch: string, yearValue: string) => {
-        let newFilteredData = [...data];
+        let newFilteredData = [...course];
       
         if (batch !== "all") {
           newFilteredData = newFilteredData.filter((item) => item.batch === batch);
@@ -114,10 +118,11 @@ export default function TableCourse({ course } : { course : courseInterface[]}) 
                 <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead> Batch </TableHead>
+                        <TableHead>Course Code</TableHead>
+                        <TableHead>Course Name</TableHead>
                         <TableHead> Year Level </TableHead>
                         <TableHead>Semester</TableHead>
-                        <TableHead>Course</TableHead>
+                        <TableHead> Batch </TableHead>
                         <TableHead>Total Enrolled</TableHead>
                         <TableHead>Passed</TableHead>
                         <TableHead>Failed</TableHead>
@@ -127,10 +132,11 @@ export default function TableCourse({ course } : { course : courseInterface[]}) 
                     {filteredData.length > 0 ? (
                     filteredData.map((item, index) => (
                         <TableRow key={index}>
-                            <TableCell>{item.batch}</TableCell>
+                            <TableCell>{item.courseCode}</TableCell>
+                            <TableCell>{getCourseName(item.courseCode)}</TableCell>
                             <TableCell>{item.gradeLevel}</TableCell>
                             <TableCell>{item.sem}</TableCell>
-                            <TableCell>{item.courseCode}</TableCell>
+                            <TableCell>{item.batch}</TableCell>
                             <TableCell>{item.totalEnrolled}</TableCell>
                             <TableCell>{item.passed}</TableCell>
                             <TableCell>{(item.totalEnrolled - item.passed)}</TableCell>

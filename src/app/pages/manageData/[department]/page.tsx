@@ -60,7 +60,7 @@ export default function LandingPage() {
 
                     <DeleteButton />
 
-                    <AddButton />
+                    <AddButton department={department} setCourseDataGlobal={setCourseData}/>
                 
                 </div>
 

@@ -1,4 +1,5 @@
 export interface courseInterface {
+    department : string,
     gradeLevel : string,
     sem : number,
     batch : string,
