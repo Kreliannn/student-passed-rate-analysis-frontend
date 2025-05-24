@@ -14,19 +14,44 @@ import { Label } from "@/components/ui/label"
 import { Trash2 } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState } from "react"
+import { courseInterface } from "@/types/interface"
+import { errorAlert, successAlert } from "@/utils/alerts"
+import { useMutation } from "@tanstack/react-query"
+import axios from "axios"
+import { backendUrl } from "@/utils/url"
 
-export function DeleteButton() {
+export function DeleteButton({ department , setCourseDataGlobal} : { department : string, setCourseDataGlobal : React.Dispatch<React.SetStateAction<courseInterface[]>> }) {
 
   const [selectedDepartment, setSelectedDepartment] = useState("all");
   const [selectedYear, setSelectedYear] = useState("all");
   const [selectedSem, setSelectedSem] = useState("all");
   const [selectedBatch, setSelectedBatch] = useState("all");
+
+  const [open, setOpen] = useState(false);
+
+  const mutation = useMutation({
+    mutationFn : () => axios.post(backendUrl("course/delete"), { department : selectedDepartment, gradeLevel : selectedYear, sem : Number(selectedSem), batch : selectedBatch}),
+    onSuccess : (response : { data : courseInterface[]} ) => {
+      const newCourseData = response.data
+      if(department == newCourseData[0].department) setCourseDataGlobal(newCourseData)
+      successAlert("Data Deleted successfuly")
+    },
+    onError : (err : { request : { response : string}}) => errorAlert(err.request.response)
+  })
+
+
+  const handleDelete = () => {
+    setOpen(false)
+    if(selectedBatch == "all" || selectedDepartment == "all" || selectedYear == "all" || selectedSem == "all") return errorAlert("empty field")
+    mutation.mutate()
+    }
+
  
     
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-                <Button className="flex items-center gap-2 bg-red-500 hover:bg-red-600">
+                <Button className="flex items-center gap-2 bg-red-500 hover:bg-red-600"  onClick={() => setOpen(true)}>
                     <Trash2 className="h-4 w-4" />
                     Delete Data
                 </Button>
@@ -50,12 +75,12 @@ export function DeleteButton() {
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="all">All Departments</SelectItem>
-                    <SelectItem value="civil-engineering">Civil Engineering</SelectItem>
-                    <SelectItem value="computer-engineering">Computer Engineering</SelectItem>
-                    <SelectItem value="electrical-engineering">Electrical Engineering</SelectItem>
-                    <SelectItem value="electronics-engineering">Electronics Engineering</SelectItem>
-                    <SelectItem value="industrial-engineering">Industrial Engineering</SelectItem>
-                    <SelectItem value="mechanical-engineering">Mechanical Engineering</SelectItem>
+                    <SelectItem value="CE">Civil Engineering</SelectItem>
+                    <SelectItem value="CPE">Computer Engineering</SelectItem>
+                    <SelectItem value="EE">Electrical Engineering</SelectItem>
+                    <SelectItem value="ECE">Electronics Engineering</SelectItem>
+                    <SelectItem value="IE">Industrial Engineering</SelectItem>
+                    <SelectItem value="ME">Mechanical Engineering</SelectItem>
                 </SelectContent>
                 </Select>
             </div>
@@ -117,7 +142,7 @@ export function DeleteButton() {
         </div>
 
         <DialogFooter>
-          <Button type="submit">Delete Permanently</Button>
+          <Button type="submit" onClick={handleDelete}>Delete Permanently</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -58,7 +58,7 @@ export default function LandingPage() {
 
                 <div className="flex justify-end  gap-4 w-2/6  h-10">
 
-                    <DeleteButton />
+                    <DeleteButton department={department} setCourseDataGlobal={setCourseData}/>
 
                     <AddButton department={department} setCourseDataGlobal={setCourseData}/>
                 
