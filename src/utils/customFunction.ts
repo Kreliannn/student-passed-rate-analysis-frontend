@@ -36,3 +36,43 @@ export const convertCodeToName = (code : string) => {
       break
   }
 }
+
+
+
+export const convertYearLevel= (year : string) => {
+  switch(year)
+  {
+    case "firstYear":
+      return "1st"
+      break 
+
+    case "secondYear":
+      return "2nd"
+      break
+
+    case "thirdYear":
+      return "3rd"
+      break
+
+    case "fourthYear":
+      return "4th"
+      break
+  }
+
+  return "no selected year"
+}
+
+export const convertSem = (sem : string) => {
+  switch(sem)
+  {
+    case "1st":
+      return 1
+      break 
+
+    case "2nd":
+      return 2
+      break
+  }
+
+  return 0
+}
