@@ -21,12 +21,12 @@ export default function LandingPage() {
         <div className="w-2/6 bg-white m-auto p-10 rounded-lg">
             <h2 className="text-2xl md:text-3xl font-bold text-stone-700 text-center">Departments</h2>
             <br />
-            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/chart/CE")}> Civil Engineering </Button>
-            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/chart/CPE")}> Computer Engineering </Button>
-            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/chart/EE")}>  Electrical Engineering </Button>
-            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/chart/ECE")}> Electronics Engineering </Button>
-            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/chart/IE")}> Industrial Engineering </Button>
-            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/chart/ME")}> Mechanical Engineering </Button>
+            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/manageData/CE")}> Civil Engineering </Button>
+            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/manageData/CPE")}> Computer Engineering </Button>
+            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/manageData/EE")}>  Electrical Engineering </Button>
+            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/manageData/ECE")}> Electronics Engineering </Button>
+            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/manageData/IE")}> Industrial Engineering </Button>
+            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/manageData/ME")}> Mechanical Engineering </Button>
         </div>
     </div>
   )

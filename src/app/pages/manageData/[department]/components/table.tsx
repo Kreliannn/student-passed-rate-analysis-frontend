@@ -11,7 +11,7 @@ import Image from "next/image"
 
 
 
-export default function LandingPage() {
+export default function TableCourse() {
     const initialData = [
         {
           year: "2021-2022",
@@ -56,72 +56,80 @@ export default function LandingPage() {
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-4">
                     <div className="grid w-full max-w-sm items-center gap-1.5 ">
-                        <Label className="text-white" htmlFor="year-select">Filter by Academic Year</Label>
+                        <Label className="text-white" htmlFor="year-select">Filter by Batch</Label>
                         <Select  value={selectedYear} onValueChange={setSelectedYear} >
                         <SelectTrigger id="year-select" className="w-[200px] bg-white">
                             <SelectValue placeholder="Select Year" />
                         </SelectTrigger>
                         <SelectContent >
-                            <SelectItem value="all">All Years</SelectItem>
-                            <SelectItem value="2020-2021">2020-2021</SelectItem>
-                            <SelectItem value="2021-2022">2021-2022</SelectItem>
-                            <SelectItem value="2022-2023">2022-2023</SelectItem>
-                            <SelectItem value="2023-2024">2023-2024</SelectItem>
+                            <SelectItem value="all">select Batch</SelectItem>
+                            <SelectItem value="2020-2024">2020-2024</SelectItem>
+                            <SelectItem value="2021-2025">2021-2025</SelectItem>
+                            <SelectItem value="2022-2026">2022-2026</SelectItem>
+                            <SelectItem value="2023-2027">2023-2027</SelectItem>
                         </SelectContent>
                         </Select>
                     </div>
 
                     <div className="grid w-full max-w-sm items-center gap-1.5">
-                        <Label className="text-white" htmlFor="year-select">Filter by Academic Year</Label>
+                        <Label className="text-white" htmlFor="year-select"> Year Level </Label>
                         <Select  value={selectedYear} onValueChange={setSelectedYear} >
                         <SelectTrigger id="year-select" className="w-[200px] bg-white">
                             <SelectValue placeholder="Select Year" />
                         </SelectTrigger>
                         <SelectContent >
-                            <SelectItem value="all">All Years</SelectItem>
-                            <SelectItem value="2020-2021">2020-2021</SelectItem>
-                            <SelectItem value="2021-2022">2021-2022</SelectItem>
-                            <SelectItem value="2022-2023">2022-2023</SelectItem>
-                            <SelectItem value="2023-2024">2023-2024</SelectItem>
+                            <SelectItem value="all">Select Year Level </SelectItem>
+                            <SelectItem value="1st">1st</SelectItem>
+                            <SelectItem value="2nd">2nd</SelectItem>
+                            <SelectItem value="3rd">3rd</SelectItem>
+                            <SelectItem value="4th">4th</SelectItem>
+                        </SelectContent>
+                        </Select>
+                    </div>
+
+
+                    <div className="grid w-full max-w-sm items-center gap-1.5">
+                        <Label className="text-white" htmlFor="year-select"> Sem </Label>
+                        <Select  value={selectedYear} onValueChange={setSelectedYear} >
+                        <SelectTrigger id="year-select" className="w-[200px] bg-white">
+                            <SelectValue placeholder="Select Year" />
+                        </SelectTrigger>
+                        <SelectContent >
+                            <SelectItem value="all">Select Sem </SelectItem>
+                            <SelectItem value="1">1st</SelectItem>
+                            <SelectItem value="2">2nd</SelectItem>
                         </SelectContent>
                         </Select>
                     </div>
                 </div>
-                <Button className="flex items-center gap-2 bg-green-500 hover:bg-green-600">
-                    <Plus className="h-4 w-4" />
-                    Add Data
-                </Button>
+
+
+
+                
             </div>
 
             <div className="border rounded-md bg-white">
                 <Table>
                 <TableHeader>
                     <TableRow>
-                    <TableHead>Academic Year</TableHead>
-                    <TableHead>Course</TableHead>
-                    <TableHead>Total Enrolled</TableHead>
-                    <TableHead>Passed</TableHead>
-                    <TableHead>Failed</TableHead>
-                    <TableHead>Semester</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                        <TableHead> Year Level </TableHead>
+                        <TableHead>Semester</TableHead>
+                        <TableHead>Course</TableHead>
+                        <TableHead>Total Enrolled</TableHead>
+                        <TableHead>Passed</TableHead>
+                        <TableHead>Failed</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {filteredData.length > 0 ? (
                     filteredData.map((item, index) => (
                         <TableRow key={index}>
-                        <TableCell>{item.year}</TableCell>
-                        <TableCell>{item.course}</TableCell>
-                        <TableCell>{item.total_enrolled}</TableCell>
-                        <TableCell>{item.passed}</TableCell>
-                        <TableCell>{item.failed}</TableCell>
-                        <TableCell>{item.sem}</TableCell>
-                        <TableCell className="text-right">
-                            <Button variant="destructive" size="sm" onClick={() => handleDelete(index)}>
-                            <Trash2 className="h-4 w-4" />
-                            <span className="sr-only">Delete</span>
-                            </Button>
-                        </TableCell>
+                            <TableCell>{item.year}</TableCell>
+                            <TableCell>{item.sem}</TableCell>
+                            <TableCell>{item.course}</TableCell>
+                            <TableCell>{item.total_enrolled}</TableCell>
+                            <TableCell>{item.passed}</TableCell>
+                            <TableCell>{item.failed}</TableCell>
                         </TableRow>
                     ))
                     ) : (

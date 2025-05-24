@@ -38,7 +38,7 @@ export default function LandingPage() {
 
           <Button size="lg" variant={"outline"} > 
             <Link
-              href="/pages/manageData"
+              href="/pages/departments_2"
               className="t  "
             >  Manage Data </Link>
           </Button>
