@@ -6,3 +6,22 @@ export interface courseInterface {
     totalEnrolled : number,
     passed : number
 }
+
+
+
+
+
+
+interface SemesterCourses {
+    firstSem: string[];
+    secondSem: string[];
+}
+  
+
+
+export interface departmentCourseStructureInterface {
+    firstYear: SemesterCourses;
+    secondYear: SemesterCourses;
+    thirdYear: SemesterCourses;
+    fourthYear: SemesterCourses;
+}
