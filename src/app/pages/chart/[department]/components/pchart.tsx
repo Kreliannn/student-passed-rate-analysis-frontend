@@ -148,7 +148,7 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
 
                 <div className="bg-green-50 p-3 rounded-lg">
                     <div className="font-semibold text-green-700"> Retention</div>
-                    <div className="text-green-900">{retention.toFixed(1)}%</div>
+                    <div className="text-green-900">{retention.toFixed(1)}%  {(data[data.length - 1].gradeLevel != "4th") ? ` As Of ${data[data.length - 1].gradeLevel} Year` : " "}</div>
                 </div>
 
          

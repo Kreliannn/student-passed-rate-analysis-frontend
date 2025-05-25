@@ -13,7 +13,10 @@ import { data as CEdata } from "./components/data/CE"
 import { data as CPEdata } from "./components/data/CPE"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-
+import { useQuery } from "@tanstack/react-query"
+import axios from "axios"
+import { backendUrl } from "@/utils/url"
+import { getSortedCourses } from "@/utils/customFunction"
 
 export default function LandingPage() {
   const params = useParams()
@@ -21,17 +24,34 @@ export default function LandingPage() {
   const code = params.department as string
   const departmentName = convertCodeToName(code)
 
+
+
   const [selectedYear, setSelectedYear] = useState<string>("all")
   const [data, setData] = useState<courseInterface[]>([])
+  const [sortedData, setSortedData] = useState<courseInterface[]>([])
+
+  const { data : courseData  } = useQuery({
+    queryKey : ['course'],
+    queryFn : () => axios.get(backendUrl("course/" + code))
+  })
+
+  
+
+  useEffect(() => {
+    if(courseData?.data)
+    {
+      setSortedData(getSortedCourses(courseData?.data))
+    }
+  }, [courseData])
 
   // Ref for scrollable container
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if(selectedYear != "all")
+    if(selectedYear != "all" && courseData?.data)
     {
-      if(selectedYear == "2020-2024") setData(CEdata)
-      else if(selectedYear == "2021-2025") setData(CPEdata)
+      const getByBatch = courseData.data.filter((course : courseInterface) => course.batch == selectedYear )
+      setData(getSortedCourses(getByBatch))
     }
     else
     {
@@ -69,8 +89,10 @@ export default function LandingPage() {
                         <SelectItem value="all"> Select Batch </SelectItem>
                         <SelectItem value="2020-2024">2020-2024</SelectItem>
                         <SelectItem value="2021-2025">2021-2025</SelectItem>
-                        <SelectItem value="2022-2023">2023-2026</SelectItem>
-                        <SelectItem value="2023-2024">2024-2027</SelectItem>
+                        <SelectItem value="2022-2026">2022-2026</SelectItem>
+                        <SelectItem value="2023-2027">2023-2027</SelectItem>
+                        <SelectItem value="2024-2028">2024-2028</SelectItem>
+                        <SelectItem value="2025-2029">2025-2029</SelectItem>
                   </SelectContent>
               </Select>
         </div>

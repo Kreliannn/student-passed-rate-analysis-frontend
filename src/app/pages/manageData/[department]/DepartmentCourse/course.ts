@@ -153,11 +153,11 @@ export const IEcourse = {
 
   export const MEcourse = {
     firstYear: {
-      firstSem: ["DRW01", "CHM01a", "CHM01aL", "MAT04"],
+      firstSem: ["COE01","DRW01", "CHM01a", "CHM01aL", "MAT04"],
       secondSem: ["CAD01", "MAT05", "PHY03", "PHY03L"]
     },
     secondYear: {
-      firstSem: ["COM01", "EEN01", "MAT07", "MCE01", "MEC01", "MCE03"],
+      firstSem: ["COM01", "EEN01", "GEC09", "MAT07", "MCE01", "MEC01", "MCE03"],
       secondSem: ["BES02a", "ECE00", "MAT08", "MAT10f", "MCE02", "MCE04", "MCE35", "MEC02"]
     },
     thirdYear: {

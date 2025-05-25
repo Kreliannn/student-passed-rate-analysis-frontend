@@ -1,3 +1,4 @@
+import { courseInterface } from "@/types/interface"
 
 export const bgStyle = {
     backgroundImage: "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/bg.jpg')",
@@ -80,7 +81,39 @@ export const convertSem = (sem : string) => {
 
 
 
+export const getSortedCourses = (data : courseInterface[]) => {
+  const desiredOrder = [
+    { gradeLevel: "1st", sem: 1 },
+    { gradeLevel: "1st", sem: 2 },
+    { gradeLevel: "2nd", sem: 1 },
+    { gradeLevel: "2nd", sem: 2 },
+    { gradeLevel: "3rd", sem: 1 },
+    { gradeLevel: "3rd", sem: 2 },
+    { gradeLevel: "4th", sem: 1 },
+    { gradeLevel: "4th", sem: 2 },
+  ];
 
+  // Create a map for quick lookup and grouping
+  const groupedData = new Map();
+  for (const item of data) {
+    const key = `${item.gradeLevel}-${item.sem}`;
+    if (!groupedData.has(key)) {
+      groupedData.set(key, []);
+    }
+    groupedData.get(key).push(item);
+  }
+
+  const sortedCourses = [];
+  for (const order of desiredOrder) {
+    const key = `${order.gradeLevel}-${order.sem}`;
+    if (groupedData.has(key)) {
+      // Add all courses for this specific gradeLevel/sem combination
+      sortedCourses.push(...groupedData.get(key));
+    }
+  }
+
+  return sortedCourses;
+};
 
 
 const courseMap = new Map<string, string>([
