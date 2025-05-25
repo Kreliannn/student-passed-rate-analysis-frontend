@@ -50,6 +50,8 @@ export function AddButton({ department , setCourseDataGlobal} : { department : s
     const [selectedSem, setSelectedSem] = useState<semType>("firstSem");
     const [selectedBatch, setSelectedBatch] = useState("all");
 
+    const [addedCourse, setAddedCourse] = useState("");
+
       const handleDepartmentChange = ( selected : string ) => {
         setSelectedDepartment(selected)
         setSelectedBatch("all")
@@ -124,7 +126,7 @@ export function AddButton({ department , setCourseDataGlobal} : { department : s
 
 
       const handleSubmit = () => {
-        if(courseData.length == 0) return alert("no course found")
+        if(courseData.length == 0) return errorAlert("no course found")
         console.log(courseData)
         mutation.mutate(courseData)
         setSelectedBatch("all")
@@ -227,10 +229,10 @@ export function AddButton({ department , setCourseDataGlobal} : { department : s
                                 <SelectItem value="2022-2026">2022-2026</SelectItem>
                                 <SelectItem value="2023-2027">2023-2027</SelectItem>
                 
-                                <SelectItem value="2024-2028">2020-2024</SelectItem>
-                                <SelectItem value="2025-2029">2021-2025</SelectItem>
-                                <SelectItem value="2026-2030">2022-2026</SelectItem>
-                                <SelectItem value="2027-2031">2023-2027</SelectItem>
+                                <SelectItem value="2024-2028">2024-2028</SelectItem>
+                                <SelectItem value="2025-2029">2025-2029</SelectItem>
+                                <SelectItem value="2026-2030">2026-2030</SelectItem>
+                                <SelectItem value="2027-2031">2027-2031</SelectItem>
                 </SelectContent>
                 </Select>
             </div>
@@ -281,6 +283,11 @@ export function AddButton({ department , setCourseDataGlobal} : { department : s
                       </div>
                     </div>
                   ))}
+
+                  <div className="flex gap-2">
+                      <Input value={addedCourse} onChange={(e) => setAddedCourse(e.target.value)} placeholder="add course code"/>
+                      <Button onClick={() => setDepartmentCourse((prev : string[]) => [...prev, addedCourse])}> Add Course</Button>
+                  </div>
 
                 </div>
               )

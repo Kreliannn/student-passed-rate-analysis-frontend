@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { courseInterface } from '@/types/interface';
-import { getCourseName , convertCodeToName} from '@/utils/customFunction';
+import { getCourseName } from '@/utils/customFunction';
 
 
 interface DataPoint {
@@ -35,7 +35,7 @@ interface ChartDataPoint extends ProcessedDataPoint {
 // Import TooltipProps from recharts for proper typing
 import type { TooltipProps as RechartsTooltipProps } from 'recharts';
 
-const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
+const PChartSecond: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
 
    const retention = (data[data.length - 1].totalEnrolled  / data[0].totalEnrolled) * 100
 
@@ -64,7 +64,7 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
        
         return {
             ...item,
-            displayLabel: ` ${item.gradeLevel} yr  ${item.sem + ((item.sem == 1) ? "st" : "nd")} sem `,
+            displayLabel: `${item.batch}`,
             CL: CL,
             // Variable control limits based on individual sample size
             UCL1: CL + 1 * sigma,
@@ -124,8 +124,8 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
     return (
         <div className="w-full p-6 bg-white rounded-lg">
             <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-2"> {convertCodeToName(data[0].department)} Batch: {data[0]?.batch}  </h2>
-                <p className="text-gray-600"> Variable P-Chart: Student Pass Rate Analysis by Batch </p>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2"> Course: {getCourseName( data[0]?.courseCode) } </h2>
+                <p className="text-gray-600"> Variable P-Chart: Student Pass Rate Analysis by Course</p>
             </div>
 
             <div className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -145,11 +145,7 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
                 </div>
 
 
-                <div className="bg-green-50 p-3 rounded-lg">
-                    <div className="font-semibold text-green-700"> Retention</div>
-                    <div className="text-green-900">{retention.toFixed(1)}%  {(data[data.length - 1].gradeLevel != "4th") ? ` As Of ${data[data.length - 1].gradeLevel} Year` : " "}</div>
-                </div>
-
+          
          
             </div>
 
@@ -349,4 +345,4 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
     );
 };
 
-export default PChart;
+export default PChartSecond;

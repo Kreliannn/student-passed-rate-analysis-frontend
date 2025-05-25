@@ -14,7 +14,14 @@ export default function LandingPage() {
       {/* Top section with university name and logos */}
       <div className="w-full flex items-center justify-between p-6">
         <Image src="/logo1.png" alt="Logo 1" width={80} height={80} className="object-contain rounded-full" />
-        <h2 className="text-xl md:text-2xl font-medium text-white">Southern Luzon State University</h2>
+        <div className="">
+              <h2 className="text-xl md:text-3xl font-medium text-white">
+                Southern Luzon State University
+              </h2>
+              <h3 className="font-bold text-muted text-center">
+                College of Engineering
+              </h3>
+        </div>
         <Image src="/logo2.png" alt="Logo 2" width={80} height={80} className="object-contain rounded-full" />
       </div>
 

@@ -79,6 +79,19 @@ export const convertSem = (sem : string) => {
 }
 
 
+export const getAllCourseCode = (courses: courseInterface[]) => {
+  const items: courseInterface[] = []
+  
+  courses.forEach((course) => {
+    if (!items.find(item => item.courseCode === course.courseCode)) {
+      items.push(course)
+    }
+  })
+  
+  return items
+}
+
+
 
 
 export const getSortedCourses = (data : courseInterface[]) => {
@@ -474,7 +487,7 @@ const courseMap = new Map<string, string>([
 
 export function getCourseName(courseCode: string): string {
   const name = courseMap.get(courseCode);
-  return name ?? "Course code not found";
+  return name ?? " ";
 }
 
 
