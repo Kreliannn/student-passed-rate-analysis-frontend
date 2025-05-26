@@ -14,23 +14,43 @@ import { Label } from "@/components/ui/label"
 import { Trash2 } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState } from "react"
-import { courseInterface } from "@/types/interface"
-import { errorAlert, successAlert } from "@/utils/alerts"
+import { courseInterface , deleteItemCourse} from "@/types/interface"
+import { errorAlert, successAlert , confirmAlert} from "@/utils/alerts"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { backendUrl } from "@/utils/url"
+import {CEcourse, CPEcourse, EEcourse, ECEcourse, IEcourse, MEcourse} from "../DepartmentCourse/course"
+import { convertSem, convertYearLevel, getCourseName } from "@/utils/customFunction"
+
+
+type yearType = "firstYear" | "secondYear" | "thirdYear" | "fourthYear"
+type semType = "firstSem" | "secondSem"
+type bactchType = "2020-2024" | "2021" | "thirdYear" | "fourthYear"
+
+ 
 
 export function DeleteButton({ department , setCourseDataGlobal} : { department : string, setCourseDataGlobal : React.Dispatch<React.SetStateAction<courseInterface[]>> }) {
 
-  const [selectedDepartment, setSelectedDepartment] = useState("all");
-  const [selectedYear, setSelectedYear] = useState("all");
-  const [selectedSem, setSelectedSem] = useState("all");
+
+  const [selectedItemToDelete, setselectedItemToDelete] = useState<deleteItemCourse[]>([])
+
+  const [selectedDepartment, setSelectedDepartment] = useState("CE");
+  const [selectedYear, setSelectedYear] = useState<yearType>("firstYear");
+  const [selectedSem, setSelectedSem] = useState<semType>("firstSem");
   const [selectedBatch, setSelectedBatch] = useState("all");
+
+  const [courseData, setCourseData] = useState<deleteItemCourse[]>([])
+  
+  const [departmentCourse, setDepartmentCourse] = useState<string[]>([])
 
   const [open, setOpen] = useState(false);
 
+  const [addedCourse, setAddedCourse] = useState("");
+
+  console.log(selectedItemToDelete)
+
   const mutation = useMutation({
-    mutationFn : () => axios.post(backendUrl("course/delete"), { department : selectedDepartment, gradeLevel : selectedYear, sem : Number(selectedSem), batch : selectedBatch}),
+    mutationFn : () => axios.post(backendUrl("course/delete"), { itemToDelete : selectedItemToDelete}),
     onSuccess : (response : { data : courseInterface[]} ) => {
       const newCourseData = response.data
       if(department == newCourseData[0].department) setCourseDataGlobal(newCourseData)
@@ -41,10 +61,68 @@ export function DeleteButton({ department , setCourseDataGlobal} : { department 
 
 
   const handleDelete = () => {
-    setOpen(false)
-    if(selectedBatch == "all" || selectedDepartment == "all" || selectedYear == "all" || selectedSem == "all") return errorAlert("empty field")
-    mutation.mutate()
+    if(selectedItemToDelete.length == 0) return errorAlert("select subject first")
+    confirmAlert("data will be deleted permanently", "delete", () => {
+      setOpen(false)
+      mutation.mutate()
+      setselectedItemToDelete([])
+    })
     }
+
+    const handleDepartmentChange = ( selected : string ) => {
+      setSelectedDepartment(selected)
+      setSelectedBatch("all")
+      setDepartmentCourse([])
+      setselectedItemToDelete([])
+    }
+    
+    const handleYearChange = (selected : yearType ) => {
+      setSelectedYear(selected)
+      setSelectedBatch("all")
+      setselectedItemToDelete([])
+    }
+
+    const handleSenChange = (selected : semType ) => {
+      setSelectedSem(selected)
+      setSelectedBatch("all")
+      setselectedItemToDelete([])
+    }
+
+
+    const handleBatchChange = (selected : string ) => {
+      if(selected == "") return
+      setSelectedBatch(selected)
+      switch(selectedDepartment)
+      {
+        case "CE":
+          setDepartmentCourse(CEcourse[selectedYear][selectedSem])
+        break;
+
+        case "CPE":
+          setDepartmentCourse(CPEcourse[selectedYear][selectedSem])
+        break;
+
+        case "EE":
+          setDepartmentCourse(EEcourse[selectedYear][selectedSem])
+        break;
+
+        case "ECE":
+          setDepartmentCourse(ECEcourse[selectedYear][selectedSem])
+        break;
+
+        case "IE":
+          setDepartmentCourse(IEcourse[selectedYear][selectedSem])
+        break;
+
+        case "ME":
+          setDepartmentCourse(MEcourse[selectedYear][selectedSem])
+        break;
+      }
+
+     
+    }
+
+   
 
  
     
@@ -66,15 +144,15 @@ export function DeleteButton({ department , setCourseDataGlobal} : { department 
 
        
 
-        <div className="grid gap-6 mb-6">
+        <div className=" gap-6 mb-6">
                 <div className="grid w-full max-w-sm items-center gap-1.5">
                 <Label className="text-white" htmlFor="department-select">Filter by Department</Label>
-                <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+                <Select value={selectedDepartment} onValueChange={handleDepartmentChange}>
                 <SelectTrigger id="department-select" className="w-[380px] bg-white">
                     <SelectValue placeholder="Select Department" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="all">All Departments</SelectItem>
+                
                     <SelectItem value="CE">Civil Engineering</SelectItem>
                     <SelectItem value="CPE">Computer Engineering</SelectItem>
                     <SelectItem value="EE">Electrical Engineering</SelectItem>
@@ -88,16 +166,16 @@ export function DeleteButton({ department , setCourseDataGlobal} : { department 
             {/* Year Dropdown */}
             <div className="grid w-full max-w-sm items-center gap-1.5">
                 <Label className="text-white" htmlFor="year-select">Filter by Year</Label>
-                <Select value={selectedYear} onValueChange={setSelectedYear}>
+                <Select value={selectedYear} onValueChange={handleYearChange}>
                 <SelectTrigger id="year-select" className="w-[380px] bg-white">
                     <SelectValue placeholder="Select Year" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="all">Select Year Level</SelectItem>
-                    <SelectItem value="1st">1st Year</SelectItem>
-                    <SelectItem value="2nd">2nd Year</SelectItem>
-                    <SelectItem value="3rd">3rd Year</SelectItem>
-                    <SelectItem value="4th">4th Year</SelectItem>
+                    
+                    <SelectItem value="firstYear">1st Year</SelectItem>
+                    <SelectItem value="secondYear">2nd Year</SelectItem>
+                    <SelectItem value="thirdYear">3rd Year</SelectItem>
+                    <SelectItem value="fourthYear">4th Year</SelectItem>
                 </SelectContent>
                 </Select>
             </div>
@@ -105,14 +183,14 @@ export function DeleteButton({ department , setCourseDataGlobal} : { department 
             {/* Semester Dropdown */}
             <div className="grid w-full max-w-sm items-center gap-1.5">
                 <Label className="text-white" htmlFor="semester-select">Filter by Semester</Label>
-                <Select value={selectedSem} onValueChange={setSelectedSem}>
+                <Select value={selectedSem} onValueChange={handleSenChange}>
                 <SelectTrigger id="semester-select" className="w-[380px] bg-white">
                     <SelectValue placeholder="Select Semester" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Select Semester</SelectItem>
-                    <SelectItem value="1">1st Semester</SelectItem>
-                    <SelectItem value="2">2nd Semester</SelectItem>
+              
+                    <SelectItem value="firstSem">1st Semester</SelectItem>
+                    <SelectItem value="secondSem">2nd Semester</SelectItem>
                 </SelectContent>
                 </Select>
             </div>
@@ -120,12 +198,12 @@ export function DeleteButton({ department , setCourseDataGlobal} : { department 
             {/* Status Dropdown */}
             <div className="grid w-full max-w-sm items-center gap-1.5">
                 <Label className="text-white" htmlFor="status-select"> Batch </Label>
-                <Select value={selectedBatch} onValueChange={setSelectedBatch}>
+                <Select value={selectedBatch} onValueChange={handleBatchChange}>
                 <SelectTrigger id="status-select" className="w-[380px] bg-white">
                     <SelectValue placeholder="Select Batch" />
                 </SelectTrigger>
                 <SelectContent>
-                                <SelectItem value="all"> select Batch </SelectItem>
+                                <SelectItem value="all">Select Batch </SelectItem>
                                 <SelectItem value="2020-2024">2020-2024</SelectItem>
                                 <SelectItem value="2021-2025">2021-2025</SelectItem>
                                 <SelectItem value="2022-2026">2022-2026</SelectItem>
@@ -137,6 +215,47 @@ export function DeleteButton({ department , setCourseDataGlobal} : { department 
                                 <SelectItem value="2027-2031">2027-2031</SelectItem>
                 </SelectContent>
                 </Select>
+
+
+
+
+                {
+              selectedBatch !== "all" && (
+                <div className="w-full h-32 overflow-x-hidden" >
+                 {departmentCourse.map((courseName) => (
+                  <div className="w-full p-2 flex justify-between items-center " key={courseName}>
+                  <label className="text-sm font-bold text-gray-800">
+                    {`${courseName} - ${getCourseName(courseName)}`}
+                  </label>
+                  <input type="checkbox" onChange={(e) => {
+                      if(e.target.checked)
+                      {
+                  
+                        const item : deleteItemCourse = {
+                          department : selectedDepartment,
+                          gradeLevel : convertYearLevel(selectedYear), 
+                          sem : convertSem(selectedSem),
+                          batch : selectedBatch,
+                          courseCode : courseName,
+                        }
+                        setselectedItemToDelete((prev) => [...prev, item])
+                      }
+                      else
+                      {
+                        setselectedItemToDelete((prev) => prev.filter((item) => item.courseCode != courseName ))
+                      }
+                  }} />
+                </div>
+                
+                  ))}
+                </div>
+              )
+            }
+
+
+
+
+
             </div>
 
         </div>

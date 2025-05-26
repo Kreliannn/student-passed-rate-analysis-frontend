@@ -8,7 +8,15 @@ export interface courseInterface {
     passed : number
 }
 
-
+export interface deleteItemCourse {
+    department : string,
+    gradeLevel : string,
+    sem : number,
+    batch : string,
+    courseCode : string,
+  
+  }
+   
 
 
 
