@@ -39,7 +39,7 @@ export default function LandingPage() {
 
         <div className="flex items-center gap-4">
           {/* Button close to Right Logo */}
-          <div className="" onClick={() => router.push("/")}>
+          <div className="" onClick={() => router.push("/pages/mainPage")}>
             <Button>Back</Button>
           </div>
           {/* Right Logo */}

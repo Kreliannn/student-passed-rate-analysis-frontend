@@ -72,9 +72,15 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (data.length > 0) {
-      scrollContainerRef.current?.scrollTo({ top: 950, behavior: "smooth" });
+      scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" });
     }
   }, [data]);
+
+
+  useEffect(() => {
+    if(data.length == 0 && selectedCourse != "all") scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
+    else if(selectedCourse != "all") scrollContainerRef.current?.scrollTo({ top: 2450, behavior: "smooth" })
+  }, [ selectedCourse]);
   
  
 
@@ -147,7 +153,7 @@ export default function LandingPage() {
         </div>
 
       
-        <div className="w-4/6 h-[550px] bg-red-900 m-auto rounded relative">
+        <div className="w-4/6 h-[750px] bg-red-900 m-auto rounded relative">
           <Image
             src={`/${code}.jpg`}
             alt="Logo 2"
