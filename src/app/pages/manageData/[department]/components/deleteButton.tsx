@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Trash2 } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { courseInterface , deleteItemCourse} from "@/types/interface"
 import { errorAlert, successAlert , confirmAlert} from "@/utils/alerts"
 import { useMutation } from "@tanstack/react-query"
@@ -21,7 +21,7 @@ import axios from "axios"
 import { backendUrl } from "@/utils/url"
 import {CEcourse, CPEcourse, EEcourse, ECEcourse, IEcourse, MEcourse} from "../DepartmentCourse/course"
 import { convertSem, convertYearLevel, getCourseName } from "@/utils/customFunction"
-
+import { useRouter } from "next/navigation"
 
 type yearType = "firstYear" | "secondYear" | "thirdYear" | "fourthYear"
 type semType = "firstSem" | "secondSem"
@@ -29,8 +29,10 @@ type bactchType = "2020-2024" | "2021" | "thirdYear" | "fourthYear"
 
  
 
-export function DeleteButton({ department , setCourseDataGlobal} : { department : string, setCourseDataGlobal : React.Dispatch<React.SetStateAction<courseInterface[]>> }) {
+export function DeleteButton({refreshPage, department , setCourseDataGlobal} : {refreshPage : () => void, department : string, setCourseDataGlobal : React.Dispatch<React.SetStateAction<courseInterface[]>> }) {
 
+
+  const router = useRouter()
 
   const [selectedItemToDelete, setselectedItemToDelete] = useState<deleteItemCourse[]>([])
 
@@ -49,24 +51,29 @@ export function DeleteButton({ department , setCourseDataGlobal} : { department 
 
   console.log(selectedItemToDelete)
 
+  
+
   const mutation = useMutation({
-    mutationFn : () => axios.post(backendUrl("course/delete"), { itemToDelete : selectedItemToDelete}),
+    mutationFn : () => axios.post(backendUrl("course/delete"), { itemToDelete : selectedItemToDelete, department : selectedDepartment}),
     onSuccess : (response : { data : courseInterface[]} ) => {
       const newCourseData = response.data
-      if(department == newCourseData[0].department) setCourseDataGlobal(newCourseData)
-      successAlert("Data Deleted successfuly")
+      if(department == newCourseData[0].department) setTimeout(() => setCourseDataGlobal(newCourseData) , 200) 
+      setOpen(false)
+      setTimeout(() => refreshPage(), 500)
+      setselectedItemToDelete([])
     },
     onError : (err : { request : { response : string}}) => errorAlert(err.request.response)
   })
 
 
   const handleDelete = () => {
+    setOpen(false)
     if(selectedItemToDelete.length == 0) return errorAlert("select subject first")
     confirmAlert("data will be deleted permanently", "delete", () => {
-      setOpen(false)
+      console.log(selectedItemToDelete)
       mutation.mutate()
-      setselectedItemToDelete([])
     })
+    
     }
 
     const handleDepartmentChange = ( selected : string ) => {

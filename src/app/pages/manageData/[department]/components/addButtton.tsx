@@ -37,7 +37,7 @@ type bactchType = "2020-2024" | "2021" | "thirdYear" | "fourthYear"
 type BatchYear = "2020-2024" | "2021-2025" | "2022-2026" | "2023-2027" | "2024-2028" | "2025-2029" | "2026-2030" | "2027-2031";
 
  
-export function AddButton({ department , setCourseDataGlobal} : { department : string, setCourseDataGlobal : React.Dispatch<React.SetStateAction<courseInterface[]>> }) {
+export function AddButton({ refreshPage,  department , setCourseDataGlobal} : {refreshPage : () => void,  department : string, setCourseDataGlobal : React.Dispatch<React.SetStateAction<courseInterface[]>> }) {
 
     const [open, setOpen] = useState(false)
 
@@ -116,7 +116,8 @@ export function AddButton({ department , setCourseDataGlobal} : { department : s
         mutationFn : (data : courseInterface[]) => axios.post(backendUrl("course"), { courses : data}),
         onSuccess : (response : { data : courseInterface[]} ) => {
           const newCourseData = response.data
-          if(department == newCourseData[0].department) setCourseDataGlobal(newCourseData)
+          if(department == newCourseData[0].department) setTimeout(() => setCourseDataGlobal(newCourseData) , 200) 
+            refreshPage()
           setOpen(false)
           successAlert("data inserted successfuly")
       
