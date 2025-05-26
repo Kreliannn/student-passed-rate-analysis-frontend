@@ -13,27 +13,27 @@ export const convertCodeToName = (code : string) => {
   switch(code)
   {
     case "CE":
-      return "Civil Engeneering"
+      return "Civil Engineering"
       break 
 
     case "CPE":
-      return "Computer Engeneering"
+      return "Computer Engineering"
       break
 
     case "EE":
-      return "Electrical Engeneering"
+      return "Electrical Engineering"
       break
 
     case "ECE":
-      return "Electronic Engeneering"
+      return "Electronic Engineering"
       break
 
     case "IE":
-      return "industrial Engeneering"
+      return "industrial Engineering"
       break
 
     case "ME":
-      return "Mechanical Engeneering"
+      return "Mechanical Engineering"
       break
   }
 }
@@ -130,6 +130,18 @@ export const getSortedCourses = (data : courseInterface[]) => {
 
 
 const courseMap = new Map<string, string>([
+
+  ["CVE02F", "Fundamentals of Surveying Field"],
+  ["CVE19", "CE Laws, Ethics and Contracts"],
+  ["CVE20", "Quantity Surveying"],
+  ["CVE20L", " Quantity Surveying Lab"],
+  ["GECC06", "Purposive Communication"],
+  ["EEN06", "Basic Occupational Safety and Health"],
+  ["ECE11", "Feedback and Control Systems"],
+  ["ECE11L", "Feedback and Control Systems Lab"],
+  ["MCE25", "Basic Occupational Safety and Health"],
+
+  
   ["MAT04", "CALCULUS 1 (DIFFERENTIAL)"],
   ["CHM01a", "CHEMISTRY FOR ENGINEERS"],
   ["CHM01aL", "CHEMISTRY FOR ENGINEERS LAB"],
