@@ -1,10 +1,14 @@
+
+
+
+
 "use client"
 import { useEffect } from 'react';
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { courseInterface } from '@/types/interface';
 import { getCourseName } from '@/utils/customFunction';
-
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 interface DataPoint {
     gradeLevel: string;
@@ -16,7 +20,7 @@ interface DataPoint {
 }
 
 interface ProcessedDataPoint extends DataPoint {
-    proportion: number;
+    proportion: number;  // This will now be failed proportion
     failed: number;
 }
 
@@ -39,37 +43,41 @@ const PChartSecond: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
 
    const retention = (data[data.length - 1].totalEnrolled  / data[0].totalEnrolled) * 100
 
+    // Calculate fixed n as sum of all total enrolled
+    const fixedN: number = data.reduce((sum, item) => sum + item.totalEnrolled, 0);
 
-    // Calculate proportions and statistics
-    const processedData: ProcessedDataPoint[] = data.map(item => ({
-        ...item,
-        proportion: item.passed / item.totalEnrolled,
-        failed: item.totalEnrolled - item.passed
-    }));
+    // Calculate proportions and statistics (now using failed proportion)
+    const processedData: ProcessedDataPoint[] = data.map(item => {
+        const failed = item.totalEnrolled - item.passed;
+        return {
+            ...item,
+            proportion: failed / item.totalEnrolled,  // Failed proportion
+            failed: failed
+        };
+    });
 
-    // Calculate Center Line (CL) - overall average
-    const totalPassed: number = data.reduce((sum, item) => sum + item.passed, 0);
+    // Calculate Center Line (CL) - overall average of failed proportion
+    const totalFailed: number = data.reduce((sum, item) => sum + (item.totalEnrolled - item.passed), 0);
     const totalEnrolled: number = data.reduce((sum, item) => sum + item.totalEnrolled, 0);
-    const CL: number = totalPassed / totalEnrolled;
+    const CL: number = totalFailed / totalEnrolled;
 
-    // Calculate VARIABLE control limits for each data point
+    // Calculate FIXED control limits for all data points using fixed n
+    const sigma: number = Math.sqrt((CL * (1 - CL)) / fixedN); // Fixed sigma based on total sample size
+    
+    console.log(`Fixed n = ${fixedN}`);
+    console.log(`CL = ${CL}`);
+    console.log(`Fixed Sigma = ${sigma}`);
+    console.log("\n");
+
     const chartData: ChartDataPoint[] = processedData.map(item => {
-        const n: number = item.totalEnrolled; // Individual sample size
-        const sigma: number = Math.sqrt((CL * (1 - CL)) / n); // Individual sigma based on sample size
-        
-        console.log(`Course: ${item.courseCode}, n = ${n}`);
-        console.log(`CL = ${CL}`);
-        console.log(`Sigma = ${sigma}`);
-        console.log("\n");
-       
         return {
             ...item,
             displayLabel: `${item.batch}`,
             CL: CL,
-            // Variable control limits based on individual sample size
-            UCL1: CL + 1 * sigma,
-            UCL2: CL + 2 * sigma,
-            UCL3: CL + 3 * sigma,
+            // Fixed control limits based on total sample size with bounds
+            UCL1: Math.min(1, CL + 1 * sigma),
+            UCL2: Math.min(1, CL + 2 * sigma),
+            UCL3: Math.min(1, CL + 3 * sigma),
             LCL1: Math.max(0, CL - 1 * sigma),
             LCL2: Math.max(0, CL - 2 * sigma),
             LCL3: Math.max(0, CL - 3 * sigma),
@@ -77,7 +85,6 @@ const PChartSecond: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
         };
     });
 
-    // Dynamic Y-axis calculation
     const allValues: number[] = chartData.flatMap(item => [
         item.proportion, item.CL, item.UCL1, item.UCL2, item.UCL3, item.LCL1, item.LCL2, item.LCL3
     ]).filter(val => val >= 0);
@@ -91,6 +98,7 @@ const PChartSecond: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
     const yAxisMin: number = Math.max(0, minValue - padding);
     const yAxisMax: number = Math.min(1.2, maxValue + padding);
 
+    
     const customTooltip = ({ active, payload, label }: RechartsTooltipProps<number, string>) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload as ChartDataPoint;
@@ -105,8 +113,8 @@ const PChartSecond: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
                     <p className="text-gray-600">Enrolled: {data.totalEnrolled}</p>
                     <p className="text-gray-600">Passed: {data.passed}</p>
                     <p className="text-gray-600">Failed: {data.failed}</p>
-                    <p className="font-bold text-green-600 mt-1">
-                        Pass Rate: {(data.proportion * 100).toFixed(1)}%
+                    <p className="font-bold text-stone-600 mt-1">
+                        Failure Rate: {(data.proportion * 100).toFixed(1)}%
                     </p>
                     <p className="text-gray-600 mt-1">
                         Standard Deviation: {(data.sigma * 100).toFixed(2)}%
@@ -124,83 +132,77 @@ const PChartSecond: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
     return (
         <div className="w-full p-6 bg-white rounded-lg">
             <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-2"> Course: {getCourseName( data[0]?.courseCode) } </h2>
-                <p className="text-gray-600"> Variable P-Chart: Student Pass Rate Analysis by Course</p>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2"> Subject: {getCourseName( data[0]?.courseCode) } </h2>
+                <p className="text-gray-600"> Variable P-Chart: Student Failure Rate Analysis by Subject</p>
             </div>
 
-            <div className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div className="mb-6 grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                 <div className="bg-blue-50 p-3 rounded-lg">
                     <div className="font-semibold text-blue-700">Center Line</div>
                     <div className="text-blue-900">{(CL * 100).toFixed(1)}%</div>
                 </div>
 
-                <div className="bg-purple-50 p-3 rounded-lg">
-                    <div className="font-semibold text-purple-700"> Total Items</div>
-                    <div className="text-purple-900">{data.length}</div>
+                <div className="bg-purple-100 p-3 rounded-lg">
+                    <div className="font-semibold text-purple-700"> Total Students</div>
+                    <div className="text-purple-900">{fixedN}</div>
                 </div>
                 
-                <div className="bg-amber-50 p-3 rounded-lg">
-                    <div className="font-semibold text-amber-700">Y-Axis Range</div>
-                    <div className="text-amber-900">{(yAxisMin * 100).toFixed(1)}% - {(yAxisMax * 100).toFixed(1)}%</div>
+                <div className="bg-green-100 p-3 rounded-lg">
+                    <div className="font-medium text-green-700">Standard Deviation (σ)</div>
+                    <div className="text-green-900">{(sigma * 100).toFixed(2)}%</div>
                 </div>
 
 
-          
-         
-            </div>
-
-            <div className="w-full overflow-x-auto text-sm">
-                <h3 className="text-base font-semibold text-gray-800 mb-3">Control Limits by Course</h3>
-                <div className="flex space-x-4 p-2">
-                    {chartData.map((item, index) => (
-                        <div key={index} className="w-80 flex-shrink-0 bg-gray-50 p-3 rounded-lg border">
-                            <div className="font-semibold text-gray-800 mb-2 text-center">
-                                {item.courseCode} (n={item.totalEnrolled})
-                            </div>
-                            <div className="text-xs text-center mb-2 text-gray-600">
-                                Yr {item.gradeLevel}, Sem {item.sem}
-                            </div>
-                            <div className="grid grid-cols-2 gap-1 text-xs">
-                                <div className="bg-red-100 px-1 py-0.5 rounded text-center">
-                                    <div className="font-medium text-red-700">UCL3</div>
-                                    <div className="text-red-900">{(item.UCL3 * 100).toFixed(1)}%</div>
-                                </div>
-                                <div className="bg-red-100 px-1 py-0.5 rounded text-center">
-                                    <div className="font-medium text-red-700">LCL3</div>
-                                    <div className="text-red-900">{(item.LCL3 * 100).toFixed(1)}%</div>
-                                </div>
-                                <div className="bg-orange-100 px-1 py-0.5 rounded text-center">
-                                    <div className="font-medium text-orange-700">UCL2</div>
-                                    <div className="text-orange-900">{(item.UCL2 * 100).toFixed(1)}%</div>
-                                </div>
-                                <div className="bg-orange-100 px-1 py-0.5 rounded text-center">
-                                    <div className="font-medium text-orange-700">LCL2</div>
-                                    <div className="text-orange-900">{(item.LCL2 * 100).toFixed(1)}%</div>
-                                </div>
-                                <div className="bg-yellow-100 px-1 py-0.5 rounded text-center">
-                                    <div className="font-medium text-yellow-700">UCL1</div>
-                                    <div className="text-yellow-900">{(item.UCL1 * 100).toFixed(1)}%</div>
-                                </div>
-                                <div className="bg-yellow-100 px-1 py-0.5 rounded text-center">
-                                    <div className="font-medium text-yellow-700">LCL1</div>
-                                    <div className="text-yellow-900">{(item.LCL1 * 100).toFixed(1)}%</div>
-                                </div>
-                                <div className="bg-green-100 px-1 py-0.5 rounded text-center col-span-2">
-                                    <div className="font-medium text-green-700">Standard Deviation (σ)</div>
-                                    <div className="text-green-900">{(item.sigma * 100).toFixed(2)}%</div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                <div className="bg-red-100 p-3 shadow rounded-lg">
+                    <div className="font-medium text-red-700"> UCL (+3σ)</div>
+                    <div className="text-red-900">{(Math.min(chartData[0].UCL3, 1) * 100).toFixed(1)}%</div>
                 </div>
+
+                <div className="bg-orange-100 p-3 shadow rounded-lg">
+                    <div className="font-semibold text-orange-700">UCL (+2σ)</div>
+                    <div className="text-orange-900">{(Math.min(chartData[0].UCL2, 1) * 100).toFixed(1)}%</div>
+                </div>
+
+                <div className="bg-yellow-100 p-3 shadow rounded-lg">
+                    <div className="font-semibold text-yellow-700">UCL (+1σ)</div>
+                    <div className="text-yellow-900">{(Math.min(chartData[0].UCL1, 1) * 100).toFixed(1)}%</div>
+                </div>
+
+
+                <div className="bg-red-100 p-3 shadow rounded-lg">
+                    <div className="font-medium text-red-700">LCL (-3σ)</div>
+                    <div className="text-red-900">{(Math.min(chartData[0].LCL3, 1) * 100).toFixed(1)}%</div>
+                </div>
+
+                <div className="bg-orange-100 p-3 shadow rounded-lg">
+                    <div className="font-semibold text-orange-700">LCL (-2σ)</div>
+                    <div className="text-orange-900">{(Math.min(chartData[0].LCL2, 1) * 100).toFixed(1)}%</div>
+                </div>
+
+                <div className="bg-yellow-100 p-3 shadow rounded-lg">
+                    <div className="font-semibold text-yellow-700">LCL (-1σ)</div>
+                    <div className="text-yellow-900">{(Math.min(chartData[0].LCL3, 1) * 100).toFixed(1)}%</div>
+                </div>     
             </div>
 
-
+           
 
             {/* Chart and Control Limits Container */}
             <div className=" flex gap-6">
                 {/* Chart Section - Right Side */}
-                <div className="flex-1 h-[480px]">
+                <div className='bg-stone-200 h-[320px] w-[500px]'>
+                    <div className='bg-red-100 w-full h-5/6'>
+
+                    </div>
+
+                    <div className='bg-blue-100 w-full h-1/6'>
+
+                    </div>
+                </div>
+
+
+
+                <div className="flex-1 h-[380px]">
                     <ResponsiveContainer width="100%" height="100%">
                         <LineChart
                             data={chartData}
@@ -230,7 +232,7 @@ const PChartSecond: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
                                 iconType="line"
                             />
 
-                            {/* Variable Control Limits - Upper */}
+                            {/* Fixed Control Limits - Upper */}
                             <Line
                                 type="linear"
                                 dataKey="UCL3"
@@ -272,7 +274,7 @@ const PChartSecond: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
                                 name="Center Line"
                             />
 
-                            {/* Variable Control Limits - Lower */}
+                            {/* Fixed Control Limits - Lower */}
                             <Line
                                 type="linear"
                                 dataKey="LCL1"
@@ -304,43 +306,34 @@ const PChartSecond: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
                                 connectNulls={false}
                             />
 
-                            {/* Actual Data Points */}
+                            {/* Actual Data Points - Color based on UCL comparison */}
                             <Line
                                 type="linear"
                                 dataKey="proportion"
-                                stroke="#059669"
+                                stroke="green"
                                 strokeWidth={3}
-                                dot={{ fill: '#059669', strokeWidth: 2, r: 6 }}
-                                name="Pass Rate"
+                                dot={(props) => {
+                                    const { cx, cy, payload } = props;
+                                    const isOutOfControl = payload.proportion > payload.UCL3;
+                                    return (
+                                        <circle
+                                            cx={cx}
+                                            cy={cy}
+                                            r={6}
+                                            fill={isOutOfControl ? '#dc2626' : '#16a34a'}
+                                            stroke={isOutOfControl ? '#dc2626' : '#16a34a'}
+                                            strokeWidth={2}
+                                        />
+                                    );
+                                }}
+                                name="Failure Rate"
                             />
                         </LineChart>
                     </ResponsiveContainer>
                 </div>
             </div>
 
-            <div className="w-full overflow-x-auto text-sm">
-                <div className="flex space-x-4 min-w-fit p-2">
-                    {chartData.map((item, index) => (
-                        <div key={index} className="w-[250px] bg-gray-50 p-4 rounded-lg flex-shrink-0 shadow-lg">
-                            <div className="font-semibold text-gray-700 mb-2">
-                                {item.courseCode} - Yr {item.gradeLevel}, Sem {item.sem}
-                            </div>
-                            <div className="space-y-1">
-                                <div>Batch: {item.batch}</div>
-                                <div>Enrolled: {item.totalEnrolled}</div>
-                                <div>Passed: {item.passed}</div>
-                                <div>Failed: {item.failed}</div>
-                                <div className="font-semibold text-green-600">
-                                    Pass Rate: {(item.proportion * 100).toFixed(1)}%
-                                </div>
-                                <div className="text-gray-600">
-                                    Standard Deviation: {(item.sigma * 100).toFixed(2)}%
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
+            
         </div>
     );
 };

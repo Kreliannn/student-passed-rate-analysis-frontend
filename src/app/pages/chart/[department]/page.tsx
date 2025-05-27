@@ -129,25 +129,30 @@ export default function LandingPage() {
 
 
         <div className="w-4/6 h-[50px] m-auto flex items-center justify-between px-4 rounded-lg">
+             
+
+
+                {(courseData?.data) ?
+                  <Select  value={selectedCourse} onValueChange={handleSelectCourse} >
+                    <SelectTrigger id="year-select" className="w-[200px] bg-white">
+                        <SelectValue placeholder="Select Year" />
+                    </SelectTrigger>
+                      <SelectContent >
+                            <SelectItem value="all"> Select Subject </SelectItem>
+                            {
+                              getAllCourseCode(getSortedCourses(courseData?.data)).map((course : courseInterface ) => (
+                                <SelectItem key={course.courseCode} value={course.courseCode}> {`${course.gradeLevel} yr | sem - ${course.sem} ${course.courseCode} - ${getCourseName(course.courseCode)}`} </SelectItem>
+                              ))
+                            }
+                      </SelectContent>  
+                    </Select>
+                : null}
+
+
               <h1 className="text-3xl text-white text-center font-bold ">
                 {departmentName} ({code})
               </h1>
-                <Select  value={selectedYear} onValueChange={setSelectedYear} >
-                  <SelectTrigger id="year-select" className="w-[200px] bg-white">
-                      <SelectValue placeholder="Select Year" />
-                  </SelectTrigger>
-                    <SelectContent >
-                          <SelectItem value="all"> Select Batch </SelectItem>
-                          <SelectItem value="2020-2024">2020-2024</SelectItem>
-                          <SelectItem value="2021-2025">2021-2025</SelectItem>
-                          <SelectItem value="2022-2026">2022-2026</SelectItem>
-                          <SelectItem value="2023-2027">2023-2027</SelectItem>
-                          <SelectItem value="2024-2028">2024-2028</SelectItem>
-                          <SelectItem value="2025-2029">2025-2029</SelectItem>
-                          <SelectItem value="2026-2030">2026-2030</SelectItem>
-                          <SelectItem value="2027-2031">2027-2031</SelectItem>
-                    </SelectContent>
-                </Select>
+     
 
               
         </div>
@@ -167,32 +172,37 @@ export default function LandingPage() {
        
 
 
-        
-        
-        
+      
+      {
+        /*
+                   <Select  value={selectedYear} onValueChange={setSelectedYear} >
+                  <SelectTrigger id="year-select" className="w-[200px] bg-white">
+                      <SelectValue placeholder="Select Year" />
+                  </SelectTrigger>
+                    <SelectContent >
+                          <SelectItem value="all"> Select Batch </SelectItem>
+                          <SelectItem value="2020-2024">2020-2024</SelectItem>
+                          <SelectItem value="2021-2025">2021-2025</SelectItem>
+                          <SelectItem value="2022-2026">2022-2026</SelectItem>
+                          <SelectItem value="2023-2027">2023-2027</SelectItem>
+                          <SelectItem value="2024-2028">2024-2028</SelectItem>
+                          <SelectItem value="2025-2029">2025-2029</SelectItem>
+                          <SelectItem value="2026-2030">2026-2030</SelectItem>
+                          <SelectItem value="2027-2031">2027-2031</SelectItem>
+                    </SelectContent>
+                </Select>
 
+
+
+          <div className="m-auto p-5">
+            {data.length !== 0 ? <Pchart data={data} /> : null}
+          </div>
+        */
+      }
       
 
-        <div className="m-auto p-5">
-          {data.length !== 0 ? <Pchart data={data} /> : null}
-        </div>
 
-
-        {(courseData?.data) ?
-        <Select  value={selectedCourse} onValueChange={handleSelectCourse} >
-          <SelectTrigger id="year-select" className="w-4/6 bg-white m-auto">
-              <SelectValue placeholder="Select Year" />
-          </SelectTrigger>
-            <SelectContent >
-                  <SelectItem value="all"> Select Course </SelectItem>
-                  {
-                    getAllCourseCode(getSortedCourses(courseData?.data)).map((course : courseInterface ) => (
-                      <SelectItem key={course.courseCode} value={course.courseCode}> {`${course.gradeLevel} yr | sem - ${course.sem} ${course.courseCode} - ${getCourseName(course.courseCode)}`} </SelectItem>
-                    ))
-                  }
-            </SelectContent>
-          </Select>
-      : null}
+ 
 
 
         <div className="m-auto p-5">
