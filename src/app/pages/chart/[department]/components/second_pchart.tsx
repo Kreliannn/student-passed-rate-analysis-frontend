@@ -3,12 +3,22 @@
 
 
 "use client"
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { courseInterface } from '@/types/interface';
 import { getCourseName } from '@/utils/customFunction';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { successAlert, errorAlert, confirmAlert } from '@/utils/alerts';
+
+
 
 interface DataPoint {
     gradeLevel: string;
@@ -38,10 +48,68 @@ interface ChartDataPoint extends ProcessedDataPoint {
 
 // Import TooltipProps from recharts for proper typing
 import type { TooltipProps as RechartsTooltipProps } from 'recharts';
+import { Item } from '@radix-ui/react-select';
 
-const PChartSecond: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
+const PChartSecond: React.FC<{ data: courseInterface[],setDataSavePoint : React.Dispatch<React.SetStateAction<courseInterface[]>>, setData: React.Dispatch<React.SetStateAction<courseInterface[]>> }> = ({ data, setData, setDataSavePoint }) =>  {
 
-   const retention = (data[data.length - 1].totalEnrolled  / data[0].totalEnrolled) * 100
+    if(data.length == 0) return null
+
+    const [totalEnrolledInput, setTotalEnrolledInput] = useState("")
+    const [totalFailedInput, setTotalFailedInput] = useState("0")
+    const [selectedBatch, setSelectedBatch] = useState("all")
+    const courseCode = data[0].courseCode
+    const batch = data[0].batch
+    const gradeLevel = data[0].gradeLevel
+    const department = data[0].department
+    const sem = data[0].sem
+
+   
+
+   
+
+   const handleDelete = (batchItem : string) => {
+    setData((prev) =>
+        prev.filter((item: courseInterface) =>
+          !(
+            item.courseCode === courseCode &&
+            item.batch === batchItem &&
+            item.gradeLevel === gradeLevel &&
+            item.sem === sem
+          )
+        )
+      );
+
+      setDataSavePoint((prev) =>
+        prev.filter((item: courseInterface) =>
+          !(
+            item.courseCode === courseCode &&
+            item.batch === batchItem &&
+            item.gradeLevel === gradeLevel &&
+            item.sem === sem
+          )
+        )
+      );
+      
+   }
+
+   const handleAdd = () => {
+        if(selectedBatch == "all" || !totalEnrolledInput || !totalFailedInput) return errorAlert("empty field")
+        const newData : courseInterface = {
+            courseCode : courseCode,
+            department : department,
+            batch : selectedBatch,
+            gradeLevel : gradeLevel,
+            sem : sem,
+            totalEnrolled : Number(totalEnrolledInput),
+            passed : (Number(totalEnrolledInput) - Number(totalFailedInput))
+        }
+        setData((prev) => [...prev, newData])
+        setDataSavePoint((prev) => [...prev, newData])
+        setTotalEnrolledInput("")
+        setTotalFailedInput("0")
+        setSelectedBatch("all")
+        successAlert("data inserted")
+   }
 
     // Calculate fixed n as sum of all total enrolled
     const fixedN: number = data.reduce((sum, item) => sum + item.totalEnrolled, 0);
@@ -64,10 +132,7 @@ const PChartSecond: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
     // Calculate FIXED control limits for all data points using fixed n
     const sigma: number = Math.sqrt((CL * (1 - CL)) / fixedN); // Fixed sigma based on total sample size
     
-    console.log(`Fixed n = ${fixedN}`);
-    console.log(`CL = ${CL}`);
-    console.log(`Fixed Sigma = ${sigma}`);
-    console.log("\n");
+   
 
     const chartData: ChartDataPoint[] = processedData.map(item => {
         return {
@@ -190,16 +255,85 @@ const PChartSecond: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
             {/* Chart and Control Limits Container */}
             <div className=" flex gap-6">
                 {/* Chart Section - Right Side */}
-                <div className='bg-stone-200 h-[320px] w-[500px]'>
-                    <div className='bg-red-100 w-full h-5/6'>
-
+                <div className='h-[320px] w-[500px]'>
+                    <div className='w-full h-5/6 overflow-auto'>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Batch</TableHead>
+                                    <TableHead>Year & Sem</TableHead>
+                                    <TableHead>enrolled</TableHead>
+                                    <TableHead>Failed</TableHead>
+                                    <TableHead> Fail Rate</TableHead>
+                                    <TableHead> Remove</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {chartData.length > 0 ? (
+                                    chartData.map((item, index) => (
+                                        <TableRow key={index}>
+                                         
+                                            <TableCell>{item.batch}</TableCell>
+                                            <TableCell>{`${item.gradeLevel} yr - ${item.sem == 1 ? "1st sem" : "2nd"}`}</TableCell>
+                                            <TableCell>{(item.totalEnrolled )}</TableCell>
+                                            <TableCell>{(item.totalEnrolled - item.passed)}</TableCell>
+                                            <TableCell>{(item.proportion * 100).toFixed(1)}% </TableCell>
+                                            <TableCell>
+                                                <Button className="mt-6 " size="icon"  onClick={() => handleDelete(item.batch)}> <Trash2 /></Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={8} className="text-center py-4">
+                                            No data found
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
                     </div>
 
-                    <div className='bg-blue-100 w-full h-1/6'>
+                    <div className="w-full h-1/6 p-4 flex items-center gap-6 rounded-xl mt-2 ">
+                        <div className="text-lg font-semibold">
+                            <Label className=" mb-3" htmlFor="status-select">  Batch </Label>
+                            <Select value={selectedBatch} onValueChange={setSelectedBatch}>
+                            <SelectTrigger id="status-select" className=" bg-white">
+                                <SelectValue placeholder="Select Batch" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                            <SelectItem value="all">Select Batch </SelectItem>
+                                            <SelectItem value="2020-2024">2020-2024</SelectItem>
+                                            <SelectItem value="2021-2025">2021-2025</SelectItem>
+                                            <SelectItem value="2022-2026">2022-2026</SelectItem>
+                                            <SelectItem value="2023-2027">2023-2027</SelectItem>
+                            
+                                            <SelectItem value="2024-2028">2024-2028</SelectItem>
+                                            <SelectItem value="2025-2029">2025-2029</SelectItem>
+                                            <SelectItem value="2026-2030">2026-2030</SelectItem>
+                                            <SelectItem value="2027-2031">2027-2031</SelectItem>
+                            </SelectContent>
+                            </Select>
+                        </div>
 
+                        <div className="flex flex-col">
+                            <Label htmlFor="enrolled" className='mb-3'>Total Enrolled</Label>
+                            <Input id="enrolled" type="number" placeholder="e.g. 30"  value={totalEnrolledInput} onChange={(e) => setTotalEnrolledInput(e.target.value)}/>
+                        </div>
+
+                        <div className="flex flex-col">
+                            <Label htmlFor="failed" className='mb-3'>Total Failed</Label>
+                            <Input id="failed" type="number" placeholder="e.g. 5" value={totalFailedInput} onChange={(e) => setTotalFailedInput(e.target.value)} />
+                        </div>
+
+                        <Button className="mt-6 bg-green-500 hover:bg-green-600" onClick={handleAdd}>Add</Button>
                     </div>
+
+
+
+
+
                 </div>
-
 
 
                 <div className="flex-1 h-[380px]">
@@ -308,6 +442,7 @@ const PChartSecond: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
 
                             {/* Actual Data Points - Color based on UCL comparison */}
                             <Line
+                              
                                 type="linear"
                                 dataKey="proportion"
                                 stroke="green"

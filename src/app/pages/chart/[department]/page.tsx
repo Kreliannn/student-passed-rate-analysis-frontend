@@ -32,12 +32,16 @@ export default function LandingPage() {
   const [data, setData] = useState<courseInterface[]>([])
   const [sortedData, setSortedData] = useState<courseInterface[]>([])
 
+  console.log(data.length)
+
   const [coursedataChart, setCoursedataChart] = useState<courseInterface[]>([])
+
+  const [coursedataChartSavePoint, setCoursedataChartSavePoint] = useState<courseInterface[]>([])
 
   
   const handleSelectCourse = (selected : string) => {
     setSelectedCourse(selected)
-    setCoursedataChart(courseData?.data.filter((course : courseInterface) => course.courseCode == selected ))
+    setCoursedataChart(coursedataChartSavePoint.filter((course : courseInterface) => course.courseCode == selected ))
   }
 
 
@@ -52,23 +56,14 @@ export default function LandingPage() {
     if(courseData?.data)
     {
       setSortedData(getSortedCourses(courseData?.data))
+      setCoursedataChartSavePoint(courseData?.data)
     }
   }, [courseData])
 
   // Ref for scrollable container
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if(selectedYear != "all" && courseData?.data)
-    {
-      const getByBatch = courseData.data.filter((course : courseInterface) => course.batch == selectedYear )
-      setData(getSortedCourses(getByBatch))
-    }
-    else
-    {
-      setData([])
-    }
-  }, [selectedYear])
+
 
   useEffect(() => {
     if (data.length > 0) {
@@ -170,11 +165,28 @@ export default function LandingPage() {
           />
         </div>
        
+          
+        
 
+        <div className="m-auto p-5">
+          {selectedCourse !== "all" ? <PChartSecond data={coursedataChart} setData={setCoursedataChart} setDataSavePoint={setCoursedataChartSavePoint} /> : null}
+        </div>
 
       
       {
         /*
+
+          useEffect(() => {
+              if(selectedYear != "all" && courseData?.data)
+              {
+                const getByBatch = courseData.data.filter((course : courseInterface) => course.batch == selectedYear )
+                setData(getSortedCourses(getByBatch))
+              }
+              else
+              {
+                setData([])
+              }
+            }, [selectedYear])
                    <Select  value={selectedYear} onValueChange={setSelectedYear} >
                   <SelectTrigger id="year-select" className="w-[200px] bg-white">
                       <SelectValue placeholder="Select Year" />
@@ -204,10 +216,6 @@ export default function LandingPage() {
 
  
 
-
-        <div className="m-auto p-5">
-          {coursedataChart.length !== 0 ? <PChartSecond data={coursedataChart} /> : null}
-        </div>
         
           <br /><br /><br />
       </div>
