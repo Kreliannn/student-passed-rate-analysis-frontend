@@ -102,7 +102,7 @@ const PChartComputation: React.FC<PChartComputationProps> = ({ data, CL, sigma, 
 
   return (
     <MathJaxContext config={config}>
-      <div className="h-[1000px] bg-stone-50 p-6 overflow-y-auto">
+      <div className="h-[880px] bg-stone-50 p-6 overflow-y-auto">
         <h3 className="text-lg font-bold mb-4 text-center text-gray-800">
           P-Chart Statistical Computation Steps
         </h3>

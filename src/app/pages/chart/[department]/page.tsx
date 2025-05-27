@@ -76,6 +76,10 @@ export default function LandingPage() {
     if(data.length == 0 && selectedCourse != "all") scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
     else if(selectedCourse != "all") scrollContainerRef.current?.scrollTo({ top: 2450, behavior: "smooth" })
   }, [ selectedCourse]);
+
+  const scrollUp = () => {
+    scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" })
+  }
   
  
 
@@ -84,7 +88,7 @@ export default function LandingPage() {
       <div ref={scrollContainerRef} className="h-dvh w-full overflow-auto relative">
 
          
-   
+    
 
 
        <div className="w-full flex items-center justify-between p-6">
@@ -179,7 +183,7 @@ export default function LandingPage() {
         
 
         <div className="m-auto p-5">
-          {selectedCourse !== "all" ? <PChartSecond data={coursedataChart} setData={setCoursedataChart} setDataSavePoint={setCoursedataChartSavePoint} /> : null}
+          {selectedCourse !== "all" ? <PChartSecond scrollUp={scrollUp} data={coursedataChart} setData={setCoursedataChart} setDataSavePoint={setCoursedataChartSavePoint} /> : null}
         </div>
 
       

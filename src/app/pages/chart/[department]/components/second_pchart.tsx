@@ -50,7 +50,7 @@ interface ChartDataPoint extends ProcessedDataPoint {
 import type { TooltipProps as RechartsTooltipProps } from 'recharts';
 import { Item } from '@radix-ui/react-select';
 
-const PChartSecond: React.FC<{ data: courseInterface[],setDataSavePoint : React.Dispatch<React.SetStateAction<courseInterface[]>>, setData: React.Dispatch<React.SetStateAction<courseInterface[]>> }> = ({ data, setData, setDataSavePoint }) =>  {
+const PChartSecond: React.FC<{ scrollUp : () => void, data: courseInterface[],setDataSavePoint : React.Dispatch<React.SetStateAction<courseInterface[]>>, setData: React.Dispatch<React.SetStateAction<courseInterface[]>> }> = ({ scrollUp, data, setData, setDataSavePoint }) =>  {
 
     if(data.length == 0) return null
 
@@ -229,9 +229,12 @@ const PChartSecond: React.FC<{ data: courseInterface[],setDataSavePoint : React.
     };
 
     return (
-        <div className="w-full p-6 bg-white rounded-lg">
+        <div className="w-full p-6 bg-white rounded-lg relative">
+
+            <Button onClick={scrollUp} className='absolute top-[20px] left-[1200px]'> Scroll Up</Button>
+
             <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-2"> Subject: {getCourseName( data[0]?.courseCode) } </h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2"> Subject: {getCourseName( data[0]?.courseCode) } - ({courseCode})  </h2>
                 <p className="text-gray-600"> Variable P-Chart: Student Failure Rate Analysis by Subject</p>
             </div>
 
@@ -511,6 +514,8 @@ const PChartSecond: React.FC<{ data: courseInterface[],setDataSavePoint : React.
                 sigma={sigma}
                 chartData={chartData}
             />
+
+            <Button onClick={scrollUp} className='w-full'> Scroll Up</Button>
         </div>
     );
 };
