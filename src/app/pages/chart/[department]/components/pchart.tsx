@@ -30,6 +30,7 @@ interface ChartDataPoint extends ProcessedDataPoint {
     LCL2: number;
     LCL3: number;
     sigma: number;
+    isBelowLCL: boolean; // New property to track if point is below LCL
 }
 
 // Import TooltipProps from recharts for proper typing
@@ -57,6 +58,8 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
         const n: number = item.totalEnrolled; // Individual sample size
         const sigma: number = Math.sqrt((CL * (1 - CL)) / n); // Individual sigma based on sample size
         
+        const LCL1 = Math.max(0, CL - 1 * sigma);
+        
         console.log(`Course: ${item.courseCode}, n = ${n}`);
         console.log(`CL = ${CL}`);
         console.log(`Sigma = ${sigma}`);
@@ -70,10 +73,11 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
             UCL1: CL + 1 * sigma,
             UCL2: CL + 2 * sigma,
             UCL3: CL + 3 * sigma,
-            LCL1: Math.max(0, CL - 1 * sigma),
+            LCL1: LCL1,
             LCL2: Math.max(0, CL - 2 * sigma),
             LCL3: Math.max(0, CL - 3 * sigma),
-            sigma: sigma
+            sigma: sigma,
+            isBelowLCL: item.proportion < LCL1 // Check if proportion is below LCL1
         };
     });
 
@@ -91,6 +95,23 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
     const yAxisMin: number = Math.max(0, minValue - padding);
     const yAxisMax: number = Math.min(1.2, maxValue + padding);
 
+    // Custom dot function to color dots based on LCL status
+    const CustomDot = (props: any) => {
+        const { cx, cy, payload } = props;
+        const color = payload.isBelowLCL ? '#dc2626' : '#059669'; // Red if below LCL, green otherwise
+        
+        return (
+            <circle 
+                cx={cx} 
+                cy={cy} 
+                r={6} 
+                fill={color} 
+                stroke={color} 
+                strokeWidth={2}
+            />
+        );
+    };
+
     const customTooltip = ({ active, payload, label }: RechartsTooltipProps<number, string>) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload as ChartDataPoint;
@@ -105,9 +126,14 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
                     <p className="text-gray-600">Enrolled: {data.totalEnrolled}</p>
                     <p className="text-gray-600">Passed: {data.passed}</p>
                     <p className="text-gray-600">Failed: {data.failed}</p>
-                    <p className="font-bold text-green-600 mt-1">
+                    <p className={`font-bold mt-1 ${data.isBelowLCL ? 'text-red-600' : 'text-green-600'}`}>
                         Pass Rate: {(data.proportion * 100).toFixed(1)}%
                     </p>
+                    {data.isBelowLCL && (
+                        <p className="font-bold text-red-600 text-sm">
+                            ⚠️ Below Lower Control Limit
+                        </p>
+                    )}
                     <p className="text-gray-600 mt-1">
                         Standard Deviation: {(data.sigma * 100).toFixed(2)}%
                     </p>
@@ -121,11 +147,19 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
         return (value * 100).toFixed(1) + '%';
     };
 
+    // Count points below LCL for summary
+    const pointsBelowLCL = chartData.filter(item => item.isBelowLCL).length;
+
     return (
         <div className="w-full p-6 bg-white rounded-lg">
             <div className="mb-6">
                 <h2 className="text-2xl font-bold text-gray-800 mb-2"> {convertCodeToName(data[0].department)} Batch: {data[0]?.batch}  </h2>
                 <p className="text-gray-600"> Variable P-Chart: Student Pass Rate Analysis by Batch </p>
+                {pointsBelowLCL > 0 && (
+                    <p className="text-red-600 font-semibold mt-2">
+                        ⚠️ {pointsBelowLCL} course(s) below Lower Control Limit (red dots)
+                    </p>
+                )}
             </div>
 
             <div className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -144,22 +178,20 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
                     <div className="text-amber-900">{(yAxisMin * 100).toFixed(1)}% - {(yAxisMax * 100).toFixed(1)}%</div>
                 </div>
 
-
                 <div className="bg-green-50 p-3 rounded-lg">
                     <div className="font-semibold text-green-700"> Retention</div>
                     <div className="text-green-900">{retention.toFixed(1)}%  {(data[data.length - 1].gradeLevel != "4th") ? ` As Of ${data[data.length - 1].gradeLevel} Year` : " "}</div>
                 </div>
-
-         
             </div>
 
             <div className="w-full overflow-x-auto text-sm">
                 <h3 className="text-base font-semibold text-gray-800 mb-3">Control Limits by Course</h3>
                 <div className="flex space-x-4 p-2">
                     {chartData.map((item, index) => (
-                        <div key={index} className="w-80 flex-shrink-0 bg-gray-50 p-3 rounded-lg border">
+                        <div key={index} className={`w-80 flex-shrink-0 p-3 rounded-lg border ${item.isBelowLCL ? 'bg-red-50 border-red-200' : 'bg-gray-50'}`}>
                             <div className="font-semibold text-gray-800 mb-2 text-center">
                                 {item.courseCode} (n={item.totalEnrolled})
+                                {item.isBelowLCL && <span className="text-red-600 ml-2">⚠️</span>}
                             </div>
                             <div className="text-xs text-center mb-2 text-gray-600">
                                 Yr {item.gradeLevel}, Sem {item.sem}
@@ -198,8 +230,6 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
                     ))}
                 </div>
             </div>
-
-
 
             {/* Chart and Control Limits Container */}
             <div className=" flex gap-6">
@@ -308,13 +338,13 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
                                 connectNulls={false}
                             />
 
-                            {/* Actual Data Points */}
+                            {/* Actual Data Points with Custom Dots */}
                             <Line
                                 type="linear"
                                 dataKey="proportion"
                                 stroke="#059669"
                                 strokeWidth={3}
-                                dot={{ fill: '#059669', strokeWidth: 2, r: 6 }}
+                                dot={<CustomDot />}
                                 name="Pass Rate"
                             />
                         </LineChart>
@@ -325,18 +355,24 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
             <div className="w-full overflow-x-auto text-sm">
                 <div className="flex space-x-4 min-w-fit p-2">
                     {chartData.map((item, index) => (
-                        <div key={index} className="w-[250px] bg-gray-50 p-4 rounded-lg flex-shrink-0 shadow-lg">
+                        <div key={index} className={`w-[250px] p-4 rounded-lg flex-shrink-0 shadow-lg ${item.isBelowLCL ? 'bg-red-50 border border-red-200' : 'bg-gray-50'}`}>
                             <div className="font-semibold text-gray-700 mb-2">
                                 {item.courseCode} - Yr {item.gradeLevel}, Sem {item.sem}
+                                {item.isBelowLCL && <span className="text-red-600 ml-2">⚠️</span>}
                             </div>
                             <div className="space-y-1">
                                 <div>Batch: {item.batch}</div>
                                 <div>Enrolled: {item.totalEnrolled}</div>
                                 <div>Passed: {item.passed}</div>
                                 <div>Failed: {item.failed}</div>
-                                <div className="font-semibold text-green-600">
+                                <div className={`font-semibold ${item.isBelowLCL ? 'text-red-600' : 'text-green-600'}`}>
                                     Pass Rate: {(item.proportion * 100).toFixed(1)}%
                                 </div>
+                                {item.isBelowLCL && (
+                                    <div className="font-semibold text-red-600 text-sm">
+                                        Below LCL (-1σ): {(item.LCL1 * 100).toFixed(1)}%
+                                    </div>
+                                )}
                                 <div className="text-gray-600">
                                     Standard Deviation: {(item.sigma * 100).toFixed(2)}%
                                 </div>
