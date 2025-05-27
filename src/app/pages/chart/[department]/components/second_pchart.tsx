@@ -6,7 +6,7 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { courseInterface } from '@/types/interface';
+import { courseInterface, deleteItemCourse } from '@/types/interface';
 import { getCourseName } from '@/utils/customFunction';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Label } from "@/components/ui/label";
@@ -17,8 +17,8 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { successAlert, errorAlert, confirmAlert } from '@/utils/alerts';
-
-
+import { backendUrl } from '@/utils/url';
+import PChartComputation from "./computation"
 
 interface DataPoint {
     gradeLevel: string;
@@ -64,36 +64,64 @@ const PChartSecond: React.FC<{ data: courseInterface[],setDataSavePoint : React.
     const sem = data[0].sem
 
    
+    const mutationInsert = useMutation({
+        mutationFn : (data : courseInterface) => axios.post(backendUrl("course/insertOne"), { course : data}),
+        onSuccess : () => console.log("success"),
+        onError : (err : { request : { response : string}}) => errorAlert(err.request.response)
+      })
 
+    const mutationDelete = useMutation({
+        mutationFn : (data : deleteItemCourse) => axios.post(backendUrl("course/deleteOne"), { itemToDelete : data}),
+        onSuccess : () => console.log("success"),
+        onError : (err : { request : { response : string}}) => errorAlert(err.request.response)
+      })
+   
    
 
    const handleDelete = (batchItem : string) => {
-    setData((prev) =>
-        prev.filter((item: courseInterface) =>
-          !(
-            item.courseCode === courseCode &&
-            item.batch === batchItem &&
-            item.gradeLevel === gradeLevel &&
-            item.sem === sem
-          )
-        )
-      );
-
-      setDataSavePoint((prev) =>
-        prev.filter((item: courseInterface) =>
-          !(
-            item.courseCode === courseCode &&
-            item.batch === batchItem &&
-            item.gradeLevel === gradeLevel &&
-            item.sem === sem
-          )
-        )
-      );
-      
+    confirmAlert("you cant revert this", "delete",() => {
+        setData((prev) =>
+            prev.filter((item: courseInterface) =>
+              !(
+                item.courseCode === courseCode &&
+                item.batch === batchItem &&
+                item.gradeLevel === gradeLevel &&
+                item.sem === sem
+              )
+            )
+          );
+    
+          setDataSavePoint((prev) =>
+            prev.filter((item: courseInterface) =>
+              !(
+                item.courseCode === courseCode &&
+                item.batch === batchItem &&
+                item.gradeLevel === gradeLevel &&
+                item.sem === sem
+              )
+            )
+          );
+    
+    
+          const itemToDelete : deleteItemCourse = {
+            department : department,
+            gradeLevel : gradeLevel,
+            sem : sem,
+            batch : batchItem,
+            courseCode : courseCode,
+          }
+    
+          mutationDelete.mutate(itemToDelete)
+          
+    })
+   
    }
 
    const handleAdd = () => {
         if(selectedBatch == "all" || !totalEnrolledInput || !totalFailedInput) return errorAlert("empty field")
+        if ( data.some(item => item.batch === selectedBatch)) return errorAlert("batch already exists");
+        
+
         const newData : courseInterface = {
             courseCode : courseCode,
             department : department,
@@ -103,6 +131,7 @@ const PChartSecond: React.FC<{ data: courseInterface[],setDataSavePoint : React.
             totalEnrolled : Number(totalEnrolledInput),
             passed : (Number(totalEnrolledInput) - Number(totalFailedInput))
         }
+        mutationInsert.mutate(newData)
         setData((prev) => [...prev, newData])
         setDataSavePoint((prev) => [...prev, newData])
         setTotalEnrolledInput("")
@@ -162,6 +191,11 @@ const PChartSecond: React.FC<{ data: courseInterface[],setDataSavePoint : React.
     
     const yAxisMin: number = Math.max(0, minValue - padding);
     const yAxisMax: number = Math.min(1.2, maxValue + padding);
+
+
+    console.log(sigma)
+    console.log(CL)
+    console.log(chartData)
 
     
     const customTooltip = ({ active, payload, label }: RechartsTooltipProps<number, string>) => {
@@ -246,7 +280,7 @@ const PChartSecond: React.FC<{ data: courseInterface[],setDataSavePoint : React.
 
                 <div className="bg-yellow-100 p-3 shadow rounded-lg">
                     <div className="font-semibold text-yellow-700">LCL (-1σ)</div>
-                    <div className="text-yellow-900">{(Math.min(chartData[0].LCL3, 1) * 100).toFixed(1)}%</div>
+                    <div className="text-yellow-900">{(Math.min(chartData[0].LCL1, 1) * 100).toFixed(1)}%</div>
                 </div>     
             </div>
 
@@ -468,7 +502,15 @@ const PChartSecond: React.FC<{ data: courseInterface[],setDataSavePoint : React.
                 </div>
             </div>
 
-            
+            {
+                //last div where the formula and computation displayed
+            }          
+            <PChartComputation 
+                data={data}
+                CL={CL}
+                sigma={sigma}
+                chartData={chartData}
+            />
         </div>
     );
 };

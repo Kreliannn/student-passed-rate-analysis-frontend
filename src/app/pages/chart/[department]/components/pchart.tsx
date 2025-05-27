@@ -153,6 +153,8 @@ const PChart: React.FC<{ data: courseInterface[] }> = ({ data }) =>  {
     return (
         <div className="w-full p-6 bg-white rounded-lg">
             <div className="mb-6">
+                
+
                 <h2 className="text-2xl font-bold text-gray-800 mb-2"> {convertCodeToName(data[0].department)} Batch: {data[0]?.batch}  </h2>
                 <p className="text-gray-600"> Variable P-Chart: Student Pass Rate Analysis by Batch </p>
                 {pointsBelowLCL > 0 && (

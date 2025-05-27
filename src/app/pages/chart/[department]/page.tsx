@@ -17,7 +17,7 @@ import { backendUrl } from "@/utils/url"
 import { getSortedCourses } from "@/utils/customFunction"
 import { getAllCourseCode } from "@/utils/customFunction"
 import PChartSecond from "./components/second_pchart"
-
+import { getCL } from "@/utils/customFunction"
 
 export default function LandingPage() {
   const params = useParams()
@@ -32,7 +32,7 @@ export default function LandingPage() {
   const [data, setData] = useState<courseInterface[]>([])
   const [sortedData, setSortedData] = useState<courseInterface[]>([])
 
-  console.log(data.length)
+ 
 
   const [coursedataChart, setCoursedataChart] = useState<courseInterface[]>([])
 
@@ -81,8 +81,10 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen" style={bgStyle}>
-      <div ref={scrollContainerRef} className="h-dvh w-full overflow-auto">
+      <div ref={scrollContainerRef} className="h-dvh w-full overflow-auto relative">
 
+         
+   
 
 
        <div className="w-full flex items-center justify-between p-6">
@@ -125,8 +127,6 @@ export default function LandingPage() {
 
         <div className="w-4/6 h-[50px] m-auto flex items-center justify-between px-4 rounded-lg">
              
-
-
                 {(courseData?.data) ?
                   <Select  value={selectedCourse} onValueChange={handleSelectCourse} >
                     <SelectTrigger id="year-select" className="w-[200px] bg-white">
@@ -135,8 +135,15 @@ export default function LandingPage() {
                       <SelectContent >
                             <SelectItem value="all"> Select Subject </SelectItem>
                             {
-                              getAllCourseCode(getSortedCourses(courseData?.data)).map((course : courseInterface ) => (
-                                <SelectItem key={course.courseCode} value={course.courseCode}> {`${course.gradeLevel} yr | sem - ${course.sem} ${course.courseCode} - ${getCourseName(course.courseCode)}`} </SelectItem>
+                              getAllCourseCode(getSortedCourses(courseData?.data)).map((course : courseInterface, index ) => (
+                                <SelectItem key={course.courseCode} value={course.courseCode}>
+                                <div className="flex items-center w-full">
+                                  <span className="truncate flex-1 mr-4">
+                                    {`${course.gradeLevel} yr | sem - ${course.sem} ${getCourseName(course.courseCode)} - ${course.courseCode}`}
+                                  </span>
+                                  <span className="text-gray-400 whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1 : courseInterface) => course1.courseCode ==  course.courseCode))}</span>
+                                </div>
+                              </SelectItem>
                               ))
                             }
                       </SelectContent>  
@@ -164,8 +171,11 @@ export default function LandingPage() {
             priority
           />
         </div>
-       
-          
+
+
+
+        
+     
         
 
         <div className="m-auto p-5">

@@ -92,6 +92,18 @@ export const getAllCourseCode = (courses: courseInterface[]) => {
 }
 
 
+export const getCL = ( data : courseInterface[]) => {
+    if(data.length == 0) return "no data"
+    const totalFailed: number = data.reduce((sum, item) => sum + (item.totalEnrolled - item.passed), 0);
+    const totalEnrolled: number = data.reduce((sum, item) => sum + item.totalEnrolled, 0);
+    const CL: number = totalFailed / totalEnrolled;
+   
+   
+    return `𝑝 = ${(CL * 100).toFixed(1)}%`
+}
+
+
+  
 
 
 export const getSortedCourses = (data : courseInterface[]) => {
