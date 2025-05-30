@@ -41,3 +41,40 @@ export const errorAlert = (text : string) => {
           }
       });
 }
+
+
+
+
+export const passwordPromptAlert = (
+  correctPassword: string,
+  onSuccess: () => void
+) => {
+  Swal.fire({
+    title: 'Enter Password',
+    input: 'password',
+    inputPlaceholder: 'Your password',
+    inputAttributes: {
+      autocapitalize: 'off',
+      autocorrect: 'off'
+    },
+    showCancelButton: true,
+    confirmButtonText: 'Confirm',
+    confirmButtonColor: '#22c55e',
+    cancelButtonColor: '#d33',
+    preConfirm: (input) => {
+      if (!input) {
+        Swal.showValidationMessage('Password is required');
+        return false;
+      }
+      if (input !== correctPassword) {
+        Swal.showValidationMessage('Incorrect password');
+        return false;
+      }
+      return true;
+    }
+  }).then((result) => {
+    if (result.isConfirmed && result.value === correctPassword) {
+      onSuccess();
+    }
+  });
+};

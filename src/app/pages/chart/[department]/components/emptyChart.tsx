@@ -1,13 +1,12 @@
 
 
 
-
 "use client"
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { courseInterface, deleteItemCourse } from '@/types/interface';
-import { getCourseName } from '@/utils/customFunction';
+import { getAllCourseCode, getCourseName, getSortedCourses } from '@/utils/customFunction';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -19,8 +18,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { successAlert, errorAlert, confirmAlert } from '@/utils/alerts';
 import { backendUrl } from '@/utils/url';
 import PChartComputation from "./computation"
-import { getSortedCourses } from '@/utils/customFunction';
-import { getAllCourseCode } from '@/utils/customFunction';
 
 interface DataPoint {
     gradeLevel: string;
@@ -54,93 +51,18 @@ import { Item } from '@radix-ui/react-select';
 
 const PChartSecond: React.FC<{ initialData : courseInterface[] , selectCourse : string,  handleSelectCourse : (selected : string) => void  ,scrollUp : () => void, data: courseInterface[],setDataSavePoint : React.Dispatch<React.SetStateAction<courseInterface[]>>, setData: React.Dispatch<React.SetStateAction<courseInterface[]>> }> = ({initialData, selectCourse, handleSelectCourse, scrollUp, data, setData, setDataSavePoint }) =>  {
 
-    if(data.length == 0) return null
+   
 
     const [totalEnrolledInput, setTotalEnrolledInput] = useState("")
     const [totalFailedInput, setTotalFailedInput] = useState("0")
     const [selectedBatch, setSelectedBatch] = useState("all")
-    const courseCode = data[0].courseCode
-    const batch = data[0].batch
-    const gradeLevel = data[0].gradeLevel
-    const department = data[0].department
-    const sem = data[0].sem
+  
 
    
-    const mutationInsert = useMutation({
-        mutationFn : (data : courseInterface) => axios.post(backendUrl("course/insertOne"), { course : data}),
-        onSuccess : () => console.log("success"),
-        onError : (err : { request : { response : string}}) => errorAlert(err.request.response)
-      })
 
-    const mutationDelete = useMutation({
-        mutationFn : (data : deleteItemCourse) => axios.post(backendUrl("course/deleteOne"), { itemToDelete : data}),
-        onSuccess : () => console.log("success"),
-        onError : (err : { request : { response : string}}) => errorAlert(err.request.response)
-      })
+    
+
    
-   
-
-   const handleDelete = (batchItem : string) => {
-    confirmAlert("you cant revert this", "delete",() => {
-        setData((prev) =>
-            prev.filter((item: courseInterface) =>
-              !(
-                item.courseCode === courseCode &&
-                item.batch === batchItem &&
-                item.gradeLevel === gradeLevel &&
-                item.sem === sem
-              )
-            )
-          );
-    
-          setDataSavePoint((prev) =>
-            prev.filter((item: courseInterface) =>
-              !(
-                item.courseCode === courseCode &&
-                item.batch === batchItem &&
-                item.gradeLevel === gradeLevel &&
-                item.sem === sem
-              )
-            )
-          );
-    
-    
-          const itemToDelete : deleteItemCourse = {
-            department : department,
-            gradeLevel : gradeLevel,
-            sem : sem,
-            batch : batchItem,
-            courseCode : courseCode,
-          }
-    
-          mutationDelete.mutate(itemToDelete)
-          
-    })
-   
-   }
-
-   const handleAdd = () => {
-        if(selectedBatch == "all" || !totalEnrolledInput || !totalFailedInput) return errorAlert("empty field")
-        if ( data.some(item => item.batch === selectedBatch)) return errorAlert("batch already exists");
-        
-
-        const newData : courseInterface = {
-            courseCode : courseCode,
-            department : department,
-            batch : selectedBatch,
-            gradeLevel : gradeLevel,
-            sem : sem,
-            totalEnrolled : Number(totalEnrolledInput),
-            passed : (Number(totalEnrolledInput) - Number(totalFailedInput))
-        }
-        mutationInsert.mutate(newData)
-        setData((prev) => [...prev, newData])
-        setDataSavePoint((prev) => [...prev, newData])
-        setTotalEnrolledInput("")
-        setTotalFailedInput("0")
-        setSelectedBatch("all")
-        successAlert("data inserted")
-   }
 
     // Calculate fixed n as sum of all total enrolled
     const fixedN: number = data.reduce((sum, item) => sum + item.totalEnrolled, 0);
@@ -260,66 +182,66 @@ const PChartSecond: React.FC<{ initialData : courseInterface[] , selectCourse : 
                                 }
                         </SelectContent>  
                     </Select>
-                
-                
+
+
                 :null}
 
                 </div>
-           
+
                     
-                
+
                     
                     
-           
+
                 <p className="text-gray-600"> Variable P-Chart: Student Failure Rate Analysis by Subject</p>
-            </div>
+                </div>
 
             <div className="mb-6 grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                 <div className="bg-blue-50 p-3 rounded-lg">
                     <div className="font-semibold text-blue-700">Center Line</div>
-                    <div className="text-blue-900">{(CL * 100).toFixed(1)}%</div>
+                    <div className="text-blue-900">{0}%</div>
                 </div>
 
                 <div className="bg-purple-100 p-3 rounded-lg">
                     <div className="font-semibold text-purple-700"> Total Students</div>
-                    <div className="text-purple-900">{fixedN}</div>
+                    <div className="text-purple-900">{0}</div>
                 </div>
                 
                 <div className="bg-green-100 p-3 rounded-lg">
                     <div className="font-medium text-green-700">Standard Deviation (σ)</div>
-                    <div className="text-green-900">{(sigma * 100).toFixed(2)}%</div>
+                    <div className="text-green-900">{0}%</div>
                 </div>
 
 
                 <div className="bg-red-100 p-3 shadow rounded-lg">
                     <div className="font-medium text-red-700"> UCL (+3σ)</div>
-                    <div className="text-red-900">{(Math.min(chartData[0].UCL3, 1) * 100).toFixed(1)}%</div>
+                    <div className="text-red-900">{0}%</div>
                 </div>
 
                 <div className="bg-orange-100 p-3 shadow rounded-lg">
                     <div className="font-semibold text-orange-700">UCL (+2σ)</div>
-                    <div className="text-orange-900">{(Math.min(chartData[0].UCL2, 1) * 100).toFixed(1)}%</div>
+                    <div className="text-orange-900">{0}%</div>
                 </div>
 
                 <div className="bg-yellow-100 p-3 shadow rounded-lg">
                     <div className="font-semibold text-yellow-700">UCL (+1σ)</div>
-                    <div className="text-yellow-900">{(Math.min(chartData[0].UCL1, 1) * 100).toFixed(1)}%</div>
+                    <div className="text-yellow-900">{0}%</div>
                 </div>
 
 
                 <div className="bg-red-100 p-3 shadow rounded-lg">
                     <div className="font-medium text-red-700">LCL (-3σ)</div>
-                    <div className="text-red-900">{(Math.min(chartData[0].LCL3, 1) * 100).toFixed(1)}%</div>
+                    <div className="text-red-900">{0}%</div>
                 </div>
 
                 <div className="bg-orange-100 p-3 shadow rounded-lg">
                     <div className="font-semibold text-orange-700">LCL (-2σ)</div>
-                    <div className="text-orange-900">{(Math.min(chartData[0].LCL2, 1) * 100).toFixed(1)}%</div>
+                    <div className="text-orange-900">{0}%</div>
                 </div>
 
                 <div className="bg-yellow-100 p-3 shadow rounded-lg">
                     <div className="font-semibold text-yellow-700">LCL (-1σ)</div>
-                    <div className="text-yellow-900">{(Math.min(chartData[0].LCL1, 1) * 100).toFixed(1)}%</div>
+                    <div className="text-yellow-900">{0}%</div>
                 </div>     
             </div>
 
@@ -351,9 +273,6 @@ const PChartSecond: React.FC<{ initialData : courseInterface[] , selectCourse : 
                                             <TableCell>{(item.totalEnrolled )}</TableCell>
                                             <TableCell>{(item.totalEnrolled - item.passed)}</TableCell>
                                             <TableCell>{(item.proportion * 100).toFixed(1)}% </TableCell>
-                                            <TableCell>
-                                                <Button className="mt-6 " size="icon"  onClick={() => handleDelete(item.batch)}> <Trash2 /></Button>
-                                            </TableCell>
                                         </TableRow>
                                     ))
                                 ) : (
@@ -366,46 +285,6 @@ const PChartSecond: React.FC<{ initialData : courseInterface[] , selectCourse : 
                             </TableBody>
                         </Table>
                     </div>
-
-                    <div className="w-full h-1/6 p-4 flex items-center gap-6 rounded-xl mt-2 ">
-                        <div className="text-lg font-semibold">
-                            <Label className=" mb-3" htmlFor="status-select">  Batch </Label>
-                            <Select value={selectedBatch} onValueChange={setSelectedBatch}>
-                            <SelectTrigger id="status-select" className=" bg-white">
-                                <SelectValue placeholder="Select Batch" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                            <SelectItem value="all">Select Batch </SelectItem>
-                                            <SelectItem value="2020-2024">2020-2024</SelectItem>
-                                            <SelectItem value="2021-2025">2021-2025</SelectItem>
-                                            <SelectItem value="2022-2026">2022-2026</SelectItem>
-                                            <SelectItem value="2023-2027">2023-2027</SelectItem>
-                            
-                                            <SelectItem value="2024-2028">2024-2028</SelectItem>
-                                            <SelectItem value="2025-2029">2025-2029</SelectItem>
-                                            <SelectItem value="2026-2030">2026-2030</SelectItem>
-                                            <SelectItem value="2027-2031">2027-2031</SelectItem>
-                            </SelectContent>
-                            </Select>
-                        </div>
-
-                        <div className="flex flex-col">
-                            <Label htmlFor="enrolled" className='mb-3'>Total Enrolled</Label>
-                            <Input id="enrolled" type="number" placeholder="e.g. 30"  value={totalEnrolledInput} onChange={(e) => setTotalEnrolledInput(e.target.value)}/>
-                        </div>
-
-                        <div className="flex flex-col">
-                            <Label htmlFor="failed" className='mb-3'>Total Failed</Label>
-                            <Input id="failed" type="number" placeholder="e.g. 5" value={totalFailedInput} onChange={(e) => setTotalFailedInput(e.target.value)} />
-                        </div>
-
-                        <Button className="mt-6 bg-green-500 hover:bg-green-600" onClick={handleAdd}>Add</Button>
-                    </div>
-
-
-
-
-
                 </div>
 
 
@@ -540,16 +419,6 @@ const PChartSecond: React.FC<{ initialData : courseInterface[] , selectCourse : 
                     </ResponsiveContainer>
                 </div>
             </div>
-
-            {
-                //last div where the formula and computation displayed
-            }          
-            <PChartComputation 
-                data={data}
-                CL={CL}
-                sigma={sigma}
-                chartData={chartData}
-            />
 
             <Button onClick={scrollUp} className='w-full'> Scroll Up</Button>
         </div>

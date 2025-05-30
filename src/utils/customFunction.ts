@@ -99,12 +99,39 @@ export const getCL = ( data : courseInterface[]) => {
     const CL: number = totalFailed / totalEnrolled;
    
    
-    return `𝑝 = ${(CL * 100).toFixed(1)}%`
+    return `𝑝 ${(CL * 100).toFixed(1)}%`
 }
 
 
   
+export const getSortedCoursesByYear = (data: courseInterface[]) => {
+  // Extract unique batch years and sort them by the starting year
+  const uniqueBatches = [...new Set(data.map(item => item.batch))].sort((a, b) => {
+    const startYearA = parseInt(a.split('-')[0]);
+    const startYearB = parseInt(b.split('-')[0]);
+    return startYearA - startYearB;
+  });
 
+  // Create a map for quick lookup and grouping by batch
+  const groupedData = new Map();
+  for (const item of data) {
+    const batch = item.batch;
+    if (!groupedData.has(batch)) {
+      groupedData.set(batch, []);
+    }
+    groupedData.get(batch).push(item);
+  }
+
+  const sortedCourses = [];
+  for (const batch of uniqueBatches) {
+    if (groupedData.has(batch)) {
+      // Add all courses for this specific batch
+      sortedCourses.push(...groupedData.get(batch));
+    }
+  }
+
+  return sortedCourses;
+};
 
 export const getSortedCourses = (data : courseInterface[]) => {
   const desiredOrder = [
