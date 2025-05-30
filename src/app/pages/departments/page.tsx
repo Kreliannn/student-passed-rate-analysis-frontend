@@ -4,7 +4,7 @@ import Link from "next/link"
 import { bgStyle } from "@/utils/customFunction"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
-
+import { passwordPromptAlert } from "@/utils/alerts"
 
 export default function LandingPage() {
 
@@ -56,12 +56,54 @@ export default function LandingPage() {
         <div className="w-2/6 bg-white m-auto p-10 rounded-lg">
             <h2 className="text-2xl md:text-3xl font-bold text-stone-700 text-center">Departments</h2>
             <br />
-            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/chart/CE")}> Civil Engineering </Button>
-            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/chart/CPE")}> Computer Engineering </Button>
-            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/chart/EE")}>  Electrical Engineering </Button>
-            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/chart/ECE")}> Electronics Engineering </Button>
-            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/chart/IE")}> Industrial Engineering </Button>
-            <Button size="lg" className="w-full shadow-lg m-2  " onClick={() => router.push("/pages/chart/ME")}> Mechanical Engineering </Button>
+            <Button
+              size="lg"
+              className="w-full shadow-lg m-2"
+              onClick={() => passwordPromptAlert("Civil Engineering", "ce123", () => router.push("/pages/chart/CE"))}
+            >
+              Civil Engineering
+            </Button>
+
+            <Button
+              size="lg"
+              className="w-full shadow-lg m-2"
+              onClick={() => passwordPromptAlert("Computer Engineering","cpe123", () => router.push("/pages/chart/CPE"))}
+            >
+              Computer Engineering
+            </Button>
+
+            <Button
+              size="lg"
+              className="w-full shadow-lg m-2"
+              onClick={() => passwordPromptAlert("Electrical Engineering","ee123", () => router.push("/pages/chart/EE"))}
+            >
+              Electrical Engineering
+            </Button>
+
+            <Button
+              size="lg"
+              className="w-full shadow-lg m-2"
+              onClick={() => passwordPromptAlert("Electronics Engineering","ece123", () => router.push("/pages/chart/ECE"))}
+            >
+              Electronics Engineering
+            </Button>
+
+            <Button
+              size="lg"
+              className="w-full shadow-lg m-2"
+              onClick={() => passwordPromptAlert("Industrial Engineering","ie123", () => router.push("/pages/chart/IE"))}
+            >
+              Industrial Engineering
+            </Button>
+
+            <Button
+              size="lg"
+              className="w-full shadow-lg m-2"
+              onClick={() => passwordPromptAlert("Mechanical Engineering","me123", () => router.push("/pages/chart/ME"))}
+            >
+              Mechanical Engineering
+            </Button>
+
         </div>
     </div>
   )

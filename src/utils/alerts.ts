@@ -45,36 +45,34 @@ export const errorAlert = (text : string) => {
 
 
 
-export const passwordPromptAlert = (
-  correctPassword: string,
-  onSuccess: () => void
-) => {
-  Swal.fire({
-    title: 'Enter Password',
-    input: 'password',
-    inputPlaceholder: 'Your password',
-    inputAttributes: {
-      autocapitalize: 'off',
-      autocorrect: 'off'
-    },
-    showCancelButton: true,
-    confirmButtonText: 'Confirm',
-    confirmButtonColor: '#22c55e',
-    cancelButtonColor: '#d33',
-    preConfirm: (input) => {
-      if (!input) {
-        Swal.showValidationMessage('Password is required');
-        return false;
+export const passwordPromptAlert = (dep : string, correctPassword: string, onSuccess: () => void
+  ) => {
+    Swal.fire({
+      title:  dep,
+      input: 'password',
+      inputPlaceholder: 'enter password',
+      inputAttributes: {
+        autocapitalize: 'off',
+        autocorrect: 'off'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Confirm',
+      confirmButtonColor: '#22c55e',
+      cancelButtonColor: '#d33',
+      preConfirm: (input) => {
+        if (!input) {
+          Swal.showValidationMessage('Password is required');
+          return;
+        }
+        if (input !== correctPassword) {
+          Swal.showValidationMessage('Incorrect password');
+          return;
+        }
+        return input; // ✅ pass input forward to .then
       }
-      if (input !== correctPassword) {
-        Swal.showValidationMessage('Incorrect password');
-        return false;
+    }).then((result) => {
+      if (result.isConfirmed && result.value === correctPassword) {
+        onSuccess(); // ✅ now this will run correctly
       }
-      return true;
-    }
-  }).then((result) => {
-    if (result.isConfirmed && result.value === correctPassword) {
-      onSuccess();
-    }
-  });
-};
+    });
+  };

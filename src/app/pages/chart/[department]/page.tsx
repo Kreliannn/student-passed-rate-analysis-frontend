@@ -70,7 +70,7 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (data.length > 0) {
-      scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" });
+      scrollContainerRef.current?.scrollTo({ top: 2100, behavior: "smooth" });
     }
   }, [data]);
 
@@ -85,6 +85,18 @@ export default function LandingPage() {
   }
 
 
+  useEffect(() => {
+    if(selectedYear != "all" && courseData?.data)
+    {
+      const getByBatch = coursedataChartSavePoint.filter((course : courseInterface) => course.batch == selectedYear )
+      setData(getSortedCourses(getByBatch))
+     
+    }
+    else
+    {
+      setData([])
+    }
+  }, [selectedYear])
   
 
 
@@ -297,22 +309,12 @@ export default function LandingPage() {
         </div>
 
       
-      {
-        /*
+      
+       
 
-          useEffect(() => {
-              if(selectedYear != "all" && courseData?.data)
-              {
-                const getByBatch = courseData.data.filter((course : courseInterface) => course.batch == selectedYear )
-                setData(getSortedCourses(getByBatch))
-              }
-              else
-              {
-                setData([])
-              }
-            }, [selectedYear])
-                   <Select  value={selectedYear} onValueChange={setSelectedYear} >
-                  <SelectTrigger id="year-select" className="w-[200px] bg-white">
+         
+              <Select  value={selectedYear} onValueChange={setSelectedYear} >
+                  <SelectTrigger id="year-select" className="w-5/6 bg-white m-auto">
                       <SelectValue placeholder="Select Year" />
                   </SelectTrigger>
                     <SelectContent >
@@ -333,8 +335,8 @@ export default function LandingPage() {
           <div className="m-auto p-5">
             {data.length !== 0 ? <Pchart data={data} /> : null}
           </div>
-        */
-      }
+       
+  
       
 
 
