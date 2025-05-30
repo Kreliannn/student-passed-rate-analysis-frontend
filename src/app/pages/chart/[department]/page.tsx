@@ -6,6 +6,7 @@ import { bgStyle, convertCodeToName, getCourseName } from "@/utils/customFunctio
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import Pchart from "./components/pchart"
+import EmptyPchart_2 from "./components/emptyChart_2"
 import { useParams } from "next/navigation"
 import { useState, useRef } from "react"
 import { courseInterface } from "@/types/interface"
@@ -308,32 +309,10 @@ export default function LandingPage() {
           : < EmptyChart initialData={coursedataChartSavePoint} selectCourse={selectedCourse} handleSelectCourse={handleSelectCourse}  scrollUp={scrollUp} data={coursedataChart} setData={setCoursedataChart} setDataSavePoint={setCoursedataChartSavePoint} />}
         </div>
 
-      
-      
-       
-
-         
-              <Select  value={selectedYear} onValueChange={setSelectedYear} >
-                  <SelectTrigger id="year-select" className="w-5/6 bg-white m-auto">
-                      <SelectValue placeholder="Select Year" />
-                  </SelectTrigger>
-                    <SelectContent >
-                          <SelectItem value="all"> Select Batch </SelectItem>
-                          <SelectItem value="2020-2024">2020-2024</SelectItem>
-                          <SelectItem value="2021-2025">2021-2025</SelectItem>
-                          <SelectItem value="2022-2026">2022-2026</SelectItem>
-                          <SelectItem value="2023-2027">2023-2027</SelectItem>
-                          <SelectItem value="2024-2028">2024-2028</SelectItem>
-                          <SelectItem value="2025-2029">2025-2029</SelectItem>
-                          <SelectItem value="2026-2030">2026-2030</SelectItem>
-                          <SelectItem value="2027-2031">2027-2031</SelectItem>
-                    </SelectContent>
-                </Select>
-
-
+    
 
           <div className="m-auto p-5">
-            {data.length !== 0 ? <Pchart data={data} /> : null}
+            {data.length !== 0 ? <Pchart data={data} setSelectedYear={setSelectedYear} selectedYear={selectedYear} /> : <EmptyPchart_2 setSelectedYear={setSelectedYear} selectedYear={selectedYear} data={data} />}
           </div>
        
   

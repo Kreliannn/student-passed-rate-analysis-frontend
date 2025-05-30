@@ -551,7 +551,7 @@ const PChartSecond: React.FC<{ initialData : courseInterface[] , selectCourse : 
                 chartData={chartData}
             />
 
-            <Button onClick={scrollUp} className='w-full'> Scroll Up</Button>
+           
         </div>
     );
 };

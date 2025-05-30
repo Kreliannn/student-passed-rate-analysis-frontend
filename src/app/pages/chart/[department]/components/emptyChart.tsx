@@ -420,7 +420,7 @@ const PChartSecond: React.FC<{ initialData : courseInterface[] , selectCourse : 
                 </div>
             </div>
 
-            <Button onClick={scrollUp} className='w-full'> Scroll Up</Button>
+           
         </div>
     );
 };

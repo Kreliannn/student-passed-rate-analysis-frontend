@@ -30,7 +30,7 @@ interface ChartDataPoint extends ProcessedDataPoint {
     LCL2: number;
     LCL3: number;
     sigma: number;
-    isAboveUCL3: boolean; // New property to track if point is above UCL3
+    isBelowLCL: boolean; // New property to track if point is below LCL
 }
 
 // Import TooltipProps from recharts for proper typing
@@ -38,38 +38,38 @@ import type { TooltipProps as RechartsTooltipProps } from 'recharts';
 
 const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<React.SetStateAction<string>>, data: courseInterface[]}> = ({selectedYear, setSelectedYear, data }) =>  {
 
-   const retention = (data[data.length - 1].totalEnrolled  / data[0].totalEnrolled) * 100
+   const retention = 0
 
-    // Calculate proportions and statistics (now for FAILURE rates)
+
+    // Calculate proportions and statistics
     const processedData: ProcessedDataPoint[] = data.map(item => ({
         ...item,
-        proportion: (item.totalEnrolled - item.passed) / item.totalEnrolled, // FAILURE proportion
+        proportion: item.passed / item.totalEnrolled,
         failed: item.totalEnrolled - item.passed
     }));
 
-    // Calculate Center Line (CL) - overall average FAILURE rate
-    const totalFailed: number = data.reduce((sum, item) => sum + (item.totalEnrolled - item.passed), 0);
+    // Calculate Center Line (CL) - overall average
+    const totalPassed: number = data.reduce((sum, item) => sum + item.passed, 0);
     const totalEnrolled: number = data.reduce((sum, item) => sum + item.totalEnrolled, 0);
-    const CL: number = totalFailed / totalEnrolled;
+    const CL: number = totalPassed / totalEnrolled;
 
-    // FIXED sample size for consistent standard deviation
-    const fixedN: number = 100; // You can adjust this value as needed
-    const sigma: number = Math.sqrt((CL * (1 - CL)) / fixedN); // FIXED sigma for all points
-
-    // Calculate FIXED control limits for all data points
+    // Calculate VARIABLE control limits for each data point
     const chartData: ChartDataPoint[] = processedData.map(item => {
+        const n: number = item.totalEnrolled; // Individual sample size
+        const sigma: number = Math.sqrt((CL * (1 - CL)) / n); // Individual sigma based on sample size
+        
         const LCL1 = Math.max(0, CL - 1 * sigma);
         
-        console.log(`Course: ${item.courseCode}, Fixed n = ${fixedN}`);
+        console.log(`Course: ${item.courseCode}, n = ${n}`);
         console.log(`CL = ${CL}`);
-        console.log(`Fixed Sigma = ${sigma}`);
+        console.log(`Sigma = ${sigma}`);
         console.log("\n");
        
         return {
             ...item,
             displayLabel: ` ${item.gradeLevel} yr  ${item.sem + ((item.sem == 1) ? "st" : "nd")} sem `,
             CL: CL,
-            // FIXED control limits based on fixed sample size
+            // Variable control limits based on individual sample size
             UCL1: CL + 1 * sigma,
             UCL2: CL + 2 * sigma,
             UCL3: CL + 3 * sigma,
@@ -77,7 +77,7 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
             LCL2: Math.max(0, CL - 2 * sigma),
             LCL3: Math.max(0, CL - 3 * sigma),
             sigma: sigma,
-            isAboveUCL3: item.proportion > (CL + 3 * sigma) // Check if proportion is above UCL3
+            isBelowLCL: item.proportion < LCL1 // Check if proportion is below LCL1
         };
     });
 
@@ -95,10 +95,10 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
     const yAxisMin: number = Math.max(0, minValue - padding);
     const yAxisMax: number = Math.min(1.2, maxValue + padding);
 
-    // Custom dot function to color dots based on UCL3 status
+    // Custom dot function to color dots based on LCL status
     const CustomDot = (props: any) => {
         const { cx, cy, payload } = props;
-        const color = payload.isAboveUCL3 ? '#dc2626' : '#059669'; // Red if above UCL3, green otherwise
+        const color = payload.isBelowLCL ? '#dc2626' : '#059669'; // Red if below LCL, green otherwise
         
         return (
             <circle 
@@ -126,16 +126,16 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
                     <p className="text-gray-600">Enrolled: {data.totalEnrolled}</p>
                     <p className="text-gray-600">Passed: {data.passed}</p>
                     <p className="text-gray-600">Failed: {data.failed}</p>
-                    <p className={`font-bold mt-1 ${data.isAboveUCL3 ? 'text-red-600' : 'text-green-600'}`}>
-                        Failure Rate: {(data.proportion * 100).toFixed(1)}%
+                    <p className={`font-bold mt-1 ${data.isBelowLCL ? 'text-red-600' : 'text-green-600'}`}>
+                        Pass Rate: {(data.proportion * 100).toFixed(1)}%
                     </p>
-                    {data.isAboveUCL3 && (
+                    {data.isBelowLCL && (
                         <p className="font-bold text-red-600 text-sm">
-                            ⚠️ Above Upper Control Limit (UCL +3σ)
+                            ⚠️ Below Lower Control Limit
                         </p>
                     )}
                     <p className="text-gray-600 mt-1">
-                        Standard Deviation: {(data.sigma * 100).toFixed(2)}% (Fixed)
+                        Standard Deviation: {(data.sigma * 100).toFixed(2)}%
                     </p>
                 </div>
             );
@@ -147,15 +147,14 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
         return (value * 100).toFixed(1) + '%';
     };
 
-    // Count points above UCL3 for summary
-    const pointsAboveUCL3 = chartData.filter(item => item.isAboveUCL3).length;
+    // Count points below LCL for summary
+    const pointsBelowLCL = chartData.filter(item => item.isBelowLCL).length;
 
     return (
         <div className="w-full p-6 bg-white rounded-lg">
             <div className="mb-6">
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">  Failure Rate Chart   </h2>
-
-            <div className='flex gap-2'>
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">  Retention Rate Chart   </h2>
+                <div className='flex gap-2'>
                     <h2 className="text-2xl font-bold text-gray-800 mb-2">  Batch:   </h2>
                     <Select  value={selectedYear} onValueChange={setSelectedYear} >
                     <SelectTrigger id="year-select" className="w-[130px] bg-white ">
@@ -175,68 +174,38 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
                     </Select>
 
                 </div>
-
-                <p className="text-gray-600"> Fixed P-Chart: Student Failure Rate Analysis by Batch (Fixed Standard Deviation) </p>
-                {pointsAboveUCL3 > 0 && (
+               
+                <p className="text-gray-600"> Variable P-Chart: Student Pass Rate Analysis by Batch </p>
+                {pointsBelowLCL > 0 && (
                     <p className="text-red-600 font-semibold mt-2">
-                        ⚠️ {pointsAboveUCL3} course(s) above Upper Control Limit UCL +3σ (red dots)
+                        ⚠️ {pointsBelowLCL} course(s) below Lower Control Limit (red dots)
                     </p>
                 )}
             </div>
 
-            <div className="mb-6 grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+            <div className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div className="bg-blue-50 p-3 rounded-lg">
                     <div className="font-semibold text-blue-700">Center Line</div>
-                    <div className="text-blue-900">{(CL * 100).toFixed(1)}%</div>
+                    <div className="text-blue-900">{0}%</div>
                 </div>
 
-                <div className="bg-purple-100 p-3 rounded-lg">
-                    <div className="font-semibold text-purple-700"> Total Students</div>
-                    <div className="text-purple-900">{fixedN}</div>
+                <div className="bg-purple-50 p-3 rounded-lg">
+                    <div className="font-semibold text-purple-700"> Total Items</div>
+                    <div className="text-purple-900">{0}</div>
                 </div>
                 
-                <div className="bg-green-100 p-3 rounded-lg">
-                    <div className="font-medium text-green-700">Standard Deviation (σ)</div>
-                    <div className="text-green-900">{(sigma * 100).toFixed(2)}%</div>
+                <div className="bg-amber-50 p-3 rounded-lg">
+                    <div className="font-semibold text-amber-700">Y-Axis Range</div>
+                    <div className="text-amber-900">{0}% - {(yAxisMax * 100).toFixed(1)}%</div>
                 </div>
 
-
-                <div className="bg-red-100 p-3 shadow rounded-lg">
-                    <div className="font-medium text-red-700"> UCL (+3σ)</div>
-                    <div className="text-red-900">{(Math.min(chartData[0].UCL3, 1) * 100).toFixed(1)}%</div>
+                <div className="bg-green-50 p-3 rounded-lg">
+                    <div className="font-semibold text-green-700"> Retention</div>
+                    <div className="text-green-900">{0}%  </div>
                 </div>
-
-                <div className="bg-orange-100 p-3 shadow rounded-lg">
-                    <div className="font-semibold text-orange-700">UCL (+2σ)</div>
-                    <div className="text-orange-900">{(Math.min(chartData[0].UCL2, 1) * 100).toFixed(1)}%</div>
-                </div>
-
-                <div className="bg-yellow-100 p-3 shadow rounded-lg">
-                    <div className="font-semibold text-yellow-700">UCL (+1σ)</div>
-                    <div className="text-yellow-900">{(Math.min(chartData[0].UCL1, 1) * 100).toFixed(1)}%</div>
-                </div>
-
-
-                <div className="bg-red-100 p-3 shadow rounded-lg">
-                    <div className="font-medium text-red-700">LCL (-3σ)</div>
-                    <div className="text-red-900">{(Math.min(chartData[0].LCL3, 1) * 100).toFixed(1)}%</div>
-                </div>
-
-                <div className="bg-orange-100 p-3 shadow rounded-lg">
-                    <div className="font-semibold text-orange-700">LCL (-2σ)</div>
-                    <div className="text-orange-900">{(Math.min(chartData[0].LCL2, 1) * 100).toFixed(1)}%</div>
-                </div>
-
-                <div className="bg-yellow-100 p-3 shadow rounded-lg">
-                    <div className="font-semibold text-yellow-700">LCL (-1σ)</div>
-                    <div className="text-yellow-900">{(Math.min(chartData[0].LCL1, 1) * 100).toFixed(1)}%</div>
-                </div>     
             </div>
 
-            <div className="bg-green-100 p-3 rounded-lg shadow mb-2">
-                    <div className="font-semibold text-green-700"> Retention Rate</div>
-                    <div className="text-green-900">{retention.toFixed(1)}%  {(data[data.length - 1].gradeLevel != "4th") ? ` As Of ${data[data.length - 1].gradeLevel} Year` : " "}</div>
-            </div>
+           
 
             {/* Chart and Control Limits Container */}
             <div className=" flex gap-6">
@@ -271,7 +240,7 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
                                 iconType="line"
                             />
 
-                            {/* Fixed Control Limits - Upper */}
+                            {/* Variable Control Limits - Upper */}
                             <Line
                                 type="linear"
                                 dataKey="UCL3"
@@ -313,7 +282,7 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
                                 name="Center Line"
                             />
 
-                            {/* Fixed Control Limits - Lower */}
+                            {/* Variable Control Limits - Lower */}
                             <Line
                                 type="linear"
                                 dataKey="LCL1"
@@ -352,7 +321,7 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
                                 stroke="#059669"
                                 strokeWidth={3}
                                 dot={<CustomDot />}
-                                name="Failure Rate"
+                                name="Pass Rate"
                             />
                         </LineChart>
                     </ResponsiveContainer>
@@ -362,26 +331,26 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
             <div className="w-full overflow-x-auto text-sm">
                 <div className="flex space-x-4 min-w-fit p-2">
                     {chartData.map((item, index) => (
-                        <div key={index} className={`w-[250px] p-4 rounded-lg flex-shrink-0 shadow-lg ${item.isAboveUCL3 ? 'bg-red-50 border border-red-200' : 'bg-gray-50'}`}>
+                        <div key={index} className={`w-[250px] p-4 rounded-lg flex-shrink-0 shadow-lg ${item.isBelowLCL ? 'bg-red-50 border border-red-200' : 'bg-gray-50'}`}>
                             <div className="font-semibold text-gray-700 mb-2">
                                 {item.courseCode} - Yr {item.gradeLevel}, Sem {item.sem}
-                                {item.isAboveUCL3 && <span className="text-red-600 ml-2">⚠️</span>}
+                                {item.isBelowLCL && <span className="text-red-600 ml-2">⚠️</span>}
                             </div>
                             <div className="space-y-1">
                                 <div>Batch: {item.batch}</div>
                                 <div>Enrolled: {item.totalEnrolled}</div>
                                 <div>Passed: {item.passed}</div>
                                 <div>Failed: {item.failed}</div>
-                                <div className={`font-semibold ${item.isAboveUCL3 ? 'text-red-600' : 'text-green-600'}`}>
-                                    Failure Rate: {(item.proportion * 100).toFixed(1)}%
+                                <div className={`font-semibold ${item.isBelowLCL ? 'text-red-600' : 'text-green-600'}`}>
+                                    Pass Rate: {(item.proportion * 100).toFixed(1)}%
                                 </div>
-                                {item.isAboveUCL3 && (
+                                {item.isBelowLCL && (
                                     <div className="font-semibold text-red-600 text-sm">
-                                        Above UCL (+3σ): {(item.UCL3 * 100).toFixed(1)}%
+                                        Below LCL (-1σ): {(item.LCL1 * 100).toFixed(1)}%
                                     </div>
                                 )}
                                 <div className="text-gray-600">
-                                    Standard Deviation: {(item.sigma * 100).toFixed(2)}% (Fixed)
+                                    Standard Deviation: {(item.sigma * 100).toFixed(2)}%
                                 </div>
                             </div>
                         </div>
