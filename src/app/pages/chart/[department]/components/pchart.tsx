@@ -1,5 +1,5 @@
 "use client"
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { courseInterface } from '@/types/interface';
@@ -38,18 +38,52 @@ import type { TooltipProps as RechartsTooltipProps } from 'recharts';
 
 const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<React.SetStateAction<string>>, data: courseInterface[]}> = ({selectedYear, setSelectedYear, data }) =>  {
 
-   const retention = (data[data.length - 1].totalEnrolled  / data[0].totalEnrolled) * 100
+   const [sortedData, setSortedData] = useState<courseInterface[]>(data)
+
+   const retention = (sortedData[sortedData.length - 1].totalEnrolled  / sortedData[0].totalEnrolled) * 100
+
+   const [selectedGradeLevel, setSelectedGradeLevel] = useState<string>("4th")
+
+   useEffect(() => {
+    setSortedData(data)
+    setSelectedGradeLevel("4th")
+   }, [data])
+
+
+   const handleSelectedGradeLevel = (selected : string) => {
+        setSelectedGradeLevel(selected)
+        switch(selected)
+        {
+            case "4th":
+                setSortedData(data)
+            break
+
+            case "3rd":
+                setSortedData(data.filter((item) => ["1st", "2nd", "3rd"].includes(item.gradeLevel)))
+            break
+
+
+            case "2nd":
+                setSortedData(data.filter((item) => ["1st", "2nd"].includes(item.gradeLevel)))
+            break
+
+
+            case "1st":
+                setSortedData(data.filter((item) => ["1st"].includes(item.gradeLevel)))
+            break
+        }
+   }
 
     // Calculate proportions and statistics (now for FAILURE rates)
-    const processedData: ProcessedDataPoint[] = data.map(item => ({
+    const processedData: ProcessedDataPoint[] = sortedData.map(item => ({
         ...item,
         proportion: (item.totalEnrolled - item.passed) / item.totalEnrolled, // FAILURE proportion
         failed: item.totalEnrolled - item.passed
     }));
 
     // Calculate Center Line (CL) - overall average FAILURE rate
-    const totalFailed: number = data.reduce((sum, item) => sum + (item.totalEnrolled - item.passed), 0);
-    const totalEnrolled: number = data.reduce((sum, item) => sum + item.totalEnrolled, 0);
+    const totalFailed: number = sortedData.reduce((sum, item) => sum + (item.totalEnrolled - item.passed), 0);
+    const totalEnrolled: number = sortedData.reduce((sum, item) => sum + item.totalEnrolled, 0);
     const CL: number = totalFailed / totalEnrolled;
 
     // FIXED sample size for consistent standard deviation
@@ -174,6 +208,19 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
                         </SelectContent>
                     </Select>
 
+
+                    <Select  value={selectedGradeLevel} onValueChange={handleSelectedGradeLevel} >
+                    <SelectTrigger id="year-select" className="w-[140px] bg-white ">
+                        <SelectValue placeholder="Select Year" />
+                    </SelectTrigger>
+                        <SelectContent >
+                            <SelectItem value="4th"> 1st to 4th year</SelectItem>
+                            <SelectItem value="3rd">1st to 3rd year</SelectItem>
+                            <SelectItem value="2nd">1st to 2nd year</SelectItem>
+                            <SelectItem value="1st">1st year only </SelectItem>
+                        </SelectContent>
+                    </Select>
+
                 </div>
 
                 <p className="text-gray-600"> Fixed P-Chart: Student Failure Rate Analysis by Batch (Fixed Standard Deviation) </p>
@@ -235,7 +282,7 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
 
             <div className="bg-green-100 p-3 rounded-lg shadow mb-2">
                     <div className="font-semibold text-green-700"> Retention Rate</div>
-                    <div className="text-green-900">{retention.toFixed(1)}%  {(data[data.length - 1].gradeLevel != "4th") ? ` As Of ${data[data.length - 1].gradeLevel} Year` : " "}</div>
+                    <div className="text-green-900">{retention.toFixed(1)}%  {(sortedData[sortedData.length - 1].gradeLevel != "4th") ? ` As Of ${sortedData[sortedData.length - 1].gradeLevel} Year` : " "}</div>
             </div>
 
             {/* Chart and Control Limits Container */}

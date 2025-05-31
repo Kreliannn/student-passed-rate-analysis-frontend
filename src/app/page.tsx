@@ -14,7 +14,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
 
   const submit = () => {
-    if(username == "CollegeOfEngineering" && password == "retentionrate") {
+    if(username == "admin" && password == "123") {
       successAlert("Welcome!!")
       router.push("pages/mainPage")
     } else {
