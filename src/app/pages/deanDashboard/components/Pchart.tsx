@@ -36,7 +36,7 @@ interface ChartDataPoint extends ProcessedDataPoint {
 // Import TooltipProps from recharts for proper typing
 import type { TooltipProps as RechartsTooltipProps } from 'recharts';
 
-const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<React.SetStateAction<string>>, data: courseInterface[]}> = ({selectedYear, setSelectedYear, data }) =>  {
+const PChart: React.FC<{selectedDepartment: string, setSelectedDepartment: React.Dispatch<React.SetStateAction<string>>, selectedYear: string, setSelectedYear: React.Dispatch<React.SetStateAction<string>>, data: courseInterface[]}> = ({selectedDepartment, setSelectedDepartment, selectedYear, setSelectedYear, data }) =>  {
 
    const [sortedData, setSortedData] = useState<courseInterface[]>(data)
 
@@ -64,7 +64,7 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
        console.log("Highest Passed in 4th Year Sem 2:", highestPassedLast.passed);
  
        retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
-        retention = (retention > 100 ) ? 100 : retention
+       retention = (retention > 100) ? 100 : retention
      break;
  
      case "2nd":
@@ -81,7 +81,7 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
        console.log("Highest Passed in 4th Year Sem 2:", highestPassedLast.passed);
  
        retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
-        retention = (retention > 100 ) ? 100 : retention
+       retention = (retention > 100) ? 100 : retention
      break;
  
      case "3rd":
@@ -98,7 +98,7 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
          console.log("Highest Passed in 4th Year Sem 2:", highestPassedLast.passed);
  
          retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
-          retention = (retention > 100 ) ? 100 : retention
+         retention = (retention > 100) ? 100 : retention
      break;
  
  
@@ -116,13 +116,15 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
        console.log("Highest Passed in 4th Year Sem 2:", highestPassedLast.passed);
  
        retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
-        retention = (retention > 100 ) ? 100 : retention
+       retention = (retention > 100) ? 100 : retention
      break;
     }
  
    } catch (e) {
     console.log("no data for 2nd sem")
    }
+   
+   
 
    const [selectedGradeLevel, setSelectedGradeLevel] = useState<string>("4th")
 
@@ -175,7 +177,6 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
     // Calculate FIXED control limits for all data points
     const chartData: ChartDataPoint[] = processedData.map(item => {
         const LCL1 = Math.max(0, CL - 1 * sigma);
-        
 
        
         return {
@@ -269,7 +270,24 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
             <h2 className="text-3xl font-bold text-gray-800 mb-2">  Retention Rate Chart   </h2>
 
             <div className='flex gap-2'>
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">  Batch:   </h2>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2">  Department:   </h2>
+
+                    <Select  value={selectedDepartment} onValueChange={setSelectedDepartment} >
+                    <SelectTrigger id="year-select" className="w-[200px] bg-white ">
+                        <SelectValue placeholder="Select Year" />
+                    </SelectTrigger>
+                        <SelectContent >
+                            <SelectItem value="CE"> Civil Engineering</SelectItem>
+                            <SelectItem value="CPE">Computer Engineering</SelectItem>
+                            <SelectItem value="EE">Electrical Engineering</SelectItem>
+                            <SelectItem value="ECE">Electronics Engineering</SelectItem>
+                            <SelectItem value="IE">Industrial Engineering</SelectItem>
+                            <SelectItem value="ME">Mechanical Engineering</SelectItem>
+                           
+                        </SelectContent>
+                    </Select>
+
+
                     <Select  value={selectedYear} onValueChange={setSelectedYear} >
                     <SelectTrigger id="year-select" className="w-[130px] bg-white ">
                         <SelectValue placeholder="Select Year" />
@@ -365,7 +383,6 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
                         ?  <div className="text-green-900">{retention.toFixed(1)}%  {(sortedData[sortedData.length - 1].gradeLevel != "4th") ? ` As Of ${sortedData[sortedData.length - 1].gradeLevel} Year` : " "}</div>
                         :  <div className="text-green-900"> Data Encoding is not Complete no 2nd Sem Found  </div>
                     )}
-                   
             </div>
 
             {/* Chart and Control Limits Container */}

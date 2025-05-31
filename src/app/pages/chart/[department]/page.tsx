@@ -26,7 +26,8 @@ import EmptyChart from "./components/emptyChart"
 export default function LandingPage() {
   const params = useParams()
   const router = useRouter()
-  const code = params.department as string
+  const paramsValue = params.department as string
+  const [code, user] = paramsValue.split("_") 
   const departmentName = convertCodeToName(code)
 
 
@@ -236,7 +237,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-4">
             {/* Button close to Right Logo */}
             <div className="">
-              <Button onClick={() => router.push("/pages/departments")}>Back</Button>
+              <Button onClick={() => (user == "dean") ?  router.push("/pages/departments_dean")  : router.push("/pages/departments")}>Back</Button>
             </div>
             {/* Right Logo */}
             <Image
@@ -252,28 +253,7 @@ export default function LandingPage() {
 
         <div className="w-4/6 h-[50px] m-auto flex items-center justify-between px-4 rounded-lg">
              
-                {(courseData?.data) ?
-                  <Select  value={selectedCourse} onValueChange={handleSelectCourse} >
-                    <SelectTrigger id="year-select" className="w-[200px] bg-white">
-                        <SelectValue placeholder="Select Year" />
-                    </SelectTrigger>
-                      <SelectContent >
-                            <SelectItem value="all"> Select Subject </SelectItem>
-                            {
-                              getAllCourseCode(getSortedCourses(courseData?.data)).map((course : courseInterface, index ) => (
-                                <SelectItem key={course.courseCode} value={course.courseCode}>
-                                <div className="flex items-center w-full">
-                                  <span className="truncate flex-1 mr-4">
-                                    {`${course.gradeLevel} yr | sem - ${course.sem} ${getCourseName(course.courseCode)} - ${course.courseCode}`}
-                                  </span>
-                                  <span className="text-gray-400 whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1 : courseInterface) => course1.courseCode ==  course.courseCode))}</span>
-                                </div>
-                              </SelectItem>
-                              ))
-                            }
-                      </SelectContent>  
-                    </Select>
-                : null}
+              
 
 
               <h1 className="text-3xl text-white text-center font-bold ">

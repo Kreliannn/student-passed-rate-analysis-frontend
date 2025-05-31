@@ -39,7 +39,7 @@ export default function LandingPage() {
 
         <div className="flex items-center gap-4">
           {/* Button close to Right Logo */}
-          <div className="" onClick={() => router.push("/pages/mainPage")}>
+          <div className="" onClick={() => router.push("/pages/deanMainPage")}>
             <Button>Back</Button>
           </div>
           {/* Right Logo */}
@@ -59,7 +59,7 @@ export default function LandingPage() {
             <Button
               size="lg"
               className="w-full shadow-lg m-2"
-              onClick={() => passwordPromptAlert("Civil Engineering", "ce123", () => router.push("/pages/chart/CE_dep"))}
+              onClick={() => router.push("/pages/chart/CE_dean")}
             >
               Civil Engineering
             </Button>
@@ -67,7 +67,7 @@ export default function LandingPage() {
             <Button
               size="lg"
               className="w-full shadow-lg m-2"
-              onClick={() => passwordPromptAlert("Computer Engineering","cpe123", () => router.push("/pages/chart/CPE_dep"))}
+              onClick={() =>  router.push("/pages/chart/CPE_dean")}
             >
               Computer Engineering
             </Button>
@@ -75,7 +75,7 @@ export default function LandingPage() {
             <Button
               size="lg"
               className="w-full shadow-lg m-2"
-              onClick={() => passwordPromptAlert("Electrical Engineering","ee123", () => router.push("/pages/chart/EE_dep"))}
+              onClick={() =>router.push("/pages/chart/EE_dean")}
             >
               Electrical Engineering
             </Button>
@@ -83,7 +83,7 @@ export default function LandingPage() {
             <Button
               size="lg"
               className="w-full shadow-lg m-2"
-              onClick={() => passwordPromptAlert("Electronics Engineering","ece123", () => router.push("/pages/chart/ECE_dep"))}
+              onClick={() => router.push("/pages/chart/ECE_dean")}
             >
               Electronics Engineering
             </Button>
@@ -91,7 +91,7 @@ export default function LandingPage() {
             <Button
               size="lg"
               className="w-full shadow-lg m-2"
-              onClick={() => passwordPromptAlert("Industrial Engineering","ie123", () => router.push("/pages/chart/IE_dep"))}
+              onClick={() =>  router.push("/pages/chart/IE_dean")}
             >
               Industrial Engineering
             </Button>
@@ -99,7 +99,7 @@ export default function LandingPage() {
             <Button
               size="lg"
               className="w-full shadow-lg m-2"
-              onClick={() => passwordPromptAlert("Mechanical Engineering","me123", () => router.push("/pages/chart/ME_dep"))}
+              onClick={() =>   router.push("/pages/chart/ME_dean")}
             >
               Mechanical Engineering
             </Button>

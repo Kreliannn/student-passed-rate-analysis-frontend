@@ -17,7 +17,11 @@ export default function LoginPage() {
     if(username == "admin" && password == "123") {
       successAlert("Welcome!!")
       router.push("pages/mainPage")
-    } else {
+    } 
+    else if(username == "dean" && password == "123") {
+      successAlert("Welcome!!")
+      router.push("pages/deanMainPage")
+    }else {
       errorAlert("Invalid Credentials")
     }
   }

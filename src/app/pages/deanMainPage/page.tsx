@@ -26,11 +26,11 @@ export default function LandingPage() {
           />
           {/* Text close to Left Logo */}
           <div className="">
-            <h2 className="text-xl md:text-3xl font-medium text-white">
-                Southern Luzon State University
+              <h2 className="text-xl md:text-4xl font-medium text-white">
+                        Dean Panel
               </h2>
-              <h3 className="font-bold text-muted ">
-                College of Engineering
+              <h3 className="font-bold text-muted text-sm">
+              Southern Luzon State University College of Engineering
               </h3>
           </div>
         </div>
@@ -64,16 +64,16 @@ export default function LandingPage() {
         <div className="flex flex-col sm:flex-row gap-4">
           <Button size="lg" variant={"default"} className="bg-red-900 hover:bg-red-800"> 
             <Link
-              href="/pages/departments"
+              href="/pages/departments_dean"
               className="  "
             >  Proceed to Chart </Link>
           </Button>
 
           <Button size="lg" variant={"outline"} > 
             <Link
-              href="/pages/departments_2"
+              href="/pages/deanDashboard"
               className="t  "
-            >  Manage Data </Link>
+            >  Dean Dashboard </Link>
           </Button>
         </div>
       </div>
