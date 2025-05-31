@@ -23,6 +23,8 @@ import { getSortedCoursesByYear } from "@/utils/customFunction"
 import EmptyChart from "./components/emptyChart"
 
 
+
+
 export default function LandingPage() {
   const params = useParams()
   const router = useRouter()
@@ -30,6 +32,9 @@ export default function LandingPage() {
   const [code, user] = paramsValue.split("_") 
   const departmentName = convertCodeToName(code)
 
+  const L = 0
+  const H = 0
+  
 
   
   const [selectedCourse, setSelectedCourse] = useState<string>("all")
@@ -78,8 +83,7 @@ export default function LandingPage() {
 
 
   useEffect(() => {
-    if(data.length == 0 && selectedCourse != "all") scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
-    else if(selectedCourse != "all") scrollContainerRef.current?.scrollTo({ top: 2450, behavior: "smooth" })
+    if(selectedCourse != "all") scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" }) 
   }, [ selectedCourse]);
 
   const scrollUp = () => {
@@ -92,13 +96,17 @@ export default function LandingPage() {
     {
       const getByBatch = coursedataChartSavePoint.filter((course : courseInterface) => course.batch == selectedYear )
       setData(getSortedCourses(getByBatch))
-     
+
     }
     else
     {
       setData([])
     }
   }, [selectedYear])
+
+  const scrollDown = () => {
+    scrollContainerRef.current?.scrollTo({ top: 2100, behavior: "smooth" })
+  }
   
 
 
@@ -109,102 +117,117 @@ export default function LandingPage() {
 
         {(coursedataChartSavePoint && code == "IE") ? (
           <>
-            <Button
+           <Button
               onClick={() => {
-                 setCoursedataChart(coursedataChartSavePoint.filter((course : courseInterface) => course.courseCode == "CHM01a" ))
-                  setSelectedCourse("CHM01a")
-                 scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
+                setCoursedataChart(coursedataChartSavePoint.filter((course: courseInterface) => course.courseCode == "CHM01a"))
+                setSelectedCourse("CHM01a")
+                scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
               }}
               className="absolute flex flex-col items-center justify-center leading-[0] p-2 z-50 w-[57px]"
-              style={{ top: '380px', left: '260px' }}
+              style={{ top: `${380 + H}px`, left: `${260 + L}px` }}
             >
               <span className="mt-2">CHM0a1</span>
-              <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1 : courseInterface) => course1.courseCode ==  'CHM01a'))}</span>
+              <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1: courseInterface) => course1.courseCode == 'CHM01a'))}</span>
             </Button>
-
 
             <Button
               onClick={() => {
-                 setCoursedataChart(coursedataChartSavePoint.filter((course : courseInterface) => course.courseCode == "CHM01aL" ))
-                 setSelectedCourse("CHM01aL")
-                 scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
-                }}
+                setCoursedataChart(coursedataChartSavePoint.filter((course: courseInterface) => course.courseCode == "CHM01aL"))
+                setSelectedCourse("CHM01aL")
+                scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
+              }}
               className="absolute flex flex-col items-center justify-center leading-[0] p-1 z-50 w-[57px]"
-              style={{ top: '420px', left: '260px' }}
+              style={{ top: `${420 + H}px`, left: `${260 + L}px` }}
             >
               <span className="mt-2">CHM01aL</span>
-              <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1 : courseInterface) => course1.courseCode ==  'CHM01aL'))}</span>
+              <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1: courseInterface) => course1.courseCode == 'CHM01aL'))}</span>
             </Button>
 
             <Button
               onClick={() => {
-                 setCoursedataChart(coursedataChartSavePoint.filter((course : courseInterface) => course.courseCode == "MAT04" ))
-                 setSelectedCourse("MAT04")
-                 scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
-                }}
+                setCoursedataChart(coursedataChartSavePoint.filter((course: courseInterface) => course.courseCode == "MAT04"))
+                setSelectedCourse("MAT04")
+                scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
+              }}
               className="absolute flex flex-col items-center justify-center leading-[0] p-1 z-50 w-[57px]"
-              style={{ top: '500px', left: '260px' }}
+              style={{ top: `${500 + H}px`, left: `${260 + L}px` }}
             >
               <span className="mt-2">MAT04</span>
-              <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1 : courseInterface) => course1.courseCode ==  'MAT04'))}</span>
+              <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1: courseInterface) => course1.courseCode == 'MAT04'))}</span>
             </Button>
-
-
 
             <Button
               onClick={() => {
-                 setCoursedataChart(coursedataChartSavePoint.filter((course : courseInterface) => course.courseCode == "PHY03" ))
-                 setSelectedCourse("PHY03")
-                 scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
-                }}
+                setCoursedataChart(coursedataChartSavePoint.filter((course: courseInterface) => course.courseCode == "PHY03"))
+                setSelectedCourse("PHY03")
+                scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
+              }}
               className="absolute flex flex-col items-center justify-center leading-[0] p-1 z-50 w-[57px]"
-              style={{ top: '420px', left: '360px' }}
+              style={{ top: `${420 + H}px`, left: `${360 + L}px` }}
             >
               <span className="mt-2">PHY03</span>
-               <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1 : courseInterface) => course1.courseCode ==  'PHY03'))}</span>
+              <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1: courseInterface) => course1.courseCode == 'PHY03'))}</span>
             </Button>
-
 
             <Button
               onClick={() => {
-                 setCoursedataChart(coursedataChartSavePoint.filter((course : courseInterface) => course.courseCode == "PHY03L" ))
-                 setSelectedCourse("PHY03L")
-                 scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
-                }}
+                setCoursedataChart(coursedataChartSavePoint.filter((course: courseInterface) => course.courseCode == "PHY03L"))
+                setSelectedCourse("PHY03L")
+                scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
+              }}
               className="absolute flex flex-col items-center justify-center leading-[0] p-1 z-50 w-[57px]"
-              style={{ top: '460px', left: '360px' }}
+              style={{ top: `${460 + H}px`, left: `${360 + L}px` }}
             >
               <span className="mt-2">PHY03L </span>
-               <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1 : courseInterface) => course1.courseCode ==  'PHY03L'))}</span>
+              <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1: courseInterface) => course1.courseCode == 'PHY03L'))}</span>
             </Button>
-
 
             <Button
               onClick={() => {
-                 setCoursedataChart(coursedataChartSavePoint.filter((course : courseInterface) => course.courseCode == "MAT05" ))
-                 setSelectedCourse("MAT05")
-                 scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
-                }}
+                setCoursedataChart(coursedataChartSavePoint.filter((course: courseInterface) => course.courseCode == "MAT05"))
+                setSelectedCourse("MAT05")
+                scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
+              }}
               className="absolute flex flex-col items-center justify-center leading-[0] p-1 z-50 w-[57px]"
-              style={{ top: '500px', left: '360px' }}
+              style={{ top: `${500 + H}px`, left: `${360 + L}px` }}
             >
               <span className="mt-2">MAT05 </span>
-               <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1 : courseInterface) => course1.courseCode ==  'MAT05'))}</span>
+              <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1: courseInterface) => course1.courseCode == 'MAT05'))}</span>
             </Button>
-
 
             <Button
               onClick={() => {
-                 setCoursedataChart(coursedataChartSavePoint.filter((course : courseInterface) => course.courseCode == "IEN01" ))
-                 setSelectedCourse("IEN01")
-                 scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
-                }}
+                setCoursedataChart(coursedataChartSavePoint.filter((course: courseInterface) => course.courseCode == "IEN01"))
+                setSelectedCourse("IEN01")
+                scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
+              }}
               className="absolute flex flex-col items-center justify-center leading-[0] p-1 z-50 w-[57px]"
-              style={{ top: '540px', left: '360px' }}
+              style={{ top: `${540 + H}px`, left: `${360 + L}px` }}
             >
               <span className="mt-2">IEN01 </span>
-               <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1 : courseInterface) => course1.courseCode ==  'IEN01'))}</span>
+              <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1: courseInterface) => course1.courseCode == 'IEN01'))}</span>
             </Button>
+
+
+
+              { /*
+                <Button
+                onClick={() => {
+                  setCoursedataChart(coursedataChartSavePoint.filter((course : courseInterface) => course.courseCode == "IEN03" ))
+                  setSelectedCourse("IEN03")
+                  scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
+                  }}
+                className="absolute flex flex-col items-center justify-center leading-[0] p-1 z-50 w-[57px]"
+                style={{ top: '342px', left: '457px' }}
+              >
+                <span className="mt-2">IEN03 </span>
+                <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1 : courseInterface) => course1.courseCode ==  'IEN03'))}</span>
+              </Button>
+              */}
+            
+
+            
+
 
           </>
         ) : null}
@@ -292,7 +315,7 @@ export default function LandingPage() {
     
 
           <div className="m-auto p-5">
-            {data.length !== 0 ? <Pchart data={data} setSelectedYear={setSelectedYear} selectedYear={selectedYear} /> : <EmptyPchart_2 setSelectedYear={setSelectedYear} selectedYear={selectedYear} data={data} />}
+            {data.length !== 0 ? <Pchart  scrollDown={scrollDown} data={data} setSelectedYear={setSelectedYear} selectedYear={selectedYear} /> : <EmptyPchart_2 setSelectedYear={setSelectedYear} selectedYear={selectedYear} data={data} />}
           </div>
        
   

@@ -87,20 +87,12 @@ export default function LandingPage() {
   }, [selectedYear])
 
 
-  /*
+  
   useEffect(() => {
-    if(selectedBatch != "all" && courseData?.data)
-    {
-      const getByBatch = coursedataChartSavePoint.filter((course : courseInterface) => course.batch == selectedBatch )
-      setBatchData(getSortedCourses(getByBatch))
-      alert("run")
+    if (data.length > 0) {
+      scrollContainerRef.current?.scrollTo({ top: 800, behavior: "smooth" });
     }
-    else
-    {
-      setBatchData([])
-    }
-  }, [selectedBatch]) */
-
+  }, [data]);
 
   const handleSelectedBatch = (selected : string) => {
     setSelectedBatch(selected)
@@ -111,6 +103,10 @@ export default function LandingPage() {
     }
     const getByBatch = allData.filter((course : courseInterface) => course.batch == selected )
     setBatchData(getSortedCourses(getByBatch))
+  }
+
+  const scrollDown = () => {
+    scrollContainerRef.current?.scrollTo({ top: 800, behavior: "smooth" });
   }
 
 
@@ -194,7 +190,7 @@ export default function LandingPage() {
   
         <div className="m-auto p-5">
             {data.length !== 0 
-            ? <Pchart selectedDepartment={selectedDepartment} setSelectedDepartment={setSelectedDepartment}   data={data} setSelectedYear={setSelectedYear} selectedYear={selectedYear} /> 
+            ? <Pchart scrollDown={scrollDown} selectedDepartment={selectedDepartment} setSelectedDepartment={setSelectedDepartment}   data={data} setSelectedYear={setSelectedYear} selectedYear={selectedYear} /> 
             : <EmptyPchart_2 selectedDepartment={selectedDepartment} setSelectedDepartment={setSelectedDepartment}  setSelectedYear={setSelectedYear} selectedYear={selectedYear} data={data} />}
         </div>
       

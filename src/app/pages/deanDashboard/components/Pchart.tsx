@@ -36,7 +36,7 @@ interface ChartDataPoint extends ProcessedDataPoint {
 // Import TooltipProps from recharts for proper typing
 import type { TooltipProps as RechartsTooltipProps } from 'recharts';
 
-const PChart: React.FC<{selectedDepartment: string, setSelectedDepartment: React.Dispatch<React.SetStateAction<string>>, selectedYear: string, setSelectedYear: React.Dispatch<React.SetStateAction<string>>, data: courseInterface[]}> = ({selectedDepartment, setSelectedDepartment, selectedYear, setSelectedYear, data }) =>  {
+const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, setSelectedDepartment: React.Dispatch<React.SetStateAction<string>>, selectedYear: string, setSelectedYear: React.Dispatch<React.SetStateAction<string>>, data: courseInterface[]}> = ({scrollDown, selectedDepartment, setSelectedDepartment, selectedYear, setSelectedYear, data }) =>  {
 
    const [sortedData, setSortedData] = useState<courseInterface[]>(data)
 
@@ -156,6 +156,7 @@ const PChart: React.FC<{selectedDepartment: string, setSelectedDepartment: React
                 setSortedData(data.filter((item) => ["1st"].includes(item.gradeLevel)))
             break
         }
+        scrollDown()
    }
 
     // Calculate proportions and statistics (now for FAILURE rates)

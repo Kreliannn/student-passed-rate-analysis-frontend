@@ -3,7 +3,7 @@
 
 
 "use client"
-import { useEffect, useState } from 'react';
+import { useEffect, useState , useRef} from 'react';
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { courseInterface, deleteItemCourse } from '@/types/interface';
@@ -64,6 +64,11 @@ const PChartSecond: React.FC<{ initialData : courseInterface[] , selectCourse : 
     const gradeLevel = data[0].gradeLevel
     const department = data[0].department
     const sem = data[0].sem
+
+    const [computationIsOpen, setComputationIsOpen] = useState(false)
+
+
+    
 
    
     const mutationInsert = useMutation({
@@ -231,7 +236,7 @@ const PChartSecond: React.FC<{ initialData : courseInterface[] , selectCourse : 
     };
 
     return (
-        <div className="w-full p-6 bg-white rounded-lg relative">
+        <div className="w-full p-6 bg-white rounded-lg relative" >
 
             <Button onClick={scrollUp} className='absolute top-[20px] left-[1200px]'> Scroll Up</Button>
 
@@ -541,16 +546,21 @@ const PChartSecond: React.FC<{ initialData : courseInterface[] , selectCourse : 
                 </div>
             </div>
 
-            {
-                //last div where the formula and computation displayed
-            }          
-            <PChartComputation 
+            <div className=' flex justify-end'>
+                <Button onClick={() => setComputationIsOpen((prev) => !prev)} className='mb-3'> {computationIsOpen ? "hide" : "show"} computation </Button>       
+            </div>
+            
+            
+            {(computationIsOpen) && (
+                <PChartComputation 
                 data={data}
                 CL={CL}
                 sigma={sigma}
                 chartData={chartData}
-            />
+                />
 
+            )}
+           
            
         </div>
     );

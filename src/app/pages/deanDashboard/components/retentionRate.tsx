@@ -96,7 +96,7 @@ const getRetentionRate = (data : courseInterface[], department : string, selecte
     return [ retention , passed, enrolled]
 }
 
-const PChart: React.FC<{selectedYear: string, setSelectedYear: (selectd : string) => void, data: courseInterface[]}> = ({selectedYear, setSelectedYear, data }) =>  {
+const PChart: React.FC<{   selectedYear: string, setSelectedYear: (selectd : string) => void, data: courseInterface[]}> = ({ selectedYear, setSelectedYear, data }) =>  {
 
    const [sortedData, setSortedData] = useState<courseInterface[]>(data)
 
@@ -207,11 +207,11 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: (selectd : string
                     </div>
                     </div>
 
-                    <div className="bg-stone-50 p-3 rounded-lg shadow mb-2">
-                    <div className="font-semibold text-stone-700">All Engineering Department Retention Rate</div>
+                    <div className="bg-green-50 p-4 rounded-lg shadow mb-2">
+                    <div className="font-semibold text-green-700 text-2xl">All Engineering Department Retention Rate</div>
                     {allDepartmentRetention !== 0
-                        ? <div className="text-stone-900">{allDepartmentRetention.toFixed(1)}% {(sortedData[sortedData.length - 1].gradeLevel != "4th") ? ` As Of ${sortedData[sortedData.length - 1].gradeLevel} Year` : " "}</div>
-                        : <div className="text-stone-900">Data Encoding is not Complete</div>
+                        ? <div className="text-green-900 text-1xl font-bold ">{allDepartmentRetention.toFixed(1)}% {(sortedData[sortedData.length - 1].gradeLevel != "4th") ? ` As Of ${sortedData[sortedData.length - 1].gradeLevel} Year` : " "}</div>
+                        : <div className="text-green-900 text-1xl font-bold ">Data Encoding is not Complete</div>
                     }
                     </div>
                 </>

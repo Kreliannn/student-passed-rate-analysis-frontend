@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { courseInterface } from '@/types/interface';
@@ -36,7 +36,9 @@ interface ChartDataPoint extends ProcessedDataPoint {
 // Import TooltipProps from recharts for proper typing
 import type { TooltipProps as RechartsTooltipProps } from 'recharts';
 
-const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<React.SetStateAction<string>>, data: courseInterface[]}> = ({selectedYear, setSelectedYear, data }) =>  {
+const PChart: React.FC<{ scrollDown : () => void, selectedYear: string, setSelectedYear: React.Dispatch<React.SetStateAction<string>>, data: courseInterface[]}> = ({ scrollDown,   selectedYear, setSelectedYear, data }) =>  {
+
+    
 
    const [sortedData, setSortedData] = useState<courseInterface[]>(data)
 
@@ -154,6 +156,8 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
                 setSortedData(data.filter((item) => ["1st"].includes(item.gradeLevel)))
             break
         }
+        
+        scrollDown()
    }
 
     // Calculate proportions and statistics (now for FAILURE rates)
@@ -264,7 +268,7 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
     const pointsAboveUCL3 = chartData.filter(item => item.isAboveUCL3).length;
 
     return (
-        <div className="w-full p-6 bg-white rounded-lg">
+        <div className="w-full p-6 bg-white rounded-lg" >
             <div className="mb-6">
             <h2 className="text-3xl font-bold text-gray-800 mb-2">  Retention Rate Chart   </h2>
 

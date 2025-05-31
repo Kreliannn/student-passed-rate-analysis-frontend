@@ -184,25 +184,7 @@ const PChart: React.FC<{selectedYear: string, setSelectedYear: React.Dispatch<Re
             </div>
 
             <div className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                <div className="bg-blue-50 p-3 rounded-lg">
-                    <div className="font-semibold text-blue-700">Center Line</div>
-                    <div className="text-blue-900">{0}%</div>
-                </div>
-
-                <div className="bg-purple-50 p-3 rounded-lg">
-                    <div className="font-semibold text-purple-700"> Total Items</div>
-                    <div className="text-purple-900">{0}</div>
-                </div>
                 
-                <div className="bg-amber-50 p-3 rounded-lg">
-                    <div className="font-semibold text-amber-700">Y-Axis Range</div>
-                    <div className="text-amber-900">{0}% - {(yAxisMax * 100).toFixed(1)}%</div>
-                </div>
-
-                <div className="bg-green-50 p-3 rounded-lg">
-                    <div className="font-semibold text-green-700"> Retention</div>
-                    <div className="text-green-900">{0}%  </div>
-                </div>
             </div>
 
            

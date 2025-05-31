@@ -29,7 +29,7 @@ export const convertCodeToName = (code : string) => {
       break
 
     case "IE":
-      return "industrial Engineering"
+      return "Industrial Engineering"
       break
 
     case "ME":
