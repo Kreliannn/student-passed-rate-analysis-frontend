@@ -1,6 +1,6 @@
 import { courseInterface } from "@/types/interface"
 import { getRetentionRate } from "@/utils/customFunction"
-
+import { getCourseName } from "@/utils/customFunction"
 
 
 const filterDataByYearLevel = ( department : string ,year : string, data : courseInterface[]) => {
@@ -119,6 +119,15 @@ const isGreaterThanUcl3 = (data : courseInterface[], item : courseInterface) => 
     return proportion > ucl3
 }
 
+const getUcl3 = (data : courseInterface[]) => {
+    const totalFailed: number = data.reduce((sum, item) => sum + (item.totalEnrolled - item.passed), 0);
+    const totalEnrolled: number = data.reduce((sum, item) => sum + item.totalEnrolled, 0);
+    const CL: number = totalFailed / totalEnrolled;
+    const fixedN: number = 100; 
+    const sigma: number = Math.sqrt((CL * (1 - CL)) / fixedN); 
+    const ucl3 = (CL + 3 * sigma) * 100
+    return ucl3 
+}
 
 
 
@@ -140,35 +149,39 @@ export default function GenerateReport({ data, selectedYear } : { selectedYear :
  
     const allDepartmentRetention = (allDepartmentPassed / allDepartmentEnrolled) * 100
 
+    const CEucl3 = getUcl3(data.filter((item) => item.department == "CE"))
     const CE1st  = filterDataByYearLevel("CE", "1st", data)
-   
- 
     const CE2nd = filterDataByYearLevel("CE", "2nd", data)
     const CE3rd  = filterDataByYearLevel("CE", "3rd", data)
     const CE4th  = filterDataByYearLevel("CE", "4th", data)
    
 
+    const CPEucl3 = getUcl3(data.filter((item) => item.department == "CPE"))
     const CPE1st  = filterDataByYearLevel("CPE", "1st", data)
     const CPE2nd = filterDataByYearLevel("CPE", "2nd", data)
     const CPE3rd  = filterDataByYearLevel("CPE", "3rd", data)
     const CPE4th  = filterDataByYearLevel("CPE", "4th", data)
 
 
+    const EEucl3 = getUcl3(data.filter((item) => item.department == "EE"))
     const EE1st  = filterDataByYearLevel("EE", "1st", data)
     const EE2nd = filterDataByYearLevel("EE", "2nd", data)
     const EE3rd  = filterDataByYearLevel("EE", "3rd", data)
     const EE4th  = filterDataByYearLevel("EE", "4th", data)
 
+    const ECEucl3 = getUcl3(data.filter((item) => item.department == "ECE"))
     const ECE1st  = filterDataByYearLevel("ECE", "1st", data)
     const ECE2nd = filterDataByYearLevel("ECE", "2nd", data)
     const ECE3rd  = filterDataByYearLevel("ECE", "3rd", data)
     const ECE4th  = filterDataByYearLevel("ECE", "4th", data)
 
+    const IEucl3 = getUcl3(data.filter((item) => item.department == "IE"))
     const IE1st  = filterDataByYearLevel("IE", "1st", data)
     const IE2nd = filterDataByYearLevel("IE", "2nd", data)
     const IE3rd  = filterDataByYearLevel("IE", "3rd", data)
     const IE4th  = filterDataByYearLevel("IE", "4th", data)
 
+    const MEucl3 = getUcl3(data.filter((item) => item.department == "ME"))
     const ME1st  = filterDataByYearLevel("ME", "1st", data)
     const ME2nd = filterDataByYearLevel("ME", "2nd", data)
     const ME3rd  = filterDataByYearLevel("ME", "3rd", data)
@@ -197,18 +210,55 @@ export default function GenerateReport({ data, selectedYear } : { selectedYear :
                 {getRetentionRateByYearLevel(CE1st, "1st") !== 0 && (
                     <div>
                         <h1>1st year retention rate: {getRetentionRateByYearLevel(CE1st, "1st").toFixed(1)}%</h1>
+                        <div>
+                            {CE1st.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(isGreaterThanUcl3(CE1st, item) && item.gradeLevel == "1st")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>
                     </div>
                 )}
 
                 {getRetentionRateByYearLevel(CE2nd, "2nd") !== 0 && (
                     <div>
                         <h1>2nd year retention rate: {getRetentionRateByYearLevel(CE2nd, "2nd").toFixed(1)}%</h1>
+                        <div>
+                            {CE2nd.map((item, index) => {
+                                if(isGreaterThanUcl3(CE2nd, item) && item.gradeLevel == "2nd")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {(((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100).toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>
                     </div>
                 )}
 
                 {getRetentionRateByYearLevel(CE3rd, "3rd") !== 0 && (
                     <div>
                         <h1>3rd year retention rate: {getRetentionRateByYearLevel(CE3rd, "3rd").toFixed(1)}%</h1>
+                        <div>
+                            {CE3rd.map((item, index) => {
+                                if(isGreaterThanUcl3(CE3rd, item) && item.gradeLevel == "3rd")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {(((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100).toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>
                     </div>
                 )}
 
@@ -217,11 +267,11 @@ export default function GenerateReport({ data, selectedYear } : { selectedYear :
                         <h1>4th year retention rate: {getRetentionRateByYearLevel(CE4th, "4th").toFixed(1)}%</h1>
                         <div>
                             {CE4th.map((item, index) => {
-                                if(isGreaterThanUcl3(CE4th, item))
+                                if(isGreaterThanUcl3(CE4th, item) && item.gradeLevel == "4th")
                                 {
                                     return(
                                         <div key={index}>
-                                            <h1> {item.courseCode} </h1>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } </h1>
                                         </div>
                                     )
                                 }
