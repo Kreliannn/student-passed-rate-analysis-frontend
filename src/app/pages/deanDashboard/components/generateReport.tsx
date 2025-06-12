@@ -213,11 +213,11 @@ export default function GenerateReport({ data, selectedYear } : { selectedYear :
                         <div>
                             {CE1st.map((item, index) => {
                                 const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
-                                if(isGreaterThanUcl3(CE1st, item) && item.gradeLevel == "1st")
+                                if(proportion > CEucl3 && item.gradeLevel == "1st")
                                 {
                                     return(
                                         <div key={index}>
-                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {}% ) </h1>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
                                         </div>
                                     )
                                 }
@@ -231,11 +231,12 @@ export default function GenerateReport({ data, selectedYear } : { selectedYear :
                         <h1>2nd year retention rate: {getRetentionRateByYearLevel(CE2nd, "2nd").toFixed(1)}%</h1>
                         <div>
                             {CE2nd.map((item, index) => {
-                                if(isGreaterThanUcl3(CE2nd, item) && item.gradeLevel == "2nd")
+                               const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                               if(proportion > CEucl3 && item.gradeLevel == "2nd")
                                 {
                                     return(
                                         <div key={index}>
-                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {(((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100).toFixed(1)}% ) </h1>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
                                         </div>
                                     )
                                 }
@@ -249,11 +250,12 @@ export default function GenerateReport({ data, selectedYear } : { selectedYear :
                         <h1>3rd year retention rate: {getRetentionRateByYearLevel(CE3rd, "3rd").toFixed(1)}%</h1>
                         <div>
                             {CE3rd.map((item, index) => {
-                                if(isGreaterThanUcl3(CE3rd, item) && item.gradeLevel == "3rd")
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > CEucl3 && item.gradeLevel == "3rd")
                                 {
                                     return(
                                         <div key={index}>
-                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {(((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100).toFixed(1)}% ) </h1>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
                                         </div>
                                     )
                                 }
@@ -267,11 +269,12 @@ export default function GenerateReport({ data, selectedYear } : { selectedYear :
                         <h1>4th year retention rate: {getRetentionRateByYearLevel(CE4th, "4th").toFixed(1)}%</h1>
                         <div>
                             {CE4th.map((item, index) => {
-                                if(isGreaterThanUcl3(CE4th, item) && item.gradeLevel == "4th")
+                              const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                              if(proportion > CEucl3 && item.gradeLevel == "4th")
                                 {
                                     return(
                                         <div key={index}>
-                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } </h1>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) }   ( {proportion.toFixed(1)}% ) </h1>
                                         </div>
                                     )
                                 }
@@ -287,24 +290,76 @@ export default function GenerateReport({ data, selectedYear } : { selectedYear :
                 {getRetentionRateByYearLevel(CPE1st, "1st") !== 0 && (
                     <div>
                         <h1>1st year retention rate: {getRetentionRateByYearLevel(CPE1st, "1st").toFixed(1)}%</h1>
+                        <div>
+                            {CPE1st.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > CPEucl3 && item.gradeLevel == "1st")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>
                     </div>
                 )}
 
                 {getRetentionRateByYearLevel(CPE2nd, "2nd") !== 0 && (
                     <div>
                         <h1>2nd year retention rate: {getRetentionRateByYearLevel(CPE2nd, "2nd").toFixed(1)}%</h1>
+                        <div>
+                            {CPE2nd.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > CPEucl3 && item.gradeLevel == "2nd")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>
                     </div>
                 )}
 
                 {getRetentionRateByYearLevel(CPE3rd, "3rd") !== 0 && (
                     <div>
                         <h1>3rd year retention rate: {getRetentionRateByYearLevel(CPE3rd, "3rd").toFixed(1)}%</h1>
+                        <div>
+                            {CPE3rd.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > CPEucl3 && item.gradeLevel == "3rd")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>
                     </div>
                 )}
 
                 {getRetentionRateByYearLevel(CPE4th, "4th") !== 0 && (
                     <div>
                         <h1>4th year retention rate: {getRetentionRateByYearLevel(CPE4th, "4th").toFixed(1)}%</h1>
+                        <div>
+                            {CPE4th.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > CPEucl3 && item.gradeLevel == "4th")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>
                     </div>
                 )}
             </div>
@@ -315,24 +370,77 @@ export default function GenerateReport({ data, selectedYear } : { selectedYear :
                 {getRetentionRateByYearLevel(EE1st, "1st") !== 0 && (
                     <div>
                         <h1>1st year retention rate: {getRetentionRateByYearLevel(EE1st, "1st").toFixed(1)}%</h1>
+                        <div>
+                            {EE1st.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > EEucl3 && item.gradeLevel == "1st")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>
                     </div>
                 )}
 
                 {getRetentionRateByYearLevel(EE2nd, "2nd") !== 0 && (
                     <div>
                         <h1>2nd year retention rate: {getRetentionRateByYearLevel(EE2nd, "2nd").toFixed(1)}%</h1>
+                        <div>
+                            {EE2nd.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > EEucl3 && item.gradeLevel == "2nd")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>
                     </div>
+                    
                 )}
 
                 {getRetentionRateByYearLevel(EE3rd, "3rd") !== 0 && (
                     <div>
                         <h1>3rd year retention rate: {getRetentionRateByYearLevel(EE3rd, "3rd").toFixed(1)}%</h1>
+                        <div>
+                            {EE3rd.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > EEucl3 && item.gradeLevel == "3rd")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>
                     </div>
                 )}
 
                 {getRetentionRateByYearLevel(EE4th, "4th") !== 0 && (
                     <div>
                         <h1>4th year retention rate: {getRetentionRateByYearLevel(EE4th, "4th").toFixed(1)}%</h1>
+                        <div>
+                            {EE4th.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > EEucl3 && item.gradeLevel == "4th")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>
                     </div>
                 )}
             </div>
@@ -343,24 +451,70 @@ export default function GenerateReport({ data, selectedYear } : { selectedYear :
                 {getRetentionRateByYearLevel(ECE1st, "1st") !== 0 && (
                     <div>
                         <h1>1st year retention rate: {getRetentionRateByYearLevel(ECE1st, "1st").toFixed(1)}%</h1>
+                        <div>
+                            {ECE1st.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > ECEucl3 && item.gradeLevel == "1st")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>
                     </div>
                 )}
 
                 {getRetentionRateByYearLevel(ECE2nd, "2nd") !== 0 && (
                     <div>
                         <h1>2nd year retention rate: {getRetentionRateByYearLevel(ECE2nd, "2nd").toFixed(1)}%</h1>
+                        {ECE2nd.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > ECEucl3 && item.gradeLevel == "2nd")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
                     </div>
                 )}
 
                 {getRetentionRateByYearLevel(ECE3rd, "3rd") !== 0 && (
                     <div>
                         <h1>3rd year retention rate: {getRetentionRateByYearLevel(ECE3rd, "3rd").toFixed(1)}%</h1>
+                        {ECE3rd.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > ECEucl3 && item.gradeLevel == "3rd")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
                     </div>
                 )}
 
                 {getRetentionRateByYearLevel(ECE4th, "4th") !== 0 && (
                     <div>
                         <h1>4th year retention rate: {getRetentionRateByYearLevel(ECE4th, "4th").toFixed(1)}%</h1>
+                        {ECE4th.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > ECEucl3 && item.gradeLevel == "4th")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
                     </div>
                 )}
             </div>
@@ -371,24 +525,76 @@ export default function GenerateReport({ data, selectedYear } : { selectedYear :
                 {getRetentionRateByYearLevel(IE1st, "1st") !== 0 && (
                     <div>
                         <h1>1st year retention rate: {getRetentionRateByYearLevel(IE1st, "1st").toFixed(1)}%</h1>
+                        <div>
+                            {IE1st.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > IEucl3 && item.gradeLevel == "1st")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>    
                     </div>
                 )}
 
                 {getRetentionRateByYearLevel(IE2nd, "2nd") !== 0 && (
                     <div>
                         <h1>2nd year retention rate: {getRetentionRateByYearLevel(IE2nd, "2nd").toFixed(1)}%</h1>
+                        <div>
+                            {IE2nd.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > IEucl3 && item.gradeLevel == "2nd")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>   
                     </div>
                 )}
 
                 {getRetentionRateByYearLevel(IE3rd, "3rd") !== 0 && (
                     <div>
                         <h1>3rd year retention rate: {getRetentionRateByYearLevel(IE3rd, "3rd").toFixed(1)}%</h1>
+                        <div>
+                            {IE3rd.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > IEucl3 && item.gradeLevel == "3rd")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>   
                     </div>
                 )}
 
                 {getRetentionRateByYearLevel(IE4th, "4th") !== 0 && (
                     <div>
                         <h1>4th year retention rate: {getRetentionRateByYearLevel(IE4th, "4th").toFixed(1)}%</h1>
+                        <div>
+                            {IE4th.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > IEucl3 && item.gradeLevel == "4th")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>   
                     </div>
                 )}
             </div>
@@ -399,24 +605,76 @@ export default function GenerateReport({ data, selectedYear } : { selectedYear :
                 {getRetentionRateByYearLevel(ME1st, "1st") !== 0 && (
                     <div>
                         <h1>1st year retention rate: {getRetentionRateByYearLevel(ME1st, "1st").toFixed(1)}%</h1>
+                        <div>
+                            {ME1st.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > MEucl3 && item.gradeLevel == "1st")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>   
                     </div>
                 )}
 
                 {getRetentionRateByYearLevel(ME2nd, "2nd") !== 0 && (
                     <div>
                         <h1>2nd year retention rate: {getRetentionRateByYearLevel(ME2nd, "2nd").toFixed(1)}%</h1>
+                        <div>
+                            {ME2nd.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > MEucl3 && item.gradeLevel == "2nd")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>  
                     </div>
                 )}
 
                 {getRetentionRateByYearLevel(ME3rd, "3rd") !== 0 && (
                     <div>
                         <h1>3rd year retention rate: {getRetentionRateByYearLevel(ME3rd, "3rd").toFixed(1)}%</h1>
+                        <div>
+                            {ME3rd.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > MEucl3 && item.gradeLevel == "3rd")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>  
                     </div>
                 )}
 
                 {getRetentionRateByYearLevel(ME4th, "4th") !== 0 && (
                     <div>
                         <h1>4th year retention rate: {getRetentionRateByYearLevel(ME4th, "4th").toFixed(1)}%</h1>
+                        <div>
+                            {ME4th.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > MEucl3 && item.gradeLevel == "4th")
+                                {
+                                    return(
+                                        <div key={index}>
+                                            <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>  
                     </div>
                 )}
             </div>
