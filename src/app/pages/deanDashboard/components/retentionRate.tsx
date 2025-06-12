@@ -210,7 +210,7 @@ const PChart: React.FC<{   selectedYear: string, setSelectedYear: (selectd : str
                     <div className="bg-green-50 p-4 rounded-lg shadow mb-2">
                     <div className="font-semibold text-green-700 text-2xl">All Engineering Department Retention Rate</div>
                     {allDepartmentRetention !== 0
-                        ? <div className="text-green-900 text-1xl font-bold ">{allDepartmentRetention.toFixed(1)}% {(sortedData[sortedData.length - 1].gradeLevel != "4th") ? ` As Of ${sortedData[sortedData.length - 1].gradeLevel} Year` : " "}</div>
+                        ? <div className={` text-1xl font-bold ${( allDepartmentRetention >= 80 ) ? "text-green-500" : "text-red-500"}`} >{allDepartmentRetention.toFixed(1)}% {(sortedData[sortedData.length - 1].gradeLevel != "4th") ? ` As Of ${sortedData[sortedData.length - 1].gradeLevel} Year` : " "}</div>
                         : <div className="text-green-900 text-1xl font-bold ">Data Encoding is not Complete</div>
                     }
                     </div>
