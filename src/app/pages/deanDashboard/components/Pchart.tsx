@@ -288,7 +288,7 @@ const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, set
                         </SelectContent>
                     </Select>
 
-
+        
                     <Select  value={selectedYear} onValueChange={setSelectedYear} >
                     <SelectTrigger id="year-select" className="w-[130px] bg-white ">
                         <SelectValue placeholder="Select Year" />
@@ -324,7 +324,7 @@ const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, set
                 <p className="text-gray-600"> Fixed P-Chart: Student Failure Rate Analysis by Batch (Fixed Standard Deviation) </p>
                 {pointsAboveUCL3 > 0 && (
                     <p className="text-red-600 font-semibold mt-2">
-                        ⚠️ {pointsAboveUCL3} course(s) above Upper Control Limit UCL +3σ (red dots)
+                        ⚠️ {pointsAboveUCL3} subjects  above Upper Control Limit UCL +3σ (red dots)
                     </p>
                 )}
             </div>

@@ -22,7 +22,7 @@ import { getSortedCoursesByYear } from "@/utils/customFunction"
 
 import Pchart from "./components/Pchart"
 import  EmptyPchart_2 from "./components/emptyChart"
-
+import GenerateReport from "./components/generateReport"
 
 export default function LandingPage() {
  
@@ -184,6 +184,10 @@ export default function LandingPage() {
             ?  <RetentionRateSection data={batchData} setSelectedYear={handleSelectedBatch} selectedYear={selectedBatch} />  
             : <div> none </div>
             }
+        </div>
+
+        <div className="m-auto p-5">
+          <GenerateReport data={batchData} selectedYear={selectedBatch} />
         </div>
       
 

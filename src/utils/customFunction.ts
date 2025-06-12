@@ -6,6 +6,97 @@ export const bgStyle = {
     backgroundRepeat: "no-repeat",
     backgroundPosition: "center"
   }
+
+
+
+ export const getRetentionRate = (data : courseInterface[], department : string, selectedYear : string) => {
+    let retention =  0
+ 
+    let highestEnrolled1st;
+    let highestPassedLast;
+
+    let passed = 0
+    let enrolled = 0
+ 
+    try{
+     switch(data.length != 0 ? data[data.length - 1].gradeLevel : "none")
+     {
+      case "1st":
+          highestEnrolled1st = data
+          .filter(item => item.gradeLevel === "1st" && item.sem === 1 && item.department == department && item.batch == selectedYear)
+          .reduce((max, item) => (item.totalEnrolled > max.totalEnrolled ? item : max));
+        
+        // Get highest passed in 4th year, 2nd sem
+         highestPassedLast = data
+          .filter(item => item.gradeLevel === "1st" && item.sem === 2 && item.department == department && item.batch == selectedYear)
+          .reduce((max, item) => (item.passed > max.passed ? item : max));
+  
+        retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
+        retention = (retention > 100 ) ? 100 : retention
+        passed = highestPassedLast.passed
+        enrolled = highestEnrolled1st.totalEnrolled
+      break;
+  
+      case "2nd":
+          highestEnrolled1st = data
+          .filter(item => item.gradeLevel === "1st" && item.sem === 1 && item.department == department && item.batch == selectedYear)
+          .reduce((max, item) => (item.totalEnrolled > max.totalEnrolled ? item : max));
+        
+        // Get highest passed in 4th year, 2nd sem
+         highestPassedLast = data
+          .filter(item => item.gradeLevel === "2nd" && item.sem === 2 && item.department == department && item.batch == selectedYear)
+          .reduce((max, item) => (item.passed > max.passed ? item : max));
+  
+        retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
+        retention = (retention > 100 ) ? 100 : retention
+        passed = highestPassedLast.passed
+        enrolled = highestEnrolled1st.totalEnrolled
+      break;
+  
+      case "3rd":
+          highestEnrolled1st = data
+          .filter(item => item.gradeLevel === "1st" && item.sem === 1 && item.department == department && item.batch == selectedYear)
+          .reduce((max, item) => (item.totalEnrolled > max.totalEnrolled ? item : max));
+  
+          // Get highest passed in 4th year, 2nd sem
+          highestPassedLast = data
+          .filter(item => item.gradeLevel === "3rd" && item.sem === 2 && item.department == department && item.batch == selectedYear)
+          .reduce((max, item) => (item.passed > max.passed ? item : max));
+  
+
+  
+          retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
+          retention = (retention > 100 ) ? 100 : retention
+          passed = highestPassedLast.passed
+          enrolled = highestEnrolled1st.totalEnrolled
+      break;
+  
+  
+      case "4th":
+          highestEnrolled1st = data
+          .filter(item => item.gradeLevel === "1st" && item.sem === 1 && item.department == department && item.batch == selectedYear)
+          .reduce((max, item) => (item.totalEnrolled > max.totalEnrolled ? item : max));
+        
+        // Get highest passed in 4th year, 2nd sem
+         highestPassedLast = data
+          .filter(item => item.gradeLevel === "4th" && item.sem === 2 && item.department == department && item.batch == selectedYear)
+          .reduce((max, item) => (item.passed > max.passed ? item : max));
+        
+        
+  
+        retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
+        retention = (retention > 100 ) ? 100 : retention
+        passed = highestPassedLast.passed
+        enrolled = highestEnrolled1st.totalEnrolled
+      break;
+     }
+  
+    } catch (e) {
+        console.log("no recoerd for 2nd sem")
+    }
+
+    return [ retention , passed, enrolled]
+}
   
 
   
