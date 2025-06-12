@@ -8,6 +8,134 @@ export const bgStyle = {
   }
 
 
+  export const filterDataByYearLevel = ( department : string ,year : string, data : courseInterface[]) => {
+    let filteredData 
+    switch(year)
+    {
+        case "4th":
+            filteredData = data 
+        break
+
+        case "3rd":
+            filteredData = data.filter((item) => ["1st", "2nd", "3rd"].includes(item.gradeLevel))
+        break
+
+
+        case "2nd":
+            filteredData = data.filter((item) => ["1st", "2nd"].includes(item.gradeLevel))
+        break
+
+
+        case "1st":
+            filteredData = data.filter((item) => ["1st"].includes(item.gradeLevel))
+        break
+    }
+
+    if(!filteredData) return []
+
+    return  filteredData?.filter((item) => item.department == department)
+    
+}
+
+
+export const getRetentionRateByYearLevel = ( data : courseInterface[], year : string) => {
+    try{
+        let retention =  0
+ 
+        let highestEnrolled1st;
+        let highestPassedLast;
+        
+         switch(year)
+         {
+          case "1st":
+              highestEnrolled1st = data
+              .filter(item => item.gradeLevel === "1st" && item.sem === 1)
+              .reduce((max, item) => (item.totalEnrolled > max.totalEnrolled ? item : max));
+            
+            // Get highest passed in 4th year, 2nd sem
+             highestPassedLast = data
+              .filter(item => item.gradeLevel === "1st" && item.sem === 2)
+              .reduce((max, item) => (item.passed > max.passed ? item : max));
+      
+            retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
+            retention = (retention > 100) ? 100 : retention
+          break;
+      
+          case "2nd":
+              highestEnrolled1st = data
+              .filter(item => item.gradeLevel === "1st" && item.sem === 1)
+              .reduce((max, item) => (item.totalEnrolled > max.totalEnrolled ? item : max));
+            
+            // Get highest passed in 4th year, 2nd sem
+             highestPassedLast = data
+              .filter(item => item.gradeLevel === "2nd" && item.sem === 2)
+              .reduce((max, item) => (item.passed > max.passed ? item : max));
+            
+      
+            retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
+            retention = (retention > 100) ? 100 : retention
+          break;
+      
+          case "3rd":
+              highestEnrolled1st = data
+              .filter(item => item.gradeLevel === "1st" && item.sem === 1)
+              .reduce((max, item) => (item.totalEnrolled > max.totalEnrolled ? item : max));
+      
+              // Get highest passed in 4th year, 2nd sem
+              highestPassedLast = data
+              .filter(item => item.gradeLevel === "3rd" && item.sem === 2)
+              .reduce((max, item) => (item.passed > max.passed ? item : max));
+      
+              retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
+              retention = (retention > 100) ? 100 : retention
+          break;
+      
+      
+          case "4th":
+              highestEnrolled1st = data
+              .filter(item => item.gradeLevel === "1st" && item.sem === 1)
+              .reduce((max, item) => (item.totalEnrolled > max.totalEnrolled ? item : max));
+            
+            // Get highest passed in 4th year, 2nd sem
+             highestPassedLast = data
+              .filter(item => item.gradeLevel === "4th" && item.sem === 2)
+              .reduce((max, item) => (item.passed > max.passed ? item : max));
+            
+            retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
+            retention = (retention > 100) ? 100 : retention
+          break;
+         }
+      
+         return retention
+    } catch(e) {
+        return 0
+    }   
+   
+}
+
+export const isGreaterThanUcl3 = (data : courseInterface[], item : courseInterface) => {
+    const totalFailed: number = data.reduce((sum, item) => sum + (item.totalEnrolled - item.passed), 0);
+    const totalEnrolled: number = data.reduce((sum, item) => sum + item.totalEnrolled, 0);
+    const CL: number = totalFailed / totalEnrolled;
+    const fixedN: number = 100; 
+    const sigma: number = Math.sqrt((CL * (1 - CL)) / fixedN); 
+    const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+    const ucl3 = (CL + 3 * sigma) * 100
+    return proportion > ucl3
+}
+
+export const getUcl3 = (data : courseInterface[]) => {
+    const totalFailed: number = data.reduce((sum, item) => sum + (item.totalEnrolled - item.passed), 0);
+    const totalEnrolled: number = data.reduce((sum, item) => sum + item.totalEnrolled, 0);
+    const CL: number = totalFailed / totalEnrolled;
+    const fixedN: number = 100; 
+    const sigma: number = Math.sqrt((CL * (1 - CL)) / fixedN); 
+    const ucl3 = (CL + 3 * sigma) * 100
+    return ucl3 
+}
+
+
+
 
  export const getRetentionRate = (data : courseInterface[], department : string, selectedYear : string) => {
     let retention =  0

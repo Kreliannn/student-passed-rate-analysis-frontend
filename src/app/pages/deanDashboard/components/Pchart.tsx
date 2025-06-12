@@ -5,6 +5,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { courseInterface } from '@/types/interface';
 import { getCourseName , convertCodeToName} from '@/utils/customFunction';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {  filterDataByYearLevel, getRetentionRateByYearLevel } from "@/utils/customFunction"
 
 interface DataPoint {
     gradeLevel: string;
@@ -169,6 +170,12 @@ const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, set
     // FIXED sample size for consistent standard deviation
     const fixedN: number = 100; // You can adjust this value as needed
     const sigma: number = Math.sqrt((CL * (1 - CL)) / fixedN); // FIXED sigma for all points
+
+
+    const department1st  = filterDataByYearLevel(selectedDepartment, "1st", sortedData)
+    const department2nd = filterDataByYearLevel(selectedDepartment, "2nd", sortedData)
+    const department3rd  = filterDataByYearLevel(selectedDepartment, "3rd", sortedData)
+    const department4th  = filterDataByYearLevel(selectedDepartment, "4th", sortedData)
 
     // Calculate FIXED control limits for all data points
     const chartData: ChartDataPoint[] = processedData.map(item => {
@@ -530,6 +537,90 @@ const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, set
                         </div>
                     ))}
                 </div>
+            </div>
+
+            <div className='w-full h-10 '>
+
+                <div className="mt-5 bg-stone-50">
+                    <h1>CE</h1>
+
+                    {getRetentionRateByYearLevel(department1st, "1st") !== 0 && (
+                        <div>
+                            <h1>1st year retention rate: {getRetentionRateByYearLevel(department1st, "1st").toFixed(1)}%</h1>
+                            <div>
+                                {department1st.map((item, index) => {
+                                    const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                    if(proportion > (Math.min(chartData[0].UCL3, 1) * 100) && item.gradeLevel == "1st")
+                                    {
+                                        return(
+                                            <div key={index}>
+                                                <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                            </div>
+                                        )
+                                    }
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    {getRetentionRateByYearLevel(department2nd, "2nd") !== 0 && (
+                        <div>
+                            <h1>2nd year retention rate: {getRetentionRateByYearLevel(department2nd, "2nd").toFixed(1)}%</h1>
+                            <div>
+                                {department2nd.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > (Math.min(chartData[0].UCL3, 1) * 100) && item.gradeLevel == "2nd")
+                                    {
+                                        return(
+                                            <div key={index}>
+                                                <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                            </div>
+                                        )
+                                    }
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    {getRetentionRateByYearLevel(department3rd, "3rd") !== 0 && (
+                        <div>
+                            <h1>3rd year retention rate: {getRetentionRateByYearLevel(department3rd, "3rd").toFixed(1)}%</h1>
+                            <div>
+                                {department3rd.map((item, index) => {
+                                    const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                    if(proportion > (Math.min(chartData[0].UCL3, 1) * 100) && item.gradeLevel == "3rd")
+                                    {
+                                        return(
+                                            <div key={index}>
+                                                <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
+                                            </div>
+                                        )
+                                    }
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    {getRetentionRateByYearLevel(department4th, "4th") !== 0 && (
+                        <div>
+                            <h1>4th year retention rate: {getRetentionRateByYearLevel(department4th, "4th").toFixed(1)}%</h1>
+                            <div>
+                                {department4th.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
+                                if(proportion > (Math.min(chartData[0].UCL3, 1) * 100) && item.gradeLevel == "4th")
+                                    {
+                                        return(
+                                            <div key={index}>
+                                                <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) }   ( {proportion.toFixed(1)}% ) </h1>
+                                            </div>
+                                        )
+                                    }
+                                })}
+                            </div>
+                        </div>
+                    )}
+                </div>
+
             </div>
         </div>
     );
