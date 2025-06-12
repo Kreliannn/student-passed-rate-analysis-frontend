@@ -143,12 +143,28 @@ export default function GenerateReport({ data, selectedYear } : { selectedYear :
     const EE2nd = filterDataByYearLevel("EE", "2nd", data)
     const EE3rd  = filterDataByYearLevel("EE", "3rd", data)
     const EE4th  = filterDataByYearLevel("EE", "4th", data)
+
+    const ECE1st  = filterDataByYearLevel("ECE", "1st", data)
+    const ECE2nd = filterDataByYearLevel("ECE", "2nd", data)
+    const ECE3rd  = filterDataByYearLevel("ECE", "3rd", data)
+    const ECE4th  = filterDataByYearLevel("ECE", "4th", data)
+
+    const IE1st  = filterDataByYearLevel("IE", "1st", data)
+    const IE2nd = filterDataByYearLevel("IE", "2nd", data)
+    const IE3rd  = filterDataByYearLevel("IE", "3rd", data)
+    const IE4th  = filterDataByYearLevel("IE", "4th", data)
+
+
+    const ME1st  = filterDataByYearLevel("ME", "1st", data)
+    const ME2nd = filterDataByYearLevel("ME", "2nd", data)
+    const ME3rd  = filterDataByYearLevel("ME", "3rd", data)
+    const ME4th  = filterDataByYearLevel("ME", "4th", data)
     
 
     return(
         <div className="w-full h-full bg-white">   
             <h1 className="text-center"> Failure Rate Analysis Report </h1>
-            <h1 className="text-center"> Batch 2020 - 2020</h1>
+            <h1 className="text-center"> Batch {selectedYear}</h1>
 
             <div className="bg-stone-50">
                 <h1> CE : {CEretention.toFixed(1)}%  </h1>
@@ -162,88 +178,167 @@ export default function GenerateReport({ data, selectedYear } : { selectedYear :
 
 
             <div className="mt-5 bg-stone-50">
-                <h1> CE </h1>
+                <h1>CE</h1>
 
-                <div>
-                    {(getRetentionRateByYearLevel(CE1st, "1st") != 0)
-                        ? <h1>1st year retention rate: {getRetentionRateByYearLevel(CE1st, "1st").toFixed(1)}%</h1>
-                        : <h1>1st year retention rate: no record</h1>}
-                </div>
+                {getRetentionRateByYearLevel(CE1st, "1st") !== 0 && (
+                    <div><h1>1st year retention rate: {getRetentionRateByYearLevel(CE1st, "1st").toFixed(1)}%</h1></div>
+                )}
 
-                <div>
-                    {(getRetentionRateByYearLevel(CE2nd, "2nd") != 0)
-                        ? <h1>2nd year retention rate: {getRetentionRateByYearLevel(CE2nd, "2nd").toFixed(1)}%</h1>
-                        : <h1>2nd year retention rate: no record</h1>}
-                </div>
+                {getRetentionRateByYearLevel(CE2nd, "2nd") !== 0 && (
+                    <div><h1>2nd year retention rate: {getRetentionRateByYearLevel(CE2nd, "2nd").toFixed(1)}%</h1></div>
+                )}
 
-                <div>
-                    {(getRetentionRateByYearLevel(CE3rd, "3rd") != 0)
-                        ? <h1>3rd year retention rate: {getRetentionRateByYearLevel(CE3rd, "3rd").toFixed(1)}%</h1>
-                        : <h1>3rd year retention rate: no record</h1>}
-                </div>
+                {getRetentionRateByYearLevel(CE3rd, "3rd") !== 0 && (
+                    <div><h1>3rd year retention rate: {getRetentionRateByYearLevel(CE3rd, "3rd").toFixed(1)}%</h1></div>
+                )}
 
-                <div>
-                    {(getRetentionRateByYearLevel(CE4th, "4th") != 0)
-                        ? <h1>4th year retention rate: {getRetentionRateByYearLevel(CE4th, "4th").toFixed(1)}%</h1>
-                        : <h1>4th year retention rate: no record</h1>}
-                </div>
+                {getRetentionRateByYearLevel(CE4th, "4th") !== 0 && (
+                    <div><h1>4th year retention rate: {getRetentionRateByYearLevel(CE4th, "4th").toFixed(1)}%</h1></div>
+                )}
             </div>
 
             <div className="mt-5 bg-stone-50">
-                <h1> CPE </h1>
+                <h1>CPE</h1>
 
-                <div>
-                    {(getRetentionRateByYearLevel(CPE1st, "1st") != 0)
-                        ? <h1>1st year retention rate: {getRetentionRateByYearLevel(CPE1st, "1st").toFixed(1)}%</h1>
-                        : <h1>1st year retention rate: no record</h1>}
-                </div>
+                {getRetentionRateByYearLevel(CPE1st, "1st") !== 0 && (
+                    <div>
+                        <h1>1st year retention rate: {getRetentionRateByYearLevel(CPE1st, "1st").toFixed(1)}%</h1>
+                    </div>
+                )}
 
-                <div>
-                    {(getRetentionRateByYearLevel(CPE2nd, "2nd") != 0)
-                        ? <h1>2nd year retention rate: {getRetentionRateByYearLevel(CPE2nd, "2nd").toFixed(1)}%</h1>
-                        : <h1>2nd year retention rate: no record</h1>}
-                </div>
+                {getRetentionRateByYearLevel(CPE2nd, "2nd") !== 0 && (
+                    <div>
+                        <h1>2nd year retention rate: {getRetentionRateByYearLevel(CPE2nd, "2nd").toFixed(1)}%</h1>
+                    </div>
+                )}
 
-                <div>
-                    {(getRetentionRateByYearLevel(CPE3rd, "3rd") != 0)
-                        ? <h1>3rd year retention rate: {getRetentionRateByYearLevel(CPE3rd, "3rd").toFixed(1)}%</h1>
-                        : <h1>3rd year retention rate: no record</h1>}
-                </div>
+                {getRetentionRateByYearLevel(CPE3rd, "3rd") !== 0 && (
+                    <div>
+                        <h1>3rd year retention rate: {getRetentionRateByYearLevel(CPE3rd, "3rd").toFixed(1)}%</h1>
+                    </div>
+                )}
 
-                <div>
-                    {(getRetentionRateByYearLevel(CPE4th, "4th") != 0)
-                        ? <h1>4th year retention rate: {getRetentionRateByYearLevel(CPE4th, "4th").toFixed(1)}%</h1>
-                        : <h1>4th year retention rate: no record</h1>}
-                </div>
+                {getRetentionRateByYearLevel(CPE4th, "4th") !== 0 && (
+                    <div>
+                        <h1>4th year retention rate: {getRetentionRateByYearLevel(CPE4th, "4th").toFixed(1)}%</h1>
+                    </div>
+                )}
             </div>
 
             <div className="mt-5 bg-stone-50">
-                <h1> EE </h1>
+                <h1>EE</h1>
 
-                <div>
-                    {(getRetentionRateByYearLevel(EE1st, "1st") != 0)
-                        ? <h1>1st year retention rate: {getRetentionRateByYearLevel(EE1st, "1st").toFixed(1)}%</h1>
-                        : <h1>1st year retention rate: no record</h1>}
-                </div>
+                {getRetentionRateByYearLevel(EE1st, "1st") !== 0 && (
+                    <div>
+                        <h1>1st year retention rate: {getRetentionRateByYearLevel(EE1st, "1st").toFixed(1)}%</h1>
+                    </div>
+                )}
 
-                <div>
-                    {(getRetentionRateByYearLevel(EE2nd, "2nd") != 0)
-                        ? <h1>2nd year retention rate: {getRetentionRateByYearLevel(EE2nd, "2nd").toFixed(1)}%</h1>
-                        : <h1>2nd year retention rate: no record</h1>}
-                </div>
+                {getRetentionRateByYearLevel(EE2nd, "2nd") !== 0 && (
+                    <div>
+                        <h1>2nd year retention rate: {getRetentionRateByYearLevel(EE2nd, "2nd").toFixed(1)}%</h1>
+                    </div>
+                )}
 
-                <div>
-                    {(getRetentionRateByYearLevel(EE3rd, "3rd") != 0)
-                        ? <h1>3rd year retention rate: {getRetentionRateByYearLevel(EE3rd, "3rd").toFixed(1)}%</h1>
-                        : <h1>3rd year retention rate: no record</h1>}
-                </div>
+                {getRetentionRateByYearLevel(EE3rd, "3rd") !== 0 && (
+                    <div>
+                        <h1>3rd year retention rate: {getRetentionRateByYearLevel(EE3rd, "3rd").toFixed(1)}%</h1>
+                    </div>
+                )}
 
-                <div>
-                    {(getRetentionRateByYearLevel(EE4th, "4th") != 0)
-                        ? <h1>4th year retention rate: {getRetentionRateByYearLevel(EE4th, "4th").toFixed(1)}%</h1>
-                        : <h1>4th year retention rate: no record</h1>}
-                </div>
+                {getRetentionRateByYearLevel(EE4th, "4th") !== 0 && (
+                    <div>
+                        <h1>4th year retention rate: {getRetentionRateByYearLevel(EE4th, "4th").toFixed(1)}%</h1>
+                    </div>
+                )}
             </div>
+
+            <div className="mt-5 bg-stone-50">
+                <h1>ECE</h1>
+
+                {getRetentionRateByYearLevel(ECE1st, "1st") !== 0 && (
+                    <div>
+                        <h1>1st year retention rate: {getRetentionRateByYearLevel(ECE1st, "1st").toFixed(1)}%</h1>
+                    </div>
+                )}
+
+                {getRetentionRateByYearLevel(ECE2nd, "2nd") !== 0 && (
+                    <div>
+                        <h1>2nd year retention rate: {getRetentionRateByYearLevel(ECE2nd, "2nd").toFixed(1)}%</h1>
+                    </div>
+                )}
+
+                {getRetentionRateByYearLevel(ECE3rd, "3rd") !== 0 && (
+                    <div>
+                        <h1>3rd year retention rate: {getRetentionRateByYearLevel(ECE3rd, "3rd").toFixed(1)}%</h1>
+                    </div>
+                )}
+
+                {getRetentionRateByYearLevel(ECE4th, "4th") !== 0 && (
+                    <div>
+                        <h1>4th year retention rate: {getRetentionRateByYearLevel(ECE4th, "4th").toFixed(1)}%</h1>
+                    </div>
+                )}
+            </div>
+
+            <div className="mt-5 bg-stone-50">
+                <h1>IE</h1>
+
+                {getRetentionRateByYearLevel(IE1st, "1st") !== 0 && (
+                    <div>
+                        <h1>1st year retention rate: {getRetentionRateByYearLevel(IE1st, "1st").toFixed(1)}%</h1>
+                    </div>
+                )}
+
+                {getRetentionRateByYearLevel(IE2nd, "2nd") !== 0 && (
+                    <div>
+                        <h1>2nd year retention rate: {getRetentionRateByYearLevel(IE2nd, "2nd").toFixed(1)}%</h1>
+                    </div>
+                )}
+
+                {getRetentionRateByYearLevel(IE3rd, "3rd") !== 0 && (
+                    <div>
+                        <h1>3rd year retention rate: {getRetentionRateByYearLevel(IE3rd, "3rd").toFixed(1)}%</h1>
+                    </div>
+                )}
+
+                {getRetentionRateByYearLevel(IE4th, "4th") !== 0 && (
+                    <div>
+                        <h1>4th year retention rate: {getRetentionRateByYearLevel(IE4th, "4th").toFixed(1)}%</h1>
+                    </div>
+                )}
+            </div>
+
+            <div className="mt-5 bg-stone-50">
+                <h1>ME</h1>
+
+                {getRetentionRateByYearLevel(ME1st, "1st") !== 0 && (
+                    <div>
+                        <h1>1st year retention rate: {getRetentionRateByYearLevel(ME1st, "1st").toFixed(1)}%</h1>
+                    </div>
+                )}
+
+                {getRetentionRateByYearLevel(ME2nd, "2nd") !== 0 && (
+                    <div>
+                        <h1>2nd year retention rate: {getRetentionRateByYearLevel(ME2nd, "2nd").toFixed(1)}%</h1>
+                    </div>
+                )}
+
+                {getRetentionRateByYearLevel(ME3rd, "3rd") !== 0 && (
+                    <div>
+                        <h1>3rd year retention rate: {getRetentionRateByYearLevel(ME3rd, "3rd").toFixed(1)}%</h1>
+                    </div>
+                )}
+
+                {getRetentionRateByYearLevel(ME4th, "4th") !== 0 && (
+                    <div>
+                        <h1>4th year retention rate: {getRetentionRateByYearLevel(ME4th, "4th").toFixed(1)}%</h1>
+                    </div>
+                )}
+            </div>
+
+
+
 
 
         </div>
