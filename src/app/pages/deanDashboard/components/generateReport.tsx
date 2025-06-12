@@ -26,80 +26,86 @@ const filterDataByYearLevel = ( department : string ,year : string, data : cours
         break
     }
 
+    if(!filteredData) return []
+
     return  filteredData?.filter((item) => item.department == department)
     
 }
 
 
-const getRetentionRateByYearLevel = (data : courseInterface[]) => {
-    let retention =  0
+const getRetentionRateByYearLevel = ( data : courseInterface[], year : string) => {
+    try{
+        let retention =  0
  
-    let highestEnrolled1st;
-    let highestPassedLast;
-    
+        let highestEnrolled1st;
+        let highestPassedLast;
+        
+         switch(year)
+         {
+          case "1st":
+              highestEnrolled1st = data
+              .filter(item => item.gradeLevel === "1st" && item.sem === 1)
+              .reduce((max, item) => (item.totalEnrolled > max.totalEnrolled ? item : max));
+            
+            // Get highest passed in 4th year, 2nd sem
+             highestPassedLast = data
+              .filter(item => item.gradeLevel === "1st" && item.sem === 2)
+              .reduce((max, item) => (item.passed > max.passed ? item : max));
+      
+            retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
+            retention = (retention > 100) ? 100 : retention
+          break;
+      
+          case "2nd":
+              highestEnrolled1st = data
+              .filter(item => item.gradeLevel === "1st" && item.sem === 1)
+              .reduce((max, item) => (item.totalEnrolled > max.totalEnrolled ? item : max));
+            
+            // Get highest passed in 4th year, 2nd sem
+             highestPassedLast = data
+              .filter(item => item.gradeLevel === "2nd" && item.sem === 2)
+              .reduce((max, item) => (item.passed > max.passed ? item : max));
+            
+      
+            retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
+            retention = (retention > 100) ? 100 : retention
+          break;
+      
+          case "3rd":
+              highestEnrolled1st = data
+              .filter(item => item.gradeLevel === "1st" && item.sem === 1)
+              .reduce((max, item) => (item.totalEnrolled > max.totalEnrolled ? item : max));
+      
+              // Get highest passed in 4th year, 2nd sem
+              highestPassedLast = data
+              .filter(item => item.gradeLevel === "3rd" && item.sem === 2)
+              .reduce((max, item) => (item.passed > max.passed ? item : max));
+      
+              retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
+              retention = (retention > 100) ? 100 : retention
+          break;
+      
+      
+          case "4th":
+              highestEnrolled1st = data
+              .filter(item => item.gradeLevel === "1st" && item.sem === 1)
+              .reduce((max, item) => (item.totalEnrolled > max.totalEnrolled ? item : max));
+            
+            // Get highest passed in 4th year, 2nd sem
+             highestPassedLast = data
+              .filter(item => item.gradeLevel === "4th" && item.sem === 2)
+              .reduce((max, item) => (item.passed > max.passed ? item : max));
+            
+            retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
+            retention = (retention > 100) ? 100 : retention
+          break;
+         }
+      
+         return retention
+    } catch(e) {
+        return 0
+    }   
    
-     switch(data.length != 0 ? data[data.length - 1].gradeLevel : "none")
-     {
-      case "1st":
-          highestEnrolled1st = data
-          .filter(item => item.gradeLevel === "1st" && item.sem === 1)
-          .reduce((max, item) => (item.totalEnrolled > max.totalEnrolled ? item : max));
-        
-        // Get highest passed in 4th year, 2nd sem
-         highestPassedLast = data
-          .filter(item => item.gradeLevel === "1st" && item.sem === 2)
-          .reduce((max, item) => (item.passed > max.passed ? item : max));
-  
-        retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
-        retention = (retention > 100) ? 100 : retention
-      break;
-  
-      case "2nd":
-          highestEnrolled1st = data
-          .filter(item => item.gradeLevel === "1st" && item.sem === 1)
-          .reduce((max, item) => (item.totalEnrolled > max.totalEnrolled ? item : max));
-        
-        // Get highest passed in 4th year, 2nd sem
-         highestPassedLast = data
-          .filter(item => item.gradeLevel === "2nd" && item.sem === 2)
-          .reduce((max, item) => (item.passed > max.passed ? item : max));
-        
-  
-        retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
-        retention = (retention > 100) ? 100 : retention
-      break;
-  
-      case "3rd":
-          highestEnrolled1st = data
-          .filter(item => item.gradeLevel === "1st" && item.sem === 1)
-          .reduce((max, item) => (item.totalEnrolled > max.totalEnrolled ? item : max));
-  
-          // Get highest passed in 4th year, 2nd sem
-          highestPassedLast = data
-          .filter(item => item.gradeLevel === "3rd" && item.sem === 2)
-          .reduce((max, item) => (item.passed > max.passed ? item : max));
-  
-          retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
-          retention = (retention > 100) ? 100 : retention
-      break;
-  
-  
-      case "4th":
-          highestEnrolled1st = data
-          .filter(item => item.gradeLevel === "1st" && item.sem === 1)
-          .reduce((max, item) => (item.totalEnrolled > max.totalEnrolled ? item : max));
-        
-        // Get highest passed in 4th year, 2nd sem
-         highestPassedLast = data
-          .filter(item => item.gradeLevel === "4th" && item.sem === 2)
-          .reduce((max, item) => (item.passed > max.passed ? item : max));
-        
-        retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
-        retention = (retention > 100) ? 100 : retention
-      break;
-     }
-  
-     return retention
 }
 
 
@@ -122,10 +128,21 @@ export default function GenerateReport({ data, selectedYear } : { selectedYear :
  
     const allDepartmentRetention = (allDepartmentPassed / allDepartmentEnrolled) * 100
 
-    const CE1st = filterDataByYearLevel("CE", "2nd", data)
+    const CE1st  = filterDataByYearLevel("CE", "1st", data)
+    const CE2nd = filterDataByYearLevel("CE", "2nd", data)
+    const CE3rd  = filterDataByYearLevel("CE", "3rd", data)
+    const CE4th  = filterDataByYearLevel("CE", "4th", data)
 
-    console.log(CE1st)      
-    console.log("test: " + getRetentionRateByYearLevel(CE1st as courseInterface[]) )
+    const CPE1st  = filterDataByYearLevel("CPE", "1st", data)
+    const CPE2nd = filterDataByYearLevel("CPE", "2nd", data)
+    const CPE3rd  = filterDataByYearLevel("CPE", "3rd", data)
+    const CPE4th  = filterDataByYearLevel("CPE", "4th", data)
+
+
+    const EE1st  = filterDataByYearLevel("EE", "1st", data)
+    const EE2nd = filterDataByYearLevel("EE", "2nd", data)
+    const EE3rd  = filterDataByYearLevel("EE", "3rd", data)
+    const EE4th  = filterDataByYearLevel("EE", "4th", data)
     
 
     return(
@@ -148,22 +165,87 @@ export default function GenerateReport({ data, selectedYear } : { selectedYear :
                 <h1> CE </h1>
 
                 <div>
-                    <h1> 1st year retention rate: </h1>
+                    {(getRetentionRateByYearLevel(CE1st, "1st") != 0)
+                        ? <h1>1st year retention rate: {getRetentionRateByYearLevel(CE1st, "1st").toFixed(1)}%</h1>
+                        : <h1>1st year retention rate: no record</h1>}
                 </div>
 
                 <div>
-                    <h1> 2nd year retention rate: </h1>
+                    {(getRetentionRateByYearLevel(CE2nd, "2nd") != 0)
+                        ? <h1>2nd year retention rate: {getRetentionRateByYearLevel(CE2nd, "2nd").toFixed(1)}%</h1>
+                        : <h1>2nd year retention rate: no record</h1>}
                 </div>
 
                 <div>
-                    <h1> 3rd year retention rate: </h1>
+                    {(getRetentionRateByYearLevel(CE3rd, "3rd") != 0)
+                        ? <h1>3rd year retention rate: {getRetentionRateByYearLevel(CE3rd, "3rd").toFixed(1)}%</h1>
+                        : <h1>3rd year retention rate: no record</h1>}
                 </div>
 
                 <div>
-                    <h1> 4th year retention rate: </h1>
+                    {(getRetentionRateByYearLevel(CE4th, "4th") != 0)
+                        ? <h1>4th year retention rate: {getRetentionRateByYearLevel(CE4th, "4th").toFixed(1)}%</h1>
+                        : <h1>4th year retention rate: no record</h1>}
                 </div>
-
             </div>
+
+            <div className="mt-5 bg-stone-50">
+                <h1> CPE </h1>
+
+                <div>
+                    {(getRetentionRateByYearLevel(CPE1st, "1st") != 0)
+                        ? <h1>1st year retention rate: {getRetentionRateByYearLevel(CPE1st, "1st").toFixed(1)}%</h1>
+                        : <h1>1st year retention rate: no record</h1>}
+                </div>
+
+                <div>
+                    {(getRetentionRateByYearLevel(CPE2nd, "2nd") != 0)
+                        ? <h1>2nd year retention rate: {getRetentionRateByYearLevel(CPE2nd, "2nd").toFixed(1)}%</h1>
+                        : <h1>2nd year retention rate: no record</h1>}
+                </div>
+
+                <div>
+                    {(getRetentionRateByYearLevel(CPE3rd, "3rd") != 0)
+                        ? <h1>3rd year retention rate: {getRetentionRateByYearLevel(CPE3rd, "3rd").toFixed(1)}%</h1>
+                        : <h1>3rd year retention rate: no record</h1>}
+                </div>
+
+                <div>
+                    {(getRetentionRateByYearLevel(CPE4th, "4th") != 0)
+                        ? <h1>4th year retention rate: {getRetentionRateByYearLevel(CPE4th, "4th").toFixed(1)}%</h1>
+                        : <h1>4th year retention rate: no record</h1>}
+                </div>
+            </div>
+
+            <div className="mt-5 bg-stone-50">
+                <h1> EE </h1>
+
+                <div>
+                    {(getRetentionRateByYearLevel(EE1st, "1st") != 0)
+                        ? <h1>1st year retention rate: {getRetentionRateByYearLevel(EE1st, "1st").toFixed(1)}%</h1>
+                        : <h1>1st year retention rate: no record</h1>}
+                </div>
+
+                <div>
+                    {(getRetentionRateByYearLevel(EE2nd, "2nd") != 0)
+                        ? <h1>2nd year retention rate: {getRetentionRateByYearLevel(EE2nd, "2nd").toFixed(1)}%</h1>
+                        : <h1>2nd year retention rate: no record</h1>}
+                </div>
+
+                <div>
+                    {(getRetentionRateByYearLevel(EE3rd, "3rd") != 0)
+                        ? <h1>3rd year retention rate: {getRetentionRateByYearLevel(EE3rd, "3rd").toFixed(1)}%</h1>
+                        : <h1>3rd year retention rate: no record</h1>}
+                </div>
+
+                <div>
+                    {(getRetentionRateByYearLevel(EE4th, "4th") != 0)
+                        ? <h1>4th year retention rate: {getRetentionRateByYearLevel(EE4th, "4th").toFixed(1)}%</h1>
+                        : <h1>4th year retention rate: no record</h1>}
+                </div>
+            </div>
+
+
         </div>
     )
 }
