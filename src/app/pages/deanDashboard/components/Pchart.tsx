@@ -60,8 +60,7 @@ const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, set
          .filter(item => item.gradeLevel === "1st" && item.sem === 2)
          .reduce((max, item) => (item.passed > max.passed ? item : max));
        
-       console.log("Highest Enrolled in 1st Year Sem 1:", highestEnrolled1st.totalEnrolled);
-       console.log("Highest Passed in 4th Year Sem 2:", highestPassedLast.passed);
+
  
        retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
        retention = (retention > 100) ? 100 : retention
@@ -76,9 +75,7 @@ const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, set
         highestPassedLast = sortedData
          .filter(item => item.gradeLevel === "2nd" && item.sem === 2)
          .reduce((max, item) => (item.passed > max.passed ? item : max));
-       
-       console.log("Highest Enrolled in 1st Year Sem 1:", highestEnrolled1st.totalEnrolled);
-       console.log("Highest Passed in 4th Year Sem 2:", highestPassedLast.passed);
+
  
        retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
        retention = (retention > 100) ? 100 : retention
@@ -94,8 +91,7 @@ const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, set
          .filter(item => item.gradeLevel === "3rd" && item.sem === 2)
          .reduce((max, item) => (item.passed > max.passed ? item : max));
  
-         console.log("Highest Enrolled in 1st Year Sem 1:", highestEnrolled1st.totalEnrolled);
-         console.log("Highest Passed in 4th Year Sem 2:", highestPassedLast.passed);
+
  
          retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
          retention = (retention > 100) ? 100 : retention
@@ -112,8 +108,7 @@ const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, set
          .filter(item => item.gradeLevel === "4th" && item.sem === 2)
          .reduce((max, item) => (item.passed > max.passed ? item : max));
        
-       console.log("Highest Enrolled in 1st Year Sem 1:", highestEnrolled1st.totalEnrolled);
-       console.log("Highest Passed in 4th Year Sem 2:", highestPassedLast.passed);
+
  
        retention = ( highestPassedLast.passed / highestEnrolled1st.totalEnrolled )* 100
        retention = (retention > 100) ? 100 : retention
