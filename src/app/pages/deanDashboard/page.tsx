@@ -22,8 +22,7 @@ export default function LandingPage() {
 
 
   const [selectedDepartment, setSelectedDepartment] = useState<string>("all")
-  const [selectedCourse, setSelectedCourse] = useState<string>("all")
-  const [selectedYear, setSelectedYear] = useState<string>("all")
+
   const [selectedBatch, setSelectedBatch] = useState<string>("all")
   const [data, setData] = useState<courseInterface[]>([])
 
@@ -33,18 +32,6 @@ export default function LandingPage() {
  
 
  
-
-  const [coursedataChart, setCoursedataChart] = useState<courseInterface[]>([])
-
-  const [coursedataChartSavePoint, setCoursedataChartSavePoint] = useState<courseInterface[]>([])
-
-  
-  const handleSelectCourse = (selected : string) => {
-    setSelectedCourse(selected)
-    setCoursedataChart(coursedataChartSavePoint.filter((course : courseInterface) => course.courseCode == selected ))
-  }
-
-
   const { data : courseData  } = useQuery({
     queryKey : ['courseall'],
     queryFn : () => axios.get(backendUrl("courseAll"))
@@ -55,7 +42,6 @@ export default function LandingPage() {
   useEffect(() => {
     if(courseData?.data)
     {
-      setCoursedataChartSavePoint(courseData?.data)
       setAllData(courseData?.data)
     }
   }, [courseData])
@@ -75,6 +61,7 @@ export default function LandingPage() {
 
   const handleSelectedBatch = (selected : string) => {
     setSelectedBatch(selected)
+    setSelectedDepartment("all")
     if(selected == "all")
     {
       setData([])
@@ -84,10 +71,6 @@ export default function LandingPage() {
     const getByBatch = allData.filter((course : courseInterface) => course.batch == selected )
     setBatchData(getSortedCourses(getByBatch))  
     setData([])
-  }
-
-  const scrollDown = () => {
-    scrollContainerRef.current?.scrollTo({ top: 800, behavior: "smooth" });
   }
 
 
@@ -110,6 +93,10 @@ export default function LandingPage() {
   }, [selectedDepartment])
   
  
+
+  const scrollDown = () => {
+    scrollContainerRef.current?.scrollTo({ top: 800, behavior: "smooth" });
+  }
 
 
   return (
@@ -170,13 +157,13 @@ export default function LandingPage() {
             }
         </div>
 
-        <div className="m-auto p-5">
+        <div className="m-auto p-5 hidden">
           <GenerateReport data={batchData} selectedYear={selectedBatch} />
         </div>
       
 
   
-        <div className="m-auto p-5">
+        <div className="m-auto p-5 ">
             {data.length !== 0 
             ? <Pchart scrollDown={scrollDown} selectedDepartment={selectedDepartment} setSelectedDepartment={setSelectedDepartment}   data={data} setSelectedYear={handleSelectedBatch} selectedYear={selectedBatch} /> 
             : <EmptyPchart_2 selectedDepartment={selectedDepartment} setSelectedDepartment={setSelectedDepartment}  setSelectedYear={handleSelectedBatch} selectedYear={selectedBatch} data={data} />}

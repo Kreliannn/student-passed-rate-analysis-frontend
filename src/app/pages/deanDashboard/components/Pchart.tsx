@@ -526,6 +526,7 @@ const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, set
             <div className='w-full h-10 '>
 
                 <div className="mt-5 bg-stone-50">
+                    <h1> Batch : {selectedYear}</h1>
                     <h1>CE</h1>
 
                     {getRetentionRateByYearLevel(department1st, "1st") !== 0 && (
