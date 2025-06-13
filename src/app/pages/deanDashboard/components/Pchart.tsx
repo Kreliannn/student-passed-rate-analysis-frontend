@@ -6,6 +6,8 @@ import { courseInterface } from '@/types/interface';
 import { getCourseName , convertCodeToName} from '@/utils/customFunction';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {  filterDataByYearLevel, getRetentionRateByYearLevel } from "@/utils/customFunction"
+import { Button } from '@/components/ui/button';
+
 
 interface DataPoint {
     gradeLevel: string;
@@ -155,6 +157,19 @@ const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, set
         scrollDown()
    }
 
+
+   const handlePrint = () => {
+        const printContent = document.getElementById('report-content-solo');
+        const originalContent = document.body.innerHTML;
+        
+        if (printContent) {
+            document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            document.body.innerHTML = originalContent;
+            window.location.reload(); // Reload to restore React functionality
+        }
+    };
+
     // Calculate proportions and statistics (now for FAILURE rates)
     const processedData: ProcessedDataPoint[] = sortedData.map(item => ({
         ...item,
@@ -268,7 +283,9 @@ const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, set
     const pointsAboveUCL3 = chartData.filter(item => item.isAboveUCL3).length;
 
     return (
-        <div className="w-full p-6 bg-white rounded-lg">
+        <div className="w-full p-6 bg-white rounded-lg relative">
+            <Button className="absolute top-0 right-0 m-2" onClick={handlePrint}> Generate Report </Button>
+
             <div className="mb-6">
             <h2 className="text-3xl font-bold text-gray-800 mb-2">  Retention Rate Chart For Batch {selectedYear}  </h2>
 
@@ -523,12 +540,13 @@ const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, set
                 </div>
             </div>
 
-            <div className='w-full h-10 '>
+                    {/*  print this */}
+            <div id="report-content-solo" className='w-full '>
 
                 <div className="mt-5 bg-stone-50">
+                    <h1> Department: { convertCodeToName(selectedDepartment) }</h1>
                     <h1> Batch : {selectedYear}</h1>
-                    <h1>CE</h1>
-
+                  
                     {getRetentionRateByYearLevel(department1st, "1st") !== 0 && (
                         <div>
                             <h1>1st year retention rate: {getRetentionRateByYearLevel(department1st, "1st").toFixed(1)}%</h1>

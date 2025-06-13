@@ -148,7 +148,9 @@ export default function LandingPage() {
         </div>
 
 
-      
+        <div className="w-full flex justify-end items-end ">
+          <GenerateReport data={batchData} selectedYear={selectedBatch} />
+        </div>
 
         <div className="m-auto p-5">
             {courseData?.data
@@ -157,9 +159,7 @@ export default function LandingPage() {
             }
         </div>
 
-        <div className="m-auto p-5 hidden">
-          <GenerateReport data={batchData} selectedYear={selectedBatch} />
-        </div>
+     
       
 
   
