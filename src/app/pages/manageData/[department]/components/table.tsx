@@ -11,6 +11,7 @@ import { bgStyle } from "@/utils/customFunction"
 import Image from "next/image"
 import { courseInterface } from "@/types/interface"
 import { getCourseName } from "@/utils/customFunction"
+import { getBatches } from "@/utils/customFunction"
 
 export default function TableCourse({ course } : { course : courseInterface[]})  {
     const router = useRouter()
@@ -103,14 +104,7 @@ export default function TableCourse({ course } : { course : courseInterface[]}) 
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="all">Select Batch</SelectItem>
-                                    <SelectItem value="2020-2024">2020-2024</SelectItem>
-                                    <SelectItem value="2021-2025">2021-2025</SelectItem>
-                                    <SelectItem value="2022-2026">2022-2026</SelectItem>
-                                    <SelectItem value="2023-2027">2023-2027</SelectItem>
-                                    <SelectItem value="2024-2028">2024-2028</SelectItem>
-                                    <SelectItem value="2025-2029">2025-2029</SelectItem>
-                                    <SelectItem value="2026-2030">2026-2030</SelectItem>
-                                    <SelectItem value="2027-2031">2027-2031</SelectItem>
+                                    {getBatches().map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}
                                 </SelectContent>
                             </Select>
                         </div>

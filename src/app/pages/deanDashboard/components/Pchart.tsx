@@ -37,7 +37,7 @@ interface ChartDataPoint extends ProcessedDataPoint {
 // Import TooltipProps from recharts for proper typing
 import type { TooltipProps as RechartsTooltipProps } from 'recharts';
 
-const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, setSelectedDepartment: React.Dispatch<React.SetStateAction<string>>, selectedYear: string, setSelectedYear: React.Dispatch<React.SetStateAction<string>>, data: courseInterface[]}> = ({scrollDown, selectedDepartment, setSelectedDepartment, selectedYear, setSelectedYear, data }) =>  {
+const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, setSelectedDepartment: React.Dispatch<React.SetStateAction<string>>, selectedYear: string, setSelectedYear: (selected : string) => void, data: courseInterface[]}> = ({scrollDown, selectedDepartment, setSelectedDepartment, selectedYear, setSelectedYear, data }) =>  {
 
    const [sortedData, setSortedData] = useState<courseInterface[]>(data)
 
@@ -270,7 +270,7 @@ const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, set
     return (
         <div className="w-full p-6 bg-white rounded-lg">
             <div className="mb-6">
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">  Retention Rate Chart   </h2>
+            <h2 className="text-3xl font-bold text-gray-800 mb-2">  Retention Rate Chart For Batch {selectedYear}  </h2>
 
             <div className='flex gap-2'>
                     <h2 className="text-2xl font-bold text-gray-800 mb-2">  Department:   </h2>

@@ -7,6 +7,23 @@ export const bgStyle = {
     backgroundPosition: "center"
   }
 
+  export function getBatches() {
+    const startYear = 2020;
+    const currentYear = new Date().getFullYear();
+    
+    const lastBatchStartYear = currentYear;
+    const batches = [];
+  
+    for (let year = startYear; year <= lastBatchStartYear; year++) {
+      const endYear = year + 4;
+      batches.push(`${year}-${endYear}`);
+    }
+  
+    return batches;
+  }
+  
+ 
+
 
   export const filterDataByYearLevel = ( department : string ,year : string, data : courseInterface[]) => {
     let filteredData 

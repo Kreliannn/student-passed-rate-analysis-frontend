@@ -1,25 +1,16 @@
 "use client"
 import Image from "next/image"
-import Link from "next/link"
 import { useEffect } from "react"
-import { bgStyle, convertCodeToName, getCourseName } from "@/utils/customFunction"
+import { bgStyle } from "@/utils/customFunction"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
-
-import { useParams } from "next/navigation"
 import { useState, useRef } from "react"
 import { courseInterface } from "@/types/interface"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Label } from "@/components/ui/label"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { backendUrl } from "@/utils/url"
 import { getSortedCourses } from "@/utils/customFunction"
-import { getAllCourseCode } from "@/utils/customFunction"
 import RetentionRateSection from "./components/retentionRate"
-import { getCL } from "@/utils/customFunction"
-import { getSortedCoursesByYear } from "@/utils/customFunction"
-
 import Pchart from "./components/Pchart"
 import  EmptyPchart_2 from "./components/emptyChart"
 import GenerateReport from "./components/generateReport"
@@ -98,11 +89,14 @@ export default function LandingPage() {
     setSelectedBatch(selected)
     if(selected == "all")
     {
+      setData([])
       setBatchData([])
       return
     }
     const getByBatch = allData.filter((course : courseInterface) => course.batch == selected )
+    const getByBatchChart = coursedataChartSavePoint.filter((course : courseInterface) => course.batch == selected )
     setBatchData(getSortedCourses(getByBatch))
+    setData(getSortedCourses(getByBatchChart))
   }
 
   const scrollDown = () => {
@@ -194,8 +188,8 @@ export default function LandingPage() {
   
         <div className="m-auto p-5">
             {data.length !== 0 
-            ? <Pchart scrollDown={scrollDown} selectedDepartment={selectedDepartment} setSelectedDepartment={setSelectedDepartment}   data={data} setSelectedYear={setSelectedYear} selectedYear={selectedYear} /> 
-            : <EmptyPchart_2 selectedDepartment={selectedDepartment} setSelectedDepartment={setSelectedDepartment}  setSelectedYear={setSelectedYear} selectedYear={selectedYear} data={data} />}
+            ? <Pchart scrollDown={scrollDown} selectedDepartment={selectedDepartment} setSelectedDepartment={setSelectedDepartment}   data={data} setSelectedYear={handleSelectedBatch} selectedYear={selectedBatch} /> 
+            : <EmptyPchart_2 selectedDepartment={selectedDepartment} setSelectedDepartment={setSelectedDepartment}  setSelectedYear={handleSelectedBatch} selectedYear={selectedBatch} data={data} />}
         </div>
       
 

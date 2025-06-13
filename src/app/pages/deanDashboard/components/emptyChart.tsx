@@ -36,7 +36,7 @@ interface ChartDataPoint extends ProcessedDataPoint {
 // Import TooltipProps from recharts for proper typing
 import type { TooltipProps as RechartsTooltipProps } from 'recharts';
 
-const PChart: React.FC<{selectedDepartment: string, setSelectedDepartment: React.Dispatch<React.SetStateAction<string>>, selectedYear: string, setSelectedYear: React.Dispatch<React.SetStateAction<string>>, data: courseInterface[]}> = ({selectedDepartment, setSelectedDepartment, selectedYear, setSelectedYear, data }) =>  {
+const PChart: React.FC<{selectedDepartment: string, setSelectedDepartment: React.Dispatch<React.SetStateAction<string>>, selectedYear: string, setSelectedYear: (selected : string) => void, data: courseInterface[]}> = ({selectedDepartment, setSelectedDepartment, selectedYear, setSelectedYear, data }) =>  {
 
    const retention = 0
 
@@ -153,7 +153,7 @@ const PChart: React.FC<{selectedDepartment: string, setSelectedDepartment: React
     return (
         <div className="w-full p-6 bg-white rounded-lg">
             <div className="mb-6">
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">  Retention Rate Chart   </h2>
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">  Retention Rate Chart For Batch {selectedYear}  </h2>
                 <div className='flex gap-2'>
                     <h2 className="text-2xl font-bold text-gray-800 mb-2">  Department:   </h2>
 
