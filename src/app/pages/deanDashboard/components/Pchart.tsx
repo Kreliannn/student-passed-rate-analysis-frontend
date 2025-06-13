@@ -280,6 +280,7 @@ const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, set
                         <SelectValue placeholder="Select Year" />
                     </SelectTrigger>
                         <SelectContent >
+                            <SelectItem value="all">select Department</SelectItem>
                             <SelectItem value="CE"> Civil Engineering</SelectItem>
                             <SelectItem value="CPE">Computer Engineering</SelectItem>
                             <SelectItem value="EE">Electrical Engineering</SelectItem>
@@ -290,24 +291,7 @@ const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, set
                         </SelectContent>
                     </Select>
 
-        
-                    <Select  value={selectedYear} onValueChange={setSelectedYear} >
-                    <SelectTrigger id="year-select" className="w-[130px] bg-white ">
-                        <SelectValue placeholder="Select Year" />
-                    </SelectTrigger>
-                        <SelectContent >
-                            <SelectItem value="all"> Select Batch </SelectItem>
-                            <SelectItem value="2020-2024">2020-2024</SelectItem>
-                            <SelectItem value="2021-2025">2021-2025</SelectItem>
-                            <SelectItem value="2022-2026">2022-2026</SelectItem>
-                            <SelectItem value="2023-2027">2023-2027</SelectItem>
-                            <SelectItem value="2024-2028">2024-2028</SelectItem>
-                            <SelectItem value="2025-2029">2025-2029</SelectItem>
-                            <SelectItem value="2026-2030">2026-2030</SelectItem>
-                            <SelectItem value="2027-2031">2027-2031</SelectItem>
-                        </SelectContent>
-                    </Select>
-
+ 
 
                     <Select  value={selectedGradeLevel} onValueChange={handleSelectedGradeLevel} >
                     <SelectTrigger id="year-select" className="w-[140px] bg-white ">

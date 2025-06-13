@@ -21,7 +21,7 @@ export default function LandingPage() {
 
 
 
-  const [selectedDepartment, setSelectedDepartment] = useState<string>("CE")
+  const [selectedDepartment, setSelectedDepartment] = useState<string>("all")
   const [selectedCourse, setSelectedCourse] = useState<string>("all")
   const [selectedYear, setSelectedYear] = useState<string>("all")
   const [selectedBatch, setSelectedBatch] = useState<string>("all")
@@ -55,7 +55,7 @@ export default function LandingPage() {
   useEffect(() => {
     if(courseData?.data)
     {
-      setCoursedataChartSavePoint(courseData?.data.filter((course : courseInterface) => course.department == "CE" ))
+      setCoursedataChartSavePoint(courseData?.data)
       setAllData(courseData?.data)
     }
   }, [courseData])
@@ -65,25 +65,13 @@ export default function LandingPage() {
 
 
 
-  useEffect(() => {
-    if(selectedYear != "all" && courseData?.data)
-    {
-      const getByBatch = coursedataChartSavePoint.filter((course : courseInterface) => course.batch == selectedYear )
-      setData(getSortedCourses(getByBatch))
-    }
-    else
-    {
-      setData([])
-    }
-  }, [selectedYear])
-
-
   
   useEffect(() => {
     if (data.length > 0) {
       scrollContainerRef.current?.scrollTo({ top: 800, behavior: "smooth" });
     }
   }, [data]);
+
 
   const handleSelectedBatch = (selected : string) => {
     setSelectedBatch(selected)
@@ -94,9 +82,8 @@ export default function LandingPage() {
       return
     }
     const getByBatch = allData.filter((course : courseInterface) => course.batch == selected )
-    const getByBatchChart = coursedataChartSavePoint.filter((course : courseInterface) => course.batch == selected )
-    setBatchData(getSortedCourses(getByBatch))
-    setData(getSortedCourses(getByBatchChart))
+    setBatchData(getSortedCourses(getByBatch))  
+    setData([])
   }
 
   const scrollDown = () => {
@@ -108,10 +95,13 @@ export default function LandingPage() {
   useEffect(() => {
     if(courseData?.data)
     {
-      const getByDepartment = allData.filter((course : courseInterface) => course.department == selectedDepartment )
-      setCoursedataChartSavePoint(getSortedCourses(getByDepartment))
-      setData([])
-      setSelectedYear("all")
+      if(selectedDepartment == "all") 
+      {
+        setData([])
+        return
+      }
+      const getByDepartment = batchData.filter((course : courseInterface) => course.department == selectedDepartment )
+      setData(getSortedCourses(getByDepartment))
     }
     else
     {
