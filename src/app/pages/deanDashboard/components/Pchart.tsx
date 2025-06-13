@@ -541,90 +541,100 @@ const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, set
             </div>
 
                     {/*  print this */}
-            <div id="report-content-solo" className='w-full '>
+                    <div id="report-content-solo" className="w-full px-6 py-8 bg-white rounded-md shadow-md hidden">
 
-                <div className="mt-5 bg-stone-50">
-                    <h1> Department: { convertCodeToName(selectedDepartment) }</h1>
-                    <h1> Batch : {selectedYear}</h1>
-                  
-                    {getRetentionRateByYearLevel(department1st, "1st") !== 0 && (
-                        <div>
-                            <h1>1st year retention rate: {getRetentionRateByYearLevel(department1st, "1st").toFixed(1)}%</h1>
-                            <div>
-                                {department1st.map((item, index) => {
-                                    const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
-                                    if(proportion > (Math.min(chartData[0].UCL3, 1) * 100) && item.gradeLevel == "1st")
-                                    {
-                                        return(
-                                            <div key={index}>
-                                                <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
-                                            </div>
-                                        )
-                                    }
-                                })}
+                        <div className="mb-6">
+                        <h1 className="text-xl font-bold text-gray-800">Department: {convertCodeToName(selectedDepartment)}</h1>
+                        <h2 className="text-lg font-medium text-gray-700">Batch: {selectedYear}</h2>
+                        </div>
+
+                        {/* 1st Year */}
+                        {getRetentionRateByYearLevel(department1st, "1st") !== 0 && (
+                        <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                            1st Year Retention Rate: {getRetentionRateByYearLevel(department1st, "1st").toFixed(1)}%
+                            </h3>
+                            <div className="pl-4 space-y-1">
+                            {department1st.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100;
+                                if (proportion > (Math.min(chartData[0].UCL3, 1) * 100) && item.gradeLevel === "1st") {
+                                return (
+                                    <p key={index} className="text-sm text-red-600">
+                                    - {item.gradeLevel} Year, {item.sem === 1 ? "1st" : "2nd"} Sem — {getCourseName(item.courseCode)} ({proportion.toFixed(1)}%)
+                                    </p>
+                                );
+                                }
+                            })}
                             </div>
                         </div>
-                    )}
+                        )}
 
-                    {getRetentionRateByYearLevel(department2nd, "2nd") !== 0 && (
-                        <div>
-                            <h1>2nd year retention rate: {getRetentionRateByYearLevel(department2nd, "2nd").toFixed(1)}%</h1>
-                            <div>
-                                {department2nd.map((item, index) => {
-                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
-                                if(proportion > (Math.min(chartData[0].UCL3, 1) * 100) && item.gradeLevel == "2nd")
-                                    {
-                                        return(
-                                            <div key={index}>
-                                                <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
-                                            </div>
-                                        )
-                                    }
-                                })}
+                        {/* 2nd Year */}
+                        {getRetentionRateByYearLevel(department2nd, "2nd") !== 0 && (
+                        <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                            2nd Year Retention Rate: {getRetentionRateByYearLevel(department2nd, "2nd").toFixed(1)}%
+                            </h3>
+                            <div className="pl-4 space-y-1">
+                            {department2nd.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100;
+                                if (proportion > (Math.min(chartData[0].UCL3, 1) * 100) && item.gradeLevel === "2nd") {
+                                return (
+                                    <p key={index} className="text-sm text-red-600">
+                                    - {item.gradeLevel} Year, {item.sem === 1 ? "1st" : "2nd"} Sem — {getCourseName(item.courseCode)} ({proportion.toFixed(1)}%)
+                                    </p>
+                                );
+                                }
+                            })}
                             </div>
                         </div>
-                    )}
+                        )}
 
-                    {getRetentionRateByYearLevel(department3rd, "3rd") !== 0 && (
-                        <div>
-                            <h1>3rd year retention rate: {getRetentionRateByYearLevel(department3rd, "3rd").toFixed(1)}%</h1>
-                            <div>
-                                {department3rd.map((item, index) => {
-                                    const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
-                                    if(proportion > (Math.min(chartData[0].UCL3, 1) * 100) && item.gradeLevel == "3rd")
-                                    {
-                                        return(
-                                            <div key={index}>
-                                                <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) } ( {proportion.toFixed(1)}% ) </h1>
-                                            </div>
-                                        )
-                                    }
-                                })}
+                        {/* 3rd Year */}
+                        {getRetentionRateByYearLevel(department3rd, "3rd") !== 0 && (
+                        <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                            3rd Year Retention Rate: {getRetentionRateByYearLevel(department3rd, "3rd").toFixed(1)}%
+                            </h3>
+                            <div className="pl-4 space-y-1">
+                            {department3rd.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100;
+                                if (proportion > (Math.min(chartData[0].UCL3, 1) * 100) && item.gradeLevel === "3rd") {
+                                return (
+                                    <p key={index} className="text-sm text-red-600">
+                                    - {item.gradeLevel} Year, {item.sem === 1 ? "1st" : "2nd"} Sem — {getCourseName(item.courseCode)} ({proportion.toFixed(1)}%)
+                                    </p>
+                                );
+                                }
+                            })}
                             </div>
                         </div>
-                    )}
+                        )}
 
-                    {getRetentionRateByYearLevel(department4th, "4th") !== 0 && (
-                        <div>
-                            <h1>4th year retention rate: {getRetentionRateByYearLevel(department4th, "4th").toFixed(1)}%</h1>
-                            <div>
-                                {department4th.map((item, index) => {
-                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100
-                                if(proportion > (Math.min(chartData[0].UCL3, 1) * 100) && item.gradeLevel == "4th")
-                                    {
-                                        return(
-                                            <div key={index}>
-                                                <h1 className="text-xs"> - {item.gradeLevel} year {(item.sem == 1) ? "1st" : "2nd"} sem { getCourseName(item.courseCode) }   ( {proportion.toFixed(1)}% ) </h1>
-                                            </div>
-                                        )
-                                    }
-                                })}
+                        {/* 4th Year */}
+                        {getRetentionRateByYearLevel(department4th, "4th") !== 0 && (
+                        <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                            4th Year Retention Rate: {getRetentionRateByYearLevel(department4th, "4th").toFixed(1)}%
+                            </h3>
+                            <div className="pl-4 space-y-1">
+                            {department4th.map((item, index) => {
+                                const proportion = ((item.totalEnrolled - item.passed) / item.totalEnrolled) * 100;
+                                if (proportion > (Math.min(chartData[0].UCL3, 1) * 100) && item.gradeLevel === "4th") {
+                                return (
+                                    <p key={index} className="text-sm text-red-600">
+                                    - {item.gradeLevel} Year, {item.sem === 1 ? "1st" : "2nd"} Sem — {getCourseName(item.courseCode)} ({proportion.toFixed(1)}%)
+                                    </p>
+                                );
+                                }
+                            })}
                             </div>
                         </div>
-                    )}
-                </div>
+                        )}
+                        </div>
 
-            </div>
+
+       
         </div>
     );
 };
