@@ -297,7 +297,7 @@ const PChart: React.FC<{scrollDown : () => void, selectedDepartment: string, set
                         <SelectValue placeholder="Select Year" />
                     </SelectTrigger>
                         <SelectContent >
-                            <SelectItem value="all">select Department</SelectItem>
+                            <SelectItem value="all">Select Department</SelectItem>
                             <SelectItem value="CE"> Civil Engineering</SelectItem>
                             <SelectItem value="CPE">Computer Engineering</SelectItem>
                             <SelectItem value="EE">Electrical Engineering</SelectItem>
