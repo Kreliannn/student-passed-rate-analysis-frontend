@@ -21,7 +21,7 @@ import PChartSecond from "./components/second_pchart"
 import { getCL } from "@/utils/customFunction"
 import { getSortedCoursesByYear } from "@/utils/customFunction"
 import EmptyChart from "./components/emptyChart"
-
+import SubjectMapping from "./components/subjectMapping"
 
 
 
@@ -83,7 +83,7 @@ export default function LandingPage() {
 
 
   useEffect(() => {
-    if(selectedCourse != "all") scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" }) 
+    if(selectedCourse != "all") scrollContainerRef.current?.scrollTo({ top: 400, behavior: "smooth" }) 
   }, [ selectedCourse]);
 
   const scrollUp = () => {
@@ -108,6 +108,10 @@ export default function LandingPage() {
     scrollContainerRef.current?.scrollTo({ top: 2100, behavior: "smooth" })
   }
   
+  const scroll = () => {
+    //1150
+    scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
+  }
 
 
   return (
@@ -115,124 +119,55 @@ export default function LandingPage() {
       <div ref={scrollContainerRef} className="h-dvh w-full overflow-auto relative">
 
 
-        {(coursedataChartSavePoint && code == "IE") ? (
-          <>
-           <Button
-              onClick={() => {
-                setCoursedataChart(coursedataChartSavePoint.filter((course: courseInterface) => course.courseCode == "CHM01a"))
-                setSelectedCourse("CHM01a")
-                scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
-              }}
-              className="absolute flex flex-col items-center justify-center leading-[0] p-2 z-50 w-[57px]"
-              style={{ top: `${380 + H}px`, left: `${260 + L}px` }}
-            >
-              <span className="mt-2">CHM0a1</span>
-              <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1: courseInterface) => course1.courseCode == 'CHM01a'))}</span>
-            </Button>
-
-            <Button
-              onClick={() => {
-                setCoursedataChart(coursedataChartSavePoint.filter((course: courseInterface) => course.courseCode == "CHM01aL"))
-                setSelectedCourse("CHM01aL")
-                scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
-              }}
-              className="absolute flex flex-col items-center justify-center leading-[0] p-1 z-50 w-[57px]"
-              style={{ top: `${420 + H}px`, left: `${260 + L}px` }}
-            >
-              <span className="mt-2">CHM01aL</span>
-              <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1: courseInterface) => course1.courseCode == 'CHM01aL'))}</span>
-            </Button>
-
-            <Button
-              onClick={() => {
-                setCoursedataChart(coursedataChartSavePoint.filter((course: courseInterface) => course.courseCode == "MAT04"))
-                setSelectedCourse("MAT04")
-                scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
-              }}
-              className="absolute flex flex-col items-center justify-center leading-[0] p-1 z-50 w-[57px]"
-              style={{ top: `${500 + H}px`, left: `${260 + L}px` }}
-            >
-              <span className="mt-2">MAT04</span>
-              <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1: courseInterface) => course1.courseCode == 'MAT04'))}</span>
-            </Button>
-
-            <Button
-              onClick={() => {
-                setCoursedataChart(coursedataChartSavePoint.filter((course: courseInterface) => course.courseCode == "PHY03"))
-                setSelectedCourse("PHY03")
-                scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
-              }}
-              className="absolute flex flex-col items-center justify-center leading-[0] p-1 z-50 w-[57px]"
-              style={{ top: `${420 + H}px`, left: `${360 + L}px` }}
-            >
-              <span className="mt-2">PHY03</span>
-              <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1: courseInterface) => course1.courseCode == 'PHY03'))}</span>
-            </Button>
-
-            <Button
-              onClick={() => {
-                setCoursedataChart(coursedataChartSavePoint.filter((course: courseInterface) => course.courseCode == "PHY03L"))
-                setSelectedCourse("PHY03L")
-                scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
-              }}
-              className="absolute flex flex-col items-center justify-center leading-[0] p-1 z-50 w-[57px]"
-              style={{ top: `${460 + H}px`, left: `${360 + L}px` }}
-            >
-              <span className="mt-2">PHY03L </span>
-              <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1: courseInterface) => course1.courseCode == 'PHY03L'))}</span>
-            </Button>
-
-            <Button
-              onClick={() => {
-                setCoursedataChart(coursedataChartSavePoint.filter((course: courseInterface) => course.courseCode == "MAT05"))
-                setSelectedCourse("MAT05")
-                scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
-              }}
-              className="absolute flex flex-col items-center justify-center leading-[0] p-1 z-50 w-[57px]"
-              style={{ top: `${500 + H}px`, left: `${360 + L}px` }}
-            >
-              <span className="mt-2">MAT05 </span>
-              <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1: courseInterface) => course1.courseCode == 'MAT05'))}</span>
-            </Button>
-
-            <Button
-              onClick={() => {
-                setCoursedataChart(coursedataChartSavePoint.filter((course: courseInterface) => course.courseCode == "IEN01"))
-                setSelectedCourse("IEN01")
-                scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
-              }}
-              className="absolute flex flex-col items-center justify-center leading-[0] p-1 z-50 w-[57px]"
-              style={{ top: `${540 + H}px`, left: `${360 + L}px` }}
-            >
-              <span className="mt-2">IEN01 </span>
-              <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1: courseInterface) => course1.courseCode == 'IEN01'))}</span>
-            </Button>
+      {coursedataChartSavePoint && code === "IE" && (
+        <>
+          <SubjectMapping subject="CHM01a" top={380} left={260} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="CHM01aL" top={420} left={260} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="MAT04" top={500} left={260} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          
+          <SubjectMapping subject="PHY03" top={420} left={360} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="PHY03L" top={460} left={360} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="MAT05" top={500} left={360} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN01" top={540} left={360} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          
+          <SubjectMapping subject="IEN03" top={342} left={457} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN03L" top={382} left={457} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="MEC00" top={422} left={457} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="MAT07" top={500} left={457} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN02" top={538} left={457} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN04" top={615} left={457} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="COM01" top={695} left={457} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+        
+          <SubjectMapping subject="BES01" top={342} left={551} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="BES05" top={382} left={551} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="MCE01a" top={422} left={551} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN05" top={500} left={551} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="AEC02" top={576} left={551} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN06" top={616} left={551} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN06L" top={654} left={551} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="CAD01" top={693} left={551} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
 
 
+          <SubjectMapping subject="AEC04" top={342} left={649} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEE01" top={382} left={649} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="EEN01a" top={422} left={649} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN07" top={500} left={649} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN08" top={539} left={649} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN09" top={616} left={649} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN09L" top={654} left={649} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
 
-              { /*
-                <Button
-                onClick={() => {
-                  setCoursedataChart(coursedataChartSavePoint.filter((course : courseInterface) => course.courseCode == "IEN03" ))
-                  setSelectedCourse("IEN03")
-                  scrollContainerRef.current?.scrollTo({ top: 1150, behavior: "smooth" })
-                  }}
-                className="absolute flex flex-col items-center justify-center leading-[0] p-1 z-50 w-[57px]"
-                style={{ top: '342px', left: '457px' }}
-              >
-                <span className="mt-2">IEN03 </span>
-                <span className="text-xs whitespace-nowrap">{getCL(coursedataChartSavePoint.filter((course1 : courseInterface) => course1.courseCode ==  'IEN03'))}</span>
-              </Button>
-              */}
-            
-
-            
-
-
-          </>
-        ) : null}
-
-         
+          <SubjectMapping subject="AEC05" top={342} left={743} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="BES04" top={382} left={743} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN10" top={462} left={743} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN11" top={500} left={743} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN12" top={577} left={743} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN12L" top={616} left={743} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEE02" top={654} left={743} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN13" top={694} left={743} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN13L" top={734} left={743} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          
+        </>
+      )}
     
 
 
