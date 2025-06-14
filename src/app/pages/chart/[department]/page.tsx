@@ -166,6 +166,15 @@ export default function LandingPage() {
           <SubjectMapping subject="IEN13" top={694} left={743} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
           <SubjectMapping subject="IEN13L" top={734} left={743} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
           
+          <SubjectMapping subject="IEN14" top={342} left={937} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN14L" top={382} left={937} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN15" top={500} left={937} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN17" top={616} left={937} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEE03" top={654} left={937} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN16" top={771} left={937} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN16L" top={810} left={937} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+        
+        
         </>
       )}
     
