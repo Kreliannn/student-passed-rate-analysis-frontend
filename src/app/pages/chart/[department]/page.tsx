@@ -83,7 +83,7 @@ export default function LandingPage() {
 
 
   useEffect(() => {
-    if(selectedCourse != "all") scrollContainerRef.current?.scrollTo({ top: 400, behavior: "smooth" }) 
+    if(selectedCourse != "all") scrollContainerRef.current?.scrollTo({ top: 950, behavior: "smooth" }) 
   }, [ selectedCourse]);
 
   const scrollUp = () => {
@@ -174,7 +174,8 @@ export default function LandingPage() {
           <SubjectMapping subject="IEN16" top={771} left={937} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
           <SubjectMapping subject="IEN16L" top={810} left={937} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
         
-        
+          <SubjectMapping subject="IEN18" top={382} left={1027} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
+          <SubjectMapping subject="IEN18L" top={422} left={1027} coursedataChartSavePoint={coursedataChartSavePoint} scrollDown={scroll} setSelectedCourse={setSelectedCourse} setCoursedataChart={setCoursedataChart} />
         </>
       )}
     
